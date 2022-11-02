@@ -570,57 +570,12 @@ exports.getByEmail = async (req, res, next) => {
   }
 };
 exports.login = async (req, res, next) => {
-  if (
-    req.session != undefined &&
-    req.session.attempt != undefined &&
-    req.session.attempt % 4 == 0
-  ) {
-    let currenttime = new Date();
-    let endofpunishment = new Date(req.session.end);
-    if (Date.parse(currenttime) < Date.parse(endofpunishment)) {
-      return res.status(403).send(req.session.end.toString());
-    }
-  }
   try {
-    const account = await User.findOne({
-      $or: [
-        { email: req.body.username.toLowerCase() },
-        { username: req.body.username.toLowerCase() },
-      ],
-    })
-      .select("password")
-      .exec();
-    if (!account || !bcrypt.compareSync(req.body.password, account.password)) {
-      if (req.session && req.session.attempt && account) {
-        req.session.attempt++;
-        if (req.session.attempt % 4 == 0) {
-          if (req.session.minutes == undefined) {
-            req.session.minutes = 1;
-          }
-          req.session.minutes *= 2;
-          let date = new Date();
-          req.session.end = date.setMinutes(
-            date.getMinutes() + req.session.minutes
-          );
-          return res.status(417).send(req.session.end.toString());
-        } else {
-          return res.status(417).send(false);
-        }
-      } else {
-        let data = "username";
-        if (account) {
-          req.session.attempt = 1;
-          data = false;
-        }
-        return res.status(417).send(data);
-      }
-    } else {
-      // authentication successful
-      req.session.uid = account._id.toString();
-      req.session.attempt = undefined;
-      req.session.minutes = undefined;
-      return res.json(req.session.uid);
-    }
+    const data = await User.findOneAndUpdate({ uid: req.body.uid },{authTime:req.body.authTime},{
+      upsert: true,
+      new: true,
+    }).exec();
+    return res.status(200).send(data);
   } catch (err) {
     return new Error(err);
   }
@@ -668,6 +623,7 @@ exports.create = async (req, res, next) => {
         name: req.body.displayName,
         email: req.body.email.toLowerCase(),
         confirmed: false,
+        authTime: req.body.auth_time,
       }
       if(req.body.photoURL){
         newUserOb.picture=req.body.photoURL;

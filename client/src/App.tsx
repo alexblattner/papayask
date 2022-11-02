@@ -26,7 +26,7 @@ function App() {
         <Routes>
           <Route path="/sign-up" element={<SignUp/>}/>
           <Route path="/log-in" element={<LogIn/>}/>
-          <Route path="*"><></></Route>
+          <Route path="*" element={<>{JSON.stringify(user)}</>}></Route>
         </Routes>
       </Router>
     </AuthContext.Provider>
