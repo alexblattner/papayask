@@ -15,8 +15,8 @@ const LogIn = () => {
     const [error, setError] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
     
-    const google=async()=>{
-        await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
+    const facebook=async()=>{
+        await auth.signInWithPopup(new firebase.auth.FacebookAuthProvider())
         .then(async(userCred:any) => {
           if (userCred) {
             
@@ -24,6 +24,15 @@ const LogIn = () => {
           }
         });
     }
+    const google=async()=>{
+      await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
+      .then(async(userCred:any) => {
+        if (userCred) {
+          
+          window.localStorage.setItem('auth', 'true');
+        }
+      });
+  }
     const emailPassword=async(e:React.FormEvent<HTMLFormElement>)=>{
       e.preventDefault();
       let email = ((e.target as HTMLInputElement).childNodes[0]as HTMLInputElement).value;
@@ -44,6 +53,7 @@ const LogIn = () => {
     return (
       <div className="options">
           <form onSubmit={emailPassword}><input type="text" onChange={(e)=>setEmail((e.target as HTMLInputElement).value)}/><input onChange={(e)=>setPassword((e.target as HTMLInputElement).value)} type="password" /><input type="submit" /></form>
+          <button onClick={facebook}>facebook</button>
           <button onClick={google}>google</button>
           {error}
       </div>
