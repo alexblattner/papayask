@@ -8,6 +8,7 @@ const questionController = require("./controllers/questionController");
 const reviewController = require("./controllers/noteController");
 const userController = require("./controllers/userController");
 const schedule = require("node-schedule");
+const middleware = require('./firebase/Middleware');
 
 const SessionModel = require("./models/session");
 const passport = require("passport"),
@@ -34,42 +35,45 @@ const {
   copy,
   s3,
 } = require("./wasabi");
-app.use(express.json({ limit: "50mb" }));
-app.use(express.urlencoded({ limit: "50mb", extended: true }));
-app.set("trust proxy", 1);
 const origin =
   process.env.NODE_ENV == "development"
     ? ["http://localhost:3000", "http://localhost:58550"]
     : process.env.NODE_ENV == "production"
     ? ["https://www.snipcritics.com", "https://snipcritics.com"]
     : ["https://www.scbackend.com", "https://scbackend.com"];
-app.use(
-  cors({
-    origin: origin,
-    methods: ["GET", "POST"],
-    credentials: true,
-  })
-);
-app.use(cookieParser());
-app.use(express.urlencoded({ extended: true }));
+    app.disable('x-powered-by');
+
+    app.use(function(req, res, next) {
+      // Website you wish to allow to connect
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    
+    // Request methods you wish to allow
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    
+    // Request headers you wish to allow
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+    
+    // Set to true if you need the website to include cookies in the requests sent
+    // to the API (e.g. in case you use sessions)
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    
+    // Pass to next layer of middleware
+    next();
+    });
+    
+    app.use(bodyParser.urlencoded({ extended: true }));
+    app.use(bodyParser.json());
+    app.use(cookieParser());
+    app.use(cors({
+      origin: origin
+    }));
+app.use(middleware.decodeToken);
 const domain =
   process.env.NODE_ENV == "development"
     ? "localhost:3000"
     : process.env.NODE_ENV == "production"
     ? "snipcritics.com"
     : "scbackend.com";
-app.use(
-  session({
-    key: "userId",
-    secret: "subscribe",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      domain: domain,
-      expires: 14 * 24 * 360000000,
-    },
-  })
-);
 mongoose.connect(
   "mongodb+srv://SnipCritics:" +
     process.env.MONGODB_PASSWORD +

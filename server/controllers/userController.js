@@ -657,30 +657,17 @@ exports.emailConfirmation = async (req, res, next) => {
   }
 };
 exports.create = async (req, res, next) => {
+  console.log(1212,req.body);
   try {
-    const doesUserExist = await User.exists({ username: req.body.username });
-    const re =
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const doesUserExist = await User.findById(req.body.uid).exec();
     if (
-      !doesUserExist &&
-      req.body.username != undefined &&
-      /^[0-9a-zA-Z_.-]+$/.test(req.body.username) &&
-      req.body.email != undefined &&
-      re.test(String(req.body.email).toLowerCase()) &&
-      req.body.password != undefined &&
-      req.body.password.length > 5 &&
-      req.body.accept != undefined &&
-      req.body.username.length <= 20
-    ) {
-      const bc = await bcrypt.hashSync(req.body.password, saltRounds);
+      !doesUserExist
+    ) { 
       const user = new User({
-        username: req.body.username.toLowerCase(),
-        password: bc,
+        _id: req.body.uid,
+        name: req.body.displayName,
         email: req.body.email.toLowerCase(),
-        reviewsToPost: process.env.REVIEWS_TO_POSTS,
-        reputation: 0,
         confirmed: false,
-        postsAllowed: process.env.POSTS_ALLOWED,
       });
       const createdUser = await user.save();
       let now = new Date();
@@ -692,7 +679,6 @@ exports.create = async (req, res, next) => {
       });
       sendinblue(req.body.email, req.body.username, 1, code._id);
       req.session.uid = createdUser._id;
-      await rewardsSetUp(createdUser);
       return res.json(createdUser._id);
     } else {
       return res.json({ error: 406 });

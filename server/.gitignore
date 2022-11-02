@@ -10,6 +10,7 @@
 
 # production
 /build
+**/firebase/serviceAccount.json
 
 # misc
 .env

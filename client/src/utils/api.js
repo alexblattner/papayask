@@ -4,7 +4,10 @@ export const baseURL = process.env.REACT_APP_API;
 
 const api = axios.create({
   baseURL,
-  withCredentials: true,
+  headers: {
+  'Accept': 'application/json',
+  'Content-Type': 'application/json'
+  }
 });
 
 /*
@@ -23,5 +26,4 @@ api.interceptors.response.use(
   (response) => response,
   (error) => Promise.reject(error)
 );
-
 export default api;

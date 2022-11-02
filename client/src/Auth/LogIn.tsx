@@ -8,26 +8,18 @@ import {Navigate} from 'react-router-dom';
 import api from "../utils/api";
 
 //https://www.quackit.com/html/codes/html_popup_window_code.cfm
-const SignUp = () => {
+const LogIn = () => {
     const user = useContext(AuthContext);
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [error, setError] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
-    const register=async(token:any,body:any)=>{
-      const res=await api({method: 'post', url: '/users',headers: {
-        Authorization: 'Bearer ' + token,
-      },data:body});
-        console.log(res);
-    }
+    
     const google=async()=>{
         await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
         .then(async(userCred:any) => {
           if (userCred) {
-            let token= await userCred.user.getIdToken();
-            let body=userCred.user.multiFactor.user.providerData[0]
-            body.uid=userCred.user.multiFactor.user.uid;
-            register(token,body);
+            
             window.localStorage.setItem('auth', 'true');
           }
         });
@@ -39,12 +31,7 @@ const SignUp = () => {
       console.log(email,password)
         await auth.createUserWithEmailAndPassword(email,password)
         .then(async(userCred:any) => {
-          console.log(userCred)
           if (userCred) {
-            let token= await userCred.user.getIdToken();
-            let body=userCred.user.multiFactor.user.providerData[0]
-            body.uid=userCred.user.multiFactor.user.uid;
-            register(token,body);
             window.localStorage.setItem('auth', 'true');
           }
         }).catch((err:any)=>{
@@ -63,4 +50,4 @@ const SignUp = () => {
     );
 };
 
-export default SignUp;
+export default LogIn;
