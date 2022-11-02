@@ -15,10 +15,9 @@ const SignUp = () => {
     const [error, setError] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
     const register=async(token:any,body:any)=>{
-      const res=await api({method: 'post', url: '/users',headers: {
+      const res=await api({method: 'post', url: '/user',headers: {
         Authorization: 'Bearer ' + token,
       },data:body});
-        console.log(res);
     }
     const google=async()=>{
         await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
@@ -39,6 +38,8 @@ const SignUp = () => {
           let token= await userCred.user.getIdToken();
           let body=userCred.user.multiFactor.user.providerData[0]
           body.uid=userCred.user.multiFactor.user.uid;
+          console.log(userCred)
+          alert(999)
           register(token,body);
           window.localStorage.setItem('auth', 'true');
         }

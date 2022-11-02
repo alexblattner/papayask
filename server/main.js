@@ -67,7 +67,6 @@ const origin =
     app.use(cors({
       origin: origin
     }));
-app.use(middleware.decodeToken);
 const domain =
   process.env.NODE_ENV == "development"
     ? "localhost:3000"
@@ -110,7 +109,7 @@ app.get("/username/:username", userController.getByUsername);
 app.get("/email/:email", userController.getByEmail);
 app.post("/username", userController.changeUsername);
 app.post("/login", userController.login);
-app.post("/user", userController.create);
+app.post("/user",middleware.decodeToken, userController.create);
 app.get("/user/:idorusername", userController.getByIdOrUsername);
 app.get("/question/:pid", questionController.getById);
 // app.get('/post/:id/:tag', postController.getById, (req, res, next) => {

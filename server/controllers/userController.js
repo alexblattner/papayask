@@ -659,27 +659,22 @@ exports.emailConfirmation = async (req, res, next) => {
 exports.create = async (req, res, next) => {
   console.log(1212,req.body);
   try {
-    const doesUserExist = await User.findById(req.body.uid).exec();
+    const doesUserExist = await User.findOne({$or:[{uid:req.body.uid},{email:req.body.email}]}).exec();
     if (
       !doesUserExist
     ) { 
-      const user = new User({
-        _id: req.body.uid,
+      const newUserOb={
+        uid: req.body.uid,
         name: req.body.displayName,
         email: req.body.email.toLowerCase(),
         confirmed: false,
-      });
+      }
+      if(req.body.photoURL){
+        newUserOb.picture=req.body.photoURL;
+      }
+      const user = new User(newUserOb);
       const createdUser = await user.save();
-      let now = new Date();
-      now.setDate(now.getDate() + 14);
-      const code = await Mail.create({
-        expiration: now,
-        type: 1,
-        user: user._id,
-      });
-      sendinblue(req.body.email, req.body.username, 1, code._id);
-      req.session.uid = createdUser._id;
-      return res.json(createdUser._id);
+      return res.json(createdUser.uid);
     } else {
       return res.json({ error: 406 });
     }

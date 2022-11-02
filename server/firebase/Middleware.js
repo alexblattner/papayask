@@ -9,7 +9,8 @@ class Middleware {
         }
         const token = req.headers.authorization.split(' ')[1];
         try{
-            const decoded = admin.auth().verifyIdToken(token);
+            const decoded = await admin.auth().verifyIdToken(token);
+            console.log(999,decoded);
             if(decoded) {
                 return next();
             }
