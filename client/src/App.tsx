@@ -13,6 +13,7 @@ import {
   Route,
   Routes,
 } from 'react-router-dom';
+import Profile from "./profile/Profile";
 function App() {
   const user = useContext(AuthContext);
   return (
@@ -21,11 +22,13 @@ function App() {
         <Routes>
           <Route path="/log-in"><></></Route>
           <Route path="/sign-up"><></></Route>
+          <Route path="/profile"><></></Route>
           <Route path="*" element={<Header />}/>
         </Routes>
         <Routes>
           <Route path="/sign-up" element={<SignUp/>}/>
           <Route path="/log-in" element={<LogIn/>}/>
+          <Route path="/profile" element={<Profile/>}/>
           <Route path="*"><></></Route>
         </Routes>
       </Router>
