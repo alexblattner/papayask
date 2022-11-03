@@ -1,14 +1,21 @@
 import React, { useContext } from 'react';
-import { Button } from 'react-bootstrap';
 
-import { auth } from '../firebase-auth';
-import { AuthContext } from "../Auth/ContextProvider";
+import { AuthContext } from '../Auth/ContextProvider';
+import ProfileSetup from '../profile/ProfileSetup';
+import './main.css';
 
 const Main = () => {
+  const [showProfileSetup, setShowProfileSetup] = React.useState<boolean>(true);
   const user = useContext(AuthContext);
-  console.log(user);
 
-  return <></>;
+  return (
+    <div className="main-app">
+      <ProfileSetup
+        showProfileSetup={showProfileSetup}
+        setShowProfileSetup={setShowProfileSetup}
+      />
+    </div>
+  );
 };
 
 export default Main;

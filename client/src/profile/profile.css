@@ -122,4 +122,230 @@
     font-weight: bold;
     padding: 8px 16px;
     border-radius: 8px;
+    display: flex;
+    gap: 16;
+}
+
+/* profile setup */
+.setup-container {
+    width: 99%;
+    height: 85vh;
+    margin: auto;
+    margin-top: 0.5vh;
+    border-radius: 5px;
+    box-shadow: -1px -1px 4px 1px rgba(196,194,194,1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 100px;
+    padding-bottom: 50px;
+}
+.pagination {
+    display: flex;
+    align-items: center;
+}
+.pagination-button {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: grid;
+    place-content: center;
+    border: #f8cbc9;
+    font-size: 24px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.pagination-line {
+    width: 50px;
+    height: 2px;
+    background-color: #f8cbc9;
+    margin: 10px;
+}
+.done {
+    background-color: #f8cbc9;
+    color: #e9635d;
+    border: 2px solid #e9635d;
+}
+.active {
+    background-color: #e9635d;
+    color: #fff;
+}
+
+.todo {
+    background-color: #f8cbc9;
+    color: #e9635d;
+}
+
+.setup-content {
+    width: 75%;
+    height: 75%;
+}
+
+.step-title {
+    font-size: 36px;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.setup-textarea {
+    width: 100%;
+    height: 200px;
+    border: 1px solid #f8cbc9;
+    border-radius: 8px;
+    padding: 16px;
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 30px;
+}
+
+.setup-input, .years-input {
+    width: 300px;
+    height: 15px;
+    border: 1px solid #f8cbc9;
+    border-radius: 8px;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 30px;
+}
+
+.setup-textarea:focus, .setup-textarea:focus-within, .years-input:focus, .years-input:focus-within, .setup-input:focus, .setup-input:focus-within {
+    outline: none;
+    border: 1px solid #e9635d;
+}
+
+.skills-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+}
+.vertical-divider {
+    width: 1px;
+    height: 20px;
+    background-color: #e9635d;
+    margin: 0 8px;
+}
+.delete-skill {
+    cursor: pointer;
+}
+
+.setup-footer {
+    display: flex;
+    align-items: center;
+    width: 75%;
+    gap: 16px;
+}
+.footer-button {
+    background-color: #e9635d;
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    cursor: pointer;
+}
+.footer-button:disabled {
+    background-color: lightgrey;
+    color: #fff;
+    cursor: not-allowed;
+}
+.skip {
+    background-color: #f8cbc9;
+    color: #e9635d;
+}
+
+.second-step-container {
+    display: flex;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.education-section {
+    width: 60%;
+}
+
+.experience-section {
+    width: 50%;
+    border-left: 1px solid #f8cbc9;
+    padding-left: 100px;
+}
+
+.education-form, .experience-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.years-input-group {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.years-input {
+    width: 125px;
+}
+
+.years-input::-webkit-outer-spin-button,
+.years-input::-webkit-inner-spin-button {
+    appearance: none;
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.years-input[type=number] {
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+.add-button {
+    width: 330px;
+    background-color: #e9635d;
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    cursor: pointer;
+}
+
+.education-list, .experience-list, .social-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 16px;
+}
+
+.education-box, .experience-box {
+    width: 200px;
+    border: 1px solid #f8cbc9;
+    border-radius: 8px;
+    padding: 16px;
+    position: relative;
+}
+.field-of-study {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.remove-button {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    cursor: pointer;
+}
+
+.social-container {
+    position: relative;
+}
+
+.delete-social {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    cursor: pointer;
 }

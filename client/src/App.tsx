@@ -26,6 +26,9 @@ function App() {
           <Route path="/profile">
             <></>
           </Route>
+          <Route path="/">
+            <></>
+          </Route>
           <Route path="*" element={<Header />} />
         </Routes>
         <Routes>
