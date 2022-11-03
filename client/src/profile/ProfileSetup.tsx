@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal } from 'react-bootstrap';
+
+import { AuthContext } from '../Auth/ContextProvider';
 import Icon from '../shared/Icon';
 import { socialName } from '../utils/socialName';
+import { auth } from '../firebase-auth';
 
 interface ProfileSetupProps {
   showProfileSetup: boolean;
@@ -26,6 +29,8 @@ const ProfileSetup = ({
   showProfileSetup,
   setShowProfileSetup,
 }: ProfileSetupProps) => {
+  const [token, setToken] = useState<string>('');
+  const { updateUser } = React.useContext(AuthContext);
   const [step, setStep] = useState<number>(0);
   const [stepsDone, setStepsDone] = useState<number[]>([0]);
   const [bio, setBio] = useState<string>('');
@@ -125,7 +130,18 @@ const ProfileSetup = ({
     setSocial(newSocial);
   };
 
+  const skip = () => {
+    updateUser(token, { isSetUp: true });
+    setShowProfileSetup(false);
+  };
+
   const submit = () => {};
+
+  useEffect(() => {
+    auth.currentUser?.getIdToken().then((token) => {
+      setToken(token);
+    });
+  }, []);
 
   return (
     <Modal show={showProfileSetup} dialogClassName="fullscreen-modal">
@@ -354,7 +370,9 @@ const ProfileSetup = ({
           )}
         </div>
         <div className="setup-footer">
-          <button className="footer-button skip">Skip</button>
+          <button className="footer-button skip" onClick={skip}>
+            Skip
+          </button>
           <button
             className="footer-button"
             disabled={step === 0}

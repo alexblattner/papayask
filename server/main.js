@@ -110,6 +110,7 @@ app.get("/email/:email", userController.getByEmail);
 app.post("/username", userController.changeUsername);
 app.post("/login", userController.login);
 app.post("/user",middleware.decodeToken, userController.createOrLogin);
+app.patch("/user/:userId",middleware.decodeToken, userController.update);
 app.get("/user/:idorusername", userController.getByIdOrUsername);
 app.get("/question/:pid", questionController.getById);
 // app.get('/post/:id/:tag', postController.getById, (req, res, next) => {
