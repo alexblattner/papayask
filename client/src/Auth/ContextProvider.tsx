@@ -17,13 +17,13 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
         const token = await user.getIdToken();
-        register(token,{email:user.email,displayName:user.displayName})
+        register(token,{email:user.email,displayName:user.displayName,uid:user.uid})
       } else {
         setUser(null);
       }
     });
     return unsubscribe;
-  }, [user]);
+  }, []);
   
   return <AuthContext.Provider value={user}>{children}</AuthContext.Provider>;
 };
