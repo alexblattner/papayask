@@ -3,14 +3,16 @@ const admin = require('./config');
 
 class Middleware {
     async decodeToken(req, res, next) {
-        console.log(req.headers,req.body);
         if (!req.headers.authorization) {
             return res.status(401).json({ error: 'Unauthorized' });
         }
         const token = req.headers.authorization.split(' ')[1];
         try{
-            const decoded = admin.auth().verifyIdToken(token);
+            const decoded = await admin.auth().verifyIdToken(token);
             if(decoded) {
+                if (req.body) {
+                    req.body.auth_time = decoded.auth_time;
+                }
                 return next();
             }
             return res.status(401).send('Unauthorized');
