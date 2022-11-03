@@ -14,19 +14,10 @@ const LogIn = () => {
     const [password, setPassword] = useState<string>("");
     const [error, setError] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
-    const register=async(token:any,body:any)=>{
-      const res=await api({method: 'post', url: '/login',headers: {
-        Authorization: 'Bearer ' + token,
-      },data:body});
-    }
     const google=async()=>{
         await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
         .then(async(userCred:any) => {
           if (userCred) {
-            let token= await userCred.user.getIdToken();
-            let body=userCred.user.multiFactor.user.providerData[0]
-            body.uid=userCred.user.multiFactor.user.uid;
-            register(token,body);
             window.localStorage.setItem('auth', 'true');
           }
         });
@@ -35,10 +26,6 @@ const LogIn = () => {
       await auth.signInWithPopup(new firebase.auth.FacebookAuthProvider())
       .then(async(userCred:any) => {
         if (userCred) {
-          let token= await userCred.user.getIdToken();
-          let body=userCred.user.multiFactor.user.providerData[0]
-          body.uid=userCred.user.multiFactor.user.uid;
-          register(token,body);
           window.localStorage.setItem('auth', 'true');
         }
       });
@@ -51,10 +38,6 @@ const LogIn = () => {
         await auth.createUserWithEmailAndPassword(email,password)
         .then(async(userCred:any) => {
           if (userCred) {
-            let token= await userCred.user.getIdToken();
-            let body=userCred.user.multiFactor.user.providerData[0]
-            body.uid=userCred.user.multiFactor.user.uid;
-            register(token,body);
             window.localStorage.setItem('auth', 'true');
           }
         }).catch((err:any)=>{
