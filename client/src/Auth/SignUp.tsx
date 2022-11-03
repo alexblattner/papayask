@@ -14,11 +14,6 @@ const SignUp = () => {
     const [password, setPassword] = useState<string>("");
     const [error, setError] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
-    const register=async(token:any,body:any)=>{
-      const res=await api({method: 'post', url: '/user',headers: {
-        Authorization: 'Bearer ' + token,
-      },data:body});
-    }
     const google=async()=>{
         await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
         .then(async(userCred:any) => {
