@@ -23,10 +23,6 @@ const SignUp = () => {
         await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
         .then(async(userCred:any) => {
           if (userCred) {
-            let token= await userCred.user.getIdToken();
-            let body=userCred.user.multiFactor.user.providerData[0]
-            body.uid=userCred.user.multiFactor.user.uid;
-            register(token,body);
             window.localStorage.setItem('auth', 'true');
           }
         });
@@ -35,12 +31,6 @@ const SignUp = () => {
       await auth.signInWithPopup(new firebase.auth.FacebookAuthProvider())
       .then(async(userCred:any) => {
         if (userCred) {
-          let token= await userCred.user.getIdToken();
-          let body=userCred.user.multiFactor.user.providerData[0]
-          body.uid=userCred.user.multiFactor.user.uid;
-          console.log(userCred)
-          alert(999)
-          register(token,body);
           window.localStorage.setItem('auth', 'true');
         }
       });
@@ -52,12 +42,7 @@ const SignUp = () => {
       console.log(email,password)
         await auth.createUserWithEmailAndPassword(email,password)
         .then(async(userCred:any) => {
-          console.log(userCred)
           if (userCred) {
-            let token= await userCred.user.getIdToken();
-            let body=userCred.user.multiFactor.user.providerData[0]
-            body.uid=userCred.user.multiFactor.user.uid;
-            register(token,body);
             window.localStorage.setItem('auth', 'true');
           }
         }).catch((err:any)=>{

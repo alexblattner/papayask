@@ -569,17 +569,6 @@ exports.getByEmail = async (req, res, next) => {
     return new Error(err);
   }
 };
-exports.login = async (req, res, next) => {
-  try {
-    const data = await User.findOneAndUpdate({ uid: req.body.uid },{authTime:req.body.authTime},{
-      upsert: true,
-      new: true,
-    }).exec();
-    return res.status(200).send(data);
-  } catch (err) {
-    return new Error(err);
-  }
-};
 exports.emailConfirmation = async (req, res, next) => {
   const mail = await Mail.findById(req.params.code).exec();
   if (mail) {
@@ -611,8 +600,18 @@ exports.emailConfirmation = async (req, res, next) => {
     res.sendStatus(404);
   }
 };
-exports.create = async (req, res, next) => {
-  console.log(1212,req.body);
+exports.login = async (req, res, next) => {
+  try {
+    const data = await User.findOneAndUpdate({ uid: req.body.uid },{authTime:req.body.authTime},{
+      upsert: true,
+      new: true,
+    }).exec();
+    return res.status(200).send(data);
+  } catch (err) {
+    return new Error(err);
+  }
+};
+exports.createOrLogin = async (req, res, next) => {
   try {
     const doesUserExist = await User.findOne({$or:[{uid:req.body.uid},{email:req.body.email}]}).exec();
     if (
@@ -630,9 +629,11 @@ exports.create = async (req, res, next) => {
       }
       const user = new User(newUserOb);
       const createdUser = await user.save();
-      return res.json(createdUser.uid);
+      return res.send(createdUser);
     } else {
-      return res.json({ error: 406 });
+      doesUserExist.authTime=req.body.auth_time;
+      await doesUserExist.save();
+      return res.send(doesUserExist);
     }
   } catch (e) {
     next(e);
