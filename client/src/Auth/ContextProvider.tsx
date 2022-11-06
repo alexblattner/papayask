@@ -1,10 +1,10 @@
 import { useEffect, useState, createContext } from 'react';
 import { auth } from '../firebase-auth';
 import api from '../utils/api';
-import { User } from '../models/User';
+import { UserProps } from '../models/User';
 
 interface AuthContextReturn {
-  user: User | null;
+  user: UserProps | null;
   updateUser: (utoken: any, body: any) => void;
 }
 
@@ -13,7 +13,7 @@ export const AuthContext = createContext<AuthContextReturn>({
   updateUser: () => {},
 });
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserProps | null>(null);
   const register = async (token: any, body: any) => {
     const res = await api({
       method: 'post',

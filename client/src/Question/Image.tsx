@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import {FileProps,NoteProps} from './Question.types';
+import {FileProps,NoteProps} from '../models/Question';
 
 type ImageProps = {
   file: FileProps,
