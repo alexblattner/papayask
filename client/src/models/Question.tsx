@@ -1,5 +1,5 @@
 import { type } from '@testing-library/user-event/dist/type';
-import {UserProps} from '../User.types';
+import {UserProps} from './User';
 export type FileProps = {
     id: string,
     name: string,

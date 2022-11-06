@@ -2,7 +2,7 @@ import * as React from 'react';
 import { SpecialZoomLevel, Viewer,Worker } from '@react-pdf-viewer/core';
 
 import '@react-pdf-viewer/core/lib/styles/index.css';
-import {FileProps,NoteProps} from '../Question.types';
+import {FileProps,NoteProps} from '../../models/Question';
 
 import ZoomPlugin from './ZoomPlugin';
 

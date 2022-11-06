@@ -20,10 +20,10 @@ import { AuthContext } from '../Auth/ContextProvider';
 import SignUp from '../Auth/SignUp';
 import LogIn from '../Auth/LogIn';
 function Header() {
-  const { user } = useContext(AuthContext);
+  const {user} = useContext(AuthContext);
   const [showSignUp, setShowSignUp] = useState(false);
   const [showLogIn, setShowLogIn] = useState(false);
-  const logout = async () => {
+  const logout =() => {
     auth.signOut();
   };
 

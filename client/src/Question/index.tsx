@@ -4,7 +4,7 @@ import moment from "moment";
 import Writing from "./Writing";
 import Image from "./Image";
 import useDevice from "../Hooks/useDevice";
-import {NoteProps,QuestionProps} from './Question.types';
+import {NoteProps,QuestionProps} from '../models/Question';
 import api from '../utils/api';
 function Question() {
   const [data, setData] = useState<QuestionProps | null>(null); //question data
