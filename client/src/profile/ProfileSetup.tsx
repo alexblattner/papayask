@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Modal } from 'react-bootstrap';
 
 import { AuthContext } from '../Auth/ContextProvider';
 import Icon from '../shared/Icon';
@@ -7,7 +6,6 @@ import { socialName } from '../utils/socialName';
 import { auth } from '../firebase-auth';
 
 interface ProfileSetupProps {
-  showProfileSetup: boolean;
   setShowProfileSetup: (show: boolean) => void;
 }
 
@@ -26,7 +24,6 @@ interface Experience {
 }
 
 const ProfileSetup = ({
-  showProfileSetup,
   setShowProfileSetup,
 }: ProfileSetupProps) => {
   const [token, setToken] = useState<string>('');
@@ -144,8 +141,8 @@ const ProfileSetup = ({
   }, []);
 
   return (
-    <Modal show={showProfileSetup} dialogClassName="fullscreen-modal">
-      <Modal.Body className="setup-container">
+    <div className='setup-modal'>
+      <div className="setup-container">
         <div className="pagination">
           {Array(3)
             .fill(0)
@@ -395,8 +392,8 @@ const ProfileSetup = ({
             </button>
           )}
         </div>
-      </Modal.Body>
-    </Modal>
+      </div>
+    </div>
   );
 };
 

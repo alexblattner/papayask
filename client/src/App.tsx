@@ -15,18 +15,6 @@ function App() {
     <AuthContext.Provider value={user}>
       <Router>
         <Routes>
-          <Route path="/log-in">
-            <></>
-          </Route>
-          <Route path="/sign-up">
-            <></>
-          </Route>
-          <Route path="/profile">
-            <></>
-          </Route>
-          {/* <Route path="/">
-            <></>
-          </Route> */}
           <Route path="*" element={<Header />} />
         </Routes>
         <Routes>

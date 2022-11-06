@@ -5,7 +5,7 @@ import { User } from '../models/User';
 
 interface AuthContextReturn {
   user: User | null;
-  updateUser: (utoken: any, body: any) => void;
+  updateUser: (token: any, body: any) => void;
 }
 
 export const AuthContext = createContext<AuthContextReturn>({
@@ -14,6 +14,7 @@ export const AuthContext = createContext<AuthContextReturn>({
 });
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+
   const register = async (token: any, body: any) => {
     const res = await api({
       method: 'post',
@@ -23,6 +24,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       },
       data: body,
     });
+
     setUser(res.data);
   };
   useEffect(() => {
@@ -35,6 +37,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           uid: user.uid,
         });
       } else {
+        
         setUser(null);
       }
     });
@@ -44,7 +47,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const updateUser = async (token: any, body: any) => {
     const res = await api({
       method: 'patch',
-      url: `/user/${user?.id}`,
+      url: `/user/${user?.uid}`,
       headers: {
         Authorization: 'Bearer ' + token,
       },

@@ -127,9 +127,18 @@
 }
 
 /* profile setup */
+.setup-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #fff;
+    z-index: 999;
+}
 .setup-container {
     width: 99%;
-    height: 85vh;
+    height: 100%;
     margin: auto;
     margin-top: 0.5vh;
     border-radius: 5px;
