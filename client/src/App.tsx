@@ -5,8 +5,6 @@ import Question from './Question';
 import firebase from "firebase/compat/app";
 import { auth } from "./firebase-auth";
 import { AuthContext } from "./Auth/ContextProvider";
-import SignUp from "./Auth/SignUp";
-import LogIn from "./Auth/LogIn";
 import Header from "./Header";
 import {
   BrowserRouter as Router,
@@ -24,9 +22,7 @@ function App() {
           <Route path="*" element={<Header />}/>
         </Routes>
         <Routes>
-          <Route path="/sign-up" element={<SignUp/>}/>
-          <Route path="/log-in" element={<LogIn/>}/>
-          <Route path="*" element={<>{JSON.stringify(user)}</>}></Route>
+          <Route path="*" element={<>{/*JSON.stringify(user)*/}</>}></Route>
         </Routes>
       </Router>
     </AuthContext.Provider>

@@ -17,10 +17,12 @@ import default_profile from "../default_profile.svg";
 import useDevice from "../Hooks/useDevice";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../Auth/ContextProvider";
-
+import SignUp from "../Auth/SignUp";
+import LogIn from "../Auth/LogIn";
 function Header() {
   const user = useContext(AuthContext);
-  
+  const [showSignUp, setShowSignUp] = useState(false);
+  const [showLogIn, setShowLogIn] = useState(false);
   const logout = async () => {
     auth.signOut();
   };
@@ -53,20 +55,35 @@ function Header() {
         window.location.href.includes("/sign-up") ||
         window.location.href.includes("/log-in")
       ) && (
-        <div id="header">
-          <div
-            style={{
-              display: "inline-flex",
-              flexDirection: "row",
-              width: "70%",
-            }}
-          >
-            {(user)?<Button onClick={logout}>Log Out</Button>:<>
-            <Link to="/log-in"><Button>Log In</Button></Link>
-            <Link to="/sign-up"><Button>Sign Up</Button></Link></>}
+        <header>
+          <Link id="logo" to="/">Papayask</Link>
+          <div id="search-bar">
+            <Form>
+              <FormControl
+                type="text"
+                placeholder="Search"
+                className="mr-sm-2"
+                id="search-input"
+              />
+              <Button variant="success" id="search-button">
+                Search
+              </Button>
+            </Form>
           </div>
-        </div>
+              {(user)?<Button onClick={logout}>Log Out</Button>:<>
+              <Button onClick={()=>setShowSignUp(true)}>Sign Up</Button><Button onClick={()=>setShowLogIn(true)}>Log In</Button></>}
+        </header>
       )}
+      {showSignUp?<Modal
+      show={showSignUp}
+      onHide={() => setShowSignUp(false)}
+      dialogClassName="review-modal"
+    ><SignUp/></Modal>:null}
+      {showLogIn?<Modal
+      show={showLogIn}
+      onHide={() => setShowLogIn(false)}
+      dialogClassName="review-modal"
+    ><LogIn/></Modal>:null}
     </>
   );
 }

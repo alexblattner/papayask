@@ -10,7 +10,6 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     const res=await api({method: 'post', url: '/user',headers: {
       Authorization: 'Bearer ' + token,
     },data:body});
-    console.log(8421,res)
     setUser(res.data);
   }
   useEffect(() => {
