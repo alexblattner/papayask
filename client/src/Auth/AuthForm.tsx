@@ -13,8 +13,8 @@ interface Props {
 const AuthForm = (props:Props) => {
     const {user} = useContext(AuthContext);
     const [type,setType] = useState(props.type);
-    const [email, setEmail] = useState<string>("");
-    const [password, setPassword] = useState<string>("");
+    const [correctEmail, setCorrectEmail] = useState<boolean>(true);
+    const [correctPassword, setCorrectPassword] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
     const google=async()=>{
@@ -58,16 +58,34 @@ const AuthForm = (props:Props) => {
         });
       }
     }
-    if(user){
-      return <Navigate to="/" />
+    async function validateEmail(e:React.FocusEvent<HTMLInputElement, Element>){
+      var email = (e.target as HTMLInputElement).value;
+  
+      const regex =
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      if (regex.test(String(email).toLowerCase())) {
+          setCorrectEmail(true);
+      } else setCorrectEmail(false);
+    }
+    function validatePassword(e:React.FocusEvent<HTMLInputElement, Element>){
+      var inner_password = (e.target as HTMLInputElement).value;
+      if (inner_password.length < 6) {
+        setCorrectPassword(false);
+      } else {
+        setCorrectPassword(true);
+      }
     }
     return (
       <div className="connection">
         <h2>{(type=="login")?"Log In":"Sign Up"}</h2>
-        <button id="facebook" className="thirdparty" onClick={facebook}>facebook</button>
-        <button id="google" className="thirdparty" onClick={google}>google</button>
+        <button id="facebook" className="thirdparty" onClick={facebook}>{type=="login"?"Log in with Facebook":"Sign up with Facebook"}</button>
+        <button id="google" className="thirdparty" onClick={google}>{type=="login"?"Log in with Google":"Sign up with Google"}</button>
         <div className="divider"><div className="line"></div>OR<div className="line"></div></div>
-        <form onSubmit={emailPassword}><input type="text" onChange={(e)=>setEmail((e.target as HTMLInputElement).value)}/><input onChange={(e)=>setPassword((e.target as HTMLInputElement).value)} type="password" /><input type="submit" value={type=="login"?"Log In!":"Sign Up!"} /></form>
+        <form onSubmit={emailPassword}>
+          <input type="text" placeholder={type=="login"?"Email or username":"Email"} onFocus={()=>setCorrectEmail(true)} onBlur={validateEmail}/>
+          <input onFocus={()=>setCorrectPassword(true)} placeholder="Password" type="password"  onBlur={validatePassword}/>
+          <input type="submit" value={type=="login"?"Log In!":"Sign Up!"} />
+          </form>
         {type=="login"?<span id="forgot-password">I forgot my password</span>:null}
         <p>{type=="login"?<>Don't have an account? <span onClick={()=>setType("signup")}>Sign Up</span></>:<>Already have an account? <span onClick={()=>setType("login")}>Log In</span></>}</p>
         {error}

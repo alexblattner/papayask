@@ -58,6 +58,10 @@
     margin-top: 5px;
     margin-bottom: 5px;
 }
+.connection form input::placeholder{
+    color: var(--primary);opacity: 1;
+}
+
 .connection form input[type="submit"]{
     background-color: var(--primary);
     color: white;

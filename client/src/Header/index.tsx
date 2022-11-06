@@ -75,12 +75,12 @@ function Header() {
         </header>
       )}
       {showSignUp?<Modal
-      show={showSignUp}
+      show={showSignUp&&!(user)}
       onHide={() => setShowSignUp(false)}
       dialogClassName="review-modal"
     ><SignUp/></Modal>:null}
       {showLogIn?<Modal
-      show={showLogIn}
+      show={showLogIn&&!(user)}
       onHide={() => setShowLogIn(false)}
       dialogClassName="review-modal"
     ><LogIn/></Modal>:null}
