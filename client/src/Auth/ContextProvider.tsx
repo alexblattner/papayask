@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       data: body,
     });
 
-    setUser(res.data);
+    setUser({ id: res.data._id, ...res.data });
   };
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -36,7 +36,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           uid: user.uid,
         });
       } else {
-        
         setUser(null);
       }
     });
@@ -46,12 +45,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const updateUser = async (token: any, body: any) => {
     const res = await api({
       method: 'patch',
-      url: `/user/${user?.uid}`,
+      url: `/user/${user?.id}`,
       headers: {
         Authorization: 'Bearer ' + token,
       },
       data: body,
     });
+
     setUser(res.data);
   };
 

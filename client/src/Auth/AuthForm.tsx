@@ -11,7 +11,7 @@ interface Props {
 }
 //https://www.quackit.com/html/codes/html_popup_window_code.cfm
 const AuthForm = (props: Props) => {
-  const user = useContext(AuthContext);
+  const {user} = useContext(AuthContext);
   const [type, setType] = useState(props.type);
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -68,6 +68,7 @@ const AuthForm = (props: Props) => {
         });
     }
   };
+  
   if (user) {
     return <Navigate to="/" />;
   }

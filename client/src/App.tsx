@@ -17,10 +17,12 @@ function App() {
         <Routes>
           <Route path="*" element={<Header />} />
         </Routes>
+        <div className='app-container'>
         <Routes>
           <Route path="/profile" element={<Profile />} />
           <Route path="/" element={<Main/>}></Route>
         </Routes>
+        </div>
       </Router>
     </AuthContext.Provider>
   );
