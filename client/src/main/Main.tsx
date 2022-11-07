@@ -5,21 +5,23 @@ import ProfileSetup from '../profile/ProfileSetup';
 import './main.css';
 
 const Main = () => {
-  const [showProfileSetup, setShowProfileSetup] = React.useState<boolean>(true);
-  const {user} = useContext(AuthContext);
-  
+  const [showProfileSetup, setShowProfileSetup] =
+    React.useState<boolean>(false);
+  const { user } = useContext(AuthContext);
+
   useEffect(() => {
-   if(user?.isSetUp){
-     setShowProfileSetup(false);
-   }
+    if (user && !user.isSetUp) {
+      setShowProfileSetup(true);
+    } else {
+      setShowProfileSetup(false);
+    }
   }, [user]);
 
   return (
     <div className="main-app">
-      <ProfileSetup
-        showProfileSetup={showProfileSetup}
-        setShowProfileSetup={setShowProfileSetup}
-      />
+      {showProfileSetup && (
+        <ProfileSetup setShowProfileSetup={setShowProfileSetup} type= "initial"/>
+      )}
     </div>
   );
 };

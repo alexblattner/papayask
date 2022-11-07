@@ -23,7 +23,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       },
       data: body,
     });
-    setUser(res.data);
+
+    setUser({ id: res.data._id, ...res.data });
   };
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -50,6 +51,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       },
       data: body,
     });
+
     setUser(res.data);
   };
 

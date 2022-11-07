@@ -1,39 +1,88 @@
-const bcrypt = require("bcrypt");
+const bcrypt = require('bcrypt');
 const saltRounds = 10;
-const fetch = require("node-fetch");
-const Question = require("../models/question");
-const Note = require("../models/note");
-const User = require("../models/user");
-const { OAuth2Client } = require("google-auth-library");
+const fetch = require('node-fetch');
+const Question = require('../models/question');
+const Note = require('../models/note');
+const User = require('../models/user');
+const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(process.env.GOOGLE_APP_ID);
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-
-const Session = require("../models/session");
+const Session = require('../models/session');
 async function rewardsSetUp(user) {
-  let rewardsarr=[]
-  let voteob={1:{amount:1,complete:false},50:{amount:5,complete:false},
-  100:{amount:10,complete:false},200:{amount:15,complete:false},500:{amount:30,complete:false},
-  1000:{amount:100,complete:false},10000:{amount:1000,complete:false},
-  100000:{amount:10000,complete:false},1000000:{amount:100000,complete:false}}
-  rewardsarr.push({user:user._id,progress:[],rewards:voteob,type:"vote"})
-  let revsob={1:{amount:5,complete:false},10:{amount:10,complete:false},50:{amount:40,complete:false},
-  100:{amount:50,complete:false},200:{amount:100,complete:false},500:{amount:300,complete:false},
-  1000:{amount:500,complete:false},10000:{amount:10000,complete:false},100000:{amount:100000,complete:false}}
-  rewardsarr.push({user:user._id,progress:[],rewards:revsob,type:"review"})
-  let qob={1:{amount:10,complete:false},5:{amount:20,complete:false},10:{amount:25,complete:false},
-  50:{amount:200,complete:false},100:{amount:250,complete:false},200:{amount:500,complete:false},
-  500:{amount:1500,complete:false},1000:{amount:2500,complete:false},10000:{amount:50000,complete:false}}
-  rewardsarr.push({user:user._id,progress:[],rewards:qob,type:"quality"})
-  let comob={1:{amount:2,complete:false},50:{amount:10,complete:false},100:{amount:10,complete:false},
-  200:{amount:20,complete:false},500:{amount:60,complete:false},1000:{amount:200,complete:false},
-  10000:{amount:2000,complete:false},100000:{amount:20000,complete:false}}
-  rewardsarr.push({user:user._id,progress:[],rewards:comob,type:"comment"})
-  await Reward.insertMany(rewardsarr)
+  let rewardsarr = [];
+  let voteob = {
+    1: { amount: 1, complete: false },
+    50: { amount: 5, complete: false },
+    100: { amount: 10, complete: false },
+    200: { amount: 15, complete: false },
+    500: { amount: 30, complete: false },
+    1000: { amount: 100, complete: false },
+    10000: { amount: 1000, complete: false },
+    100000: { amount: 10000, complete: false },
+    1000000: { amount: 100000, complete: false },
+  };
+  rewardsarr.push({
+    user: user._id,
+    progress: [],
+    rewards: voteob,
+    type: 'vote',
+  });
+  let revsob = {
+    1: { amount: 5, complete: false },
+    10: { amount: 10, complete: false },
+    50: { amount: 40, complete: false },
+    100: { amount: 50, complete: false },
+    200: { amount: 100, complete: false },
+    500: { amount: 300, complete: false },
+    1000: { amount: 500, complete: false },
+    10000: { amount: 10000, complete: false },
+    100000: { amount: 100000, complete: false },
+  };
+  rewardsarr.push({
+    user: user._id,
+    progress: [],
+    rewards: revsob,
+    type: 'review',
+  });
+  let qob = {
+    1: { amount: 10, complete: false },
+    5: { amount: 20, complete: false },
+    10: { amount: 25, complete: false },
+    50: { amount: 200, complete: false },
+    100: { amount: 250, complete: false },
+    200: { amount: 500, complete: false },
+    500: { amount: 1500, complete: false },
+    1000: { amount: 2500, complete: false },
+    10000: { amount: 50000, complete: false },
+  };
+  rewardsarr.push({
+    user: user._id,
+    progress: [],
+    rewards: qob,
+    type: 'quality',
+  });
+  let comob = {
+    1: { amount: 2, complete: false },
+    50: { amount: 10, complete: false },
+    100: { amount: 10, complete: false },
+    200: { amount: 20, complete: false },
+    500: { amount: 60, complete: false },
+    1000: { amount: 200, complete: false },
+    10000: { amount: 2000, complete: false },
+    100000: { amount: 20000, complete: false },
+  };
+  rewardsarr.push({
+    user: user._id,
+    progress: [],
+    rewards: comob,
+    type: 'comment',
+  });
+  await Reward.insertMany(rewardsarr);
 }
 exports.resendEmail = async (req, res, next) => {
   if (req.session.uid != undefined) {
-    const user = await User.findById(req.session.uid).select("+email").exec();
+    const user = await User.findById(req.session.uid).select('+email').exec();
     if (user) {
       const mail = await Mail.findOne({ user: user._id }).exec();
       if (mail) {
@@ -51,85 +100,135 @@ exports.resendEmail = async (req, res, next) => {
 };
 exports.getTop = async (req, res, next) => {
   let date = new Date();
-  if (req.body.time == "hour") {
+  if (req.body.time == 'hour') {
     date = new Date(date.getTime() - 60 * 60 * 1000);
-  } else if (req.body.time == "day") {
+  } else if (req.body.time == 'day') {
     date = new Date(date.getTime() - 24 * 60 * 60 * 1000);
-  } else if (req.body.time == "week") {
+  } else if (req.body.time == 'week') {
     date = new Date(date.getTime() - 7 * 24 * 60 * 60 * 1000);
-  } else if (req.body.time == "month") {
+  } else if (req.body.time == 'month') {
     date = new Date(date.getTime() - 30 * 24 * 60 * 60 * 1000);
-  } else if (req.body.time == "year") {
+  } else if (req.body.time == 'year') {
     date = new Date(date.getTime() - 365 * 24 * 60 * 60 * 1000);
   } else {
     date = null;
   }
-    let arr=[]
-    if(req.session.uid)
-    arr.push({$match:{_id:{$ne:mongoose.Types.ObjectId(req.session.uid)}}})
-    let revs=[]
-    if(req.body.tag){
-      let tag=await Tag.findOne({name:req.body.tag}).exec()
-      revs.push(mongoose.Types.ObjectId(tag._id))
-    }else if(req.session.uid){
-      let int=await InterestScore.find({user:req.session.uid,score:{$gt:0}}).exec()
-      revs.push(...int.map(i=>mongoose.Types.ObjectId(i._id)))
-    }
-    if(req.session.uid){
-      arr.push({$lookup: {
-        from: "votes",
-        let: { receiverId: "$_id" },
+  let arr = [];
+  if (req.session.uid)
+    arr.push({
+      $match: { _id: { $ne: mongoose.Types.ObjectId(req.session.uid) } },
+    });
+  let revs = [];
+  if (req.body.tag) {
+    let tag = await Tag.findOne({ name: req.body.tag }).exec();
+    revs.push(mongoose.Types.ObjectId(tag._id));
+  } else if (req.session.uid) {
+    let int = await InterestScore.find({
+      user: req.session.uid,
+      score: { $gt: 0 },
+    }).exec();
+    revs.push(...int.map((i) => mongoose.Types.ObjectId(i._id)));
+  }
+  if (req.session.uid) {
+    arr.push(
+      {
+        $lookup: {
+          from: 'votes',
+          let: { receiverId: '$_id' },
+          pipeline: [
+            {
+              $match: {
+                $and: [
+                  {
+                    $expr: {
+                      $eq: ['$receiver', { $toObjectId: '$$receiverId' }],
+                    },
+                  },
+                  {
+                    $expr: {
+                      $ne: [{ $setIntersection: ['$tags', revs] }, null],
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+          as: 'temp',
+        },
+      },
+      {
+        $addFields: {
+          score: {
+            $sum: [
+              { $sum: '$temp.points' },
+              {
+                $multiply: [
+                  {
+                    $size: {
+                      $setIntersection: ['$expertise', revs],
+                    },
+                  },
+                  20,
+                ],
+              },
+            ],
+          },
+        },
+      },
+      { $match: { score: { $gt: 0 } } },
+      { $sort: { score: -1 } }
+    );
+  }
+  arr.push(
+    {
+      $lookup: {
+        from: 'direct_requests',
+        let: { to: '$_id' },
         pipeline: [
           {
-            $match: {$and:[{$expr: {
-              $eq: ["$receiver", {$toObjectId: "$$receiverId"}],
-            }},{$expr:{$ne:[{$setIntersection: ["$tags", revs]},null]}}]},
-          }
+            $match: {
+              to: '$$to',
+              done: false,
+              time_limit: { $gt: new Date() },
+            },
+          },
         ],
-        as: "temp"
+        as: 'requestCount',
       },
-    },{$addFields:{
-      score: {$sum:[{$sum: "$temp.points"},{$multiply: [{$size:{
-        $setIntersection: ["$expertise", revs]
-        }},20]}]}
-      }},{$match:{score:{$gt:0}}},{$sort:{score:-1}})
-    }
-    arr.push({$lookup:{
-      from: "direct_requests",
-      let: { to: "$_id" },
-      pipeline: [
-        {$match:{to:"$$to",done:false,time_limit:{$gt:new Date()}}},
-      ],
-      as: "requestCount"
-    }},{$addFields:{
-      dr: {$size: "$requestCount"}
-    }},{$match:{$expr: { $gt: [ "$request_settings.concurrent" , "$dr" ] } }},
+    },
+    {
+      $addFields: {
+        dr: { $size: '$requestCount' },
+      },
+    },
+    { $match: { $expr: { $gt: ['$request_settings.concurrent', '$dr'] } } },
     {
       $project: {
-        "password": 0,
-        "updatedAt": 0,
-        "email": 0,
-        "createdAt": 0,
-        "confirmed": 0,
-        "postsAllowed": 0,
-        "reviewsToPost": 0,
-        "reviews": 0,
-        "posts": 0,
-        "comments": 0,
-        "votes": 0,
-        "balance": 0,
-        "tempdr": 0,
-        "dr": 0,
-        "temp": 0,
-        "isSetUp": 0,
-        "tokens": 0,
+        password: 0,
+        updatedAt: 0,
+        email: 0,
+        createdAt: 0,
+        confirmed: 0,
+        postsAllowed: 0,
+        reviewsToPost: 0,
+        reviews: 0,
+        posts: 0,
+        comments: 0,
+        votes: 0,
+        balance: 0,
+        tempdr: 0,
+        dr: 0,
+        temp: 0,
+        isSetUp: 0,
+        tokens: 0,
       },
-    })
-    if(!req.session.uid){
-      arr.push({$sort:{reputation:-1}})
     }
-    const users =await User.aggregate(arr).limit(6).exec();
-    return res.send(users);
+  );
+  if (!req.session.uid) {
+    arr.push({ $sort: { reputation: -1 } });
+  }
+  const users = await User.aggregate(arr).limit(6).exec();
+  return res.send(users);
 };
 exports.resetLoginMail = async (req, res, next) => {
   const user = await User.findOne({ email: req.body.mail }).exec();
@@ -150,25 +249,25 @@ exports.resetLoginMail = async (req, res, next) => {
 };
 exports.resetLogin = async (req, res, next) => {
   if (req.params.code != undefined) {
-    var url = require("url");
+    var url = require('url');
     const mail = await Mail.findById(req.params.code).exec();
     if (mail) {
       const exists = await User.findById(mail.user).exec();
       if (exists) {
-        await User.findByIdAndUpdate(mail.user, { password: "" });
+        await User.findByIdAndUpdate(mail.user, { password: '' });
         const user = await User.findById(mail.user).exec();
         await Mail.deleteMany({ user: mail.user, type: 4 });
 
         function getFormattedUrl() {
           return url.format({
-            protocol: process.env.NODE_ENV == "development" ? "http" : "https",
+            protocol: process.env.NODE_ENV == 'development' ? 'http' : 'https',
             host:
-              process.env.NODE_ENV == "development"
-                ? "localhost:3000"
-                : process.env.NODE_ENV == "production"
-                ? "snipcritics.com"
-                : "scbackend.com",
-            pathname: "/log-in",
+              process.env.NODE_ENV == 'development'
+                ? 'localhost:3000'
+                : process.env.NODE_ENV == 'production'
+                ? 'snipcritics.com'
+                : 'scbackend.com',
+            pathname: '/log-in',
           });
         }
         res.redirect(getFormattedUrl());
@@ -176,13 +275,13 @@ exports.resetLogin = async (req, res, next) => {
     } else {
       function getFormattedUrl() {
         return url.format({
-          protocol: process.env.NODE_ENV == "development" ? "http" : "https",
+          protocol: process.env.NODE_ENV == 'development' ? 'http' : 'https',
           host:
-            process.env.NODE_ENV == "development"
-              ? "localhost:3000"
-              : process.env.NODE_ENV == "production"
-              ? "snipcritics.com"
-              : "scbackend.com",
+            process.env.NODE_ENV == 'development'
+              ? 'localhost:3000'
+              : process.env.NODE_ENV == 'production'
+              ? 'snipcritics.com'
+              : 'scbackend.com',
         });
       }
       res.redirect(getFormattedUrl());
@@ -193,8 +292,8 @@ exports.resetLogin = async (req, res, next) => {
 };
 exports.encourageMail = async (req, res, next) => {
   const users = await User.find({
-    "posts.0": { $exists: true },
-    "reviews.0": { $exists: false },
+    'posts.0': { $exists: true },
+    'reviews.0': { $exists: false },
   }).exec();
 
   for (var i = 0; i < users.length; i++) {
@@ -212,8 +311,8 @@ exports.forgotPassword = async (req, res, next) => {
   const user = await User.findOne({
     $or: [{ username: req.body.email }, { email: req.body.email }],
   })
-    .select("email")
-    .select("username")
+    .select('email')
+    .select('username')
     .exec();
   if (user) {
     let now = new Date();
@@ -223,7 +322,7 @@ exports.forgotPassword = async (req, res, next) => {
       type: 2,
       user: user._id,
     });
-    sendinblue(user.email, user.username, 2, code._id, "password reset");
+    sendinblue(user.email, user.username, 2, code._id, 'password reset');
     return res.sendStatus(200);
   } else {
     res.sendStatus(404);
@@ -263,26 +362,26 @@ exports.resetPassword = async (req, res, next) => {
 exports.getById = async (req, res, next) => {
   try {
     let udata = await User.findById(req.params.id)
-      .select("+request_settings")
+      .select('+request_settings')
       .populate({
-        path: "posts",
+        path: 'posts',
         populate: {
-          path: "tags",
-          model: "Tag",
+          path: 'tags',
+          model: 'Tag',
         },
       })
       .populate({
-        path: "reviews",
+        path: 'reviews',
         populate: {
-          path: "post",
-          model: "Post",
+          path: 'post',
+          model: 'Post',
           populate: {
-            path: "tags",
-            model: "Tag",
+            path: 'tags',
+            model: 'Tag',
           },
         },
       })
-      .populate("votes")
+      .populate('votes')
       .exec();
     const rqst = await Direct_request.find({ to: udata._id }).exec();
     let fudata = JSON.parse(JSON.stringify(udata));
@@ -296,59 +395,61 @@ exports.getById = async (req, res, next) => {
 };
 exports.getByIdOrUsername = async (req, res, next) => {
   try {
-    let udata = await User.findOne({username:req.params.idorusername})
-      .select("+request_settings")
+    let udata = await User.findOne({ username: req.params.idorusername })
+      .select('+request_settings')
       .populate({
-        path: "posts",
+        path: 'posts',
         populate: {
-          path: "tags",
-          model: "Tag",
+          path: 'tags',
+          model: 'Tag',
         },
       })
       .populate({
-        path: "reviews",
+        path: 'reviews',
         populate: {
-          path: "post",
-          model: "Post",
+          path: 'post',
+          model: 'Post',
           populate: {
-            path: "tags",
-            model: "Tag",
+            path: 'tags',
+            model: 'Tag',
           },
         },
       })
-      .populate("votes").populate('expertise')
+      .populate('votes')
+      .populate('expertise')
       .exec();
-    if(!udata){
-        udata = await User.findById(req.params.idorusername)
-      .select("+request_settings")
-      .populate({
-        path: "posts",
-        populate: {
-          path: "tags",
-          model: "Tag",
-        },
-      })
-      .populate({
-        path: "reviews",
-        populate: {
-          path: "post",
-          model: "Post",
+    if (!udata) {
+      udata = await User.findById(req.params.idorusername)
+        .select('+request_settings')
+        .populate({
+          path: 'posts',
           populate: {
-            path: "tags",
-            model: "Tag",
+            path: 'tags',
+            model: 'Tag',
           },
-        },
-      })
-      .populate("votes").populate('expertise')
-      .exec();
+        })
+        .populate({
+          path: 'reviews',
+          populate: {
+            path: 'post',
+            model: 'Post',
+            populate: {
+              path: 'tags',
+              model: 'Tag',
+            },
+          },
+        })
+        .populate('votes')
+        .populate('expertise')
+        .exec();
     }
     const rqst = await Direct_request.find({ to: udata._id }).exec();
     let fudata = JSON.parse(JSON.stringify(udata));
-    let exp=[]
-    for(var i=0;i<udata.expertise.length;i++){
-      exp.push(udata.expertise[i].name)
+    let exp = [];
+    for (var i = 0; i < udata.expertise.length; i++) {
+      exp.push(udata.expertise[i].name);
     }
-    fudata.expertise=exp;
+    fudata.expertise = exp;
     fudata.requests = rqst.length;
     // udata.votes = revsVotes;
 
@@ -400,12 +501,12 @@ exports.loggedIn = async (req, res, next) => {
     if (ses.length === 0) {
       await Session.create({
         sessionId: req.cookies.userId,
-        userId: req.session.uid,  
+        userId: req.session.uid,
       });
     }
 
     const udata = await User.findById(req.session.uid)
-      .select("+balance +request_settings")
+      .select('+balance +request_settings')
       .exec();
     await User.updateOne(
       { _id: req.session.uid },
@@ -476,7 +577,7 @@ exports.google = async (req, res, next) => {
       .verifyIdToken({
         idToken: tokenId,
         audience:
-          os == "ios"
+          os == 'ios'
             ? process.env.GOOGLE_APP_ID_IOS
             : process.env.GOOGLE_APP_ID,
       })
@@ -484,10 +585,10 @@ exports.google = async (req, res, next) => {
         const { email_verified, picture, email } = response.payload;
         if (email_verified) {
           const user = await User.findOne({ email: email })
-            .select("password")
+            .select('password')
             .exec();
           var password = email + process.env.GOOGLE_APP_ID.substring(2, 6);
-          if (user && user.password != "") {
+          if (user && user.password != '') {
             const p = await bcrypt.compareSync(password, user.password);
             if (p) {
               req.session.uid = user._id;
@@ -495,7 +596,7 @@ exports.google = async (req, res, next) => {
             } else {
               return res.status(417).send(email);
             }
-          } else if (user && user.password == "") {
+          } else if (user && user.password == '') {
             password = await bcrypt.hashSync(password, saltRounds);
             await user.update({ password: password });
             req.session.uid = user._id;
@@ -503,7 +604,7 @@ exports.google = async (req, res, next) => {
           } else {
             password = await bcrypt.hashSync(password, saltRounds);
             const newUser = await User.create({
-              username: "",
+              username: '',
               password: password,
               email: email,
               reputation: 0,
@@ -527,18 +628,18 @@ exports.google = async (req, res, next) => {
 exports.facebook = async (req, res, next) => {
   const { userID, accessToken } = req.body;
   let urlGraphFacebook = `https://graph.facebook.com/v2.11/${userID}/?fields=id,email,picture&access_token=${accessToken}`;
-  fetch(urlGraphFacebook, { method: "GET" })
+  fetch(urlGraphFacebook, { method: 'GET' })
     .then((res) => res.json())
     .then(async (result) => {
       const { picture, email } = result;
       const user = await User.findOne({ email: email })
-        .select("password")
+        .select('password')
         .exec();
       var password = email + process.env.FACEBOOK_APP_ID.substring(2, 6);
-      if (user && user.password != "") {
+      if (user && user.password != '') {
         req.session.uid = user._id;
         return res.json(req.session.uid);
-      } else if (user && user.password == "") {
+      } else if (user && user.password == '') {
         password = await bcrypt.hashSync(password, saltRounds);
         await user.update({ password: password });
         req.session.uid = user._id;
@@ -546,7 +647,7 @@ exports.facebook = async (req, res, next) => {
       } else {
         password = await bcrypt.hashSync(password, saltRounds);
         const newUser = await User.create({
-          username: "",
+          username: '',
           password: password,
           email: email,
           reputation: 0,
@@ -578,17 +679,17 @@ exports.emailConfirmation = async (req, res, next) => {
       await user.save();
       await mail.delete();
       req.session.uid = user._id;
-      var url = require("url");
+      var url = require('url');
 
       function getFormattedUrl() {
         return url.format({
-          protocol: process.env.NODE_ENV == "development" ? "http" : "https",
+          protocol: process.env.NODE_ENV == 'development' ? 'http' : 'https',
           host:
-            process.env.NODE_ENV == "development"
-              ? "localhost:3000"
-              : process.env.NODE_ENV == "production"
-              ? "snipcritics.com"
-              : "scbackend.com",
+            process.env.NODE_ENV == 'development'
+              ? 'localhost:3000'
+              : process.env.NODE_ENV == 'production'
+              ? 'snipcritics.com'
+              : 'scbackend.com',
         });
       }
 
@@ -602,10 +703,14 @@ exports.emailConfirmation = async (req, res, next) => {
 };
 exports.login = async (req, res, next) => {
   try {
-    const data = await User.findOneAndUpdate({ uid: req.body.uid },{authTime:req.body.authTime},{
-      upsert: true,
-      new: true,
-    }).exec();
+    const data = await User.findOneAndUpdate(
+      { uid: req.body.uid },
+      { authTime: req.body.authTime },
+      {
+        upsert: true,
+        new: true,
+      }
+    ).exec();
     return res.status(200).send(data);
   } catch (err) {
     return new Error(err);
@@ -613,25 +718,25 @@ exports.login = async (req, res, next) => {
 };
 exports.createOrLogin = async (req, res, next) => {
   try {
-    const doesUserExist = await User.findOne({$or:[{uid:req.body.uid},{email:req.body.email}]}).exec();
-    if (
-      !doesUserExist
-    ) { 
-      const newUserOb={
+    const doesUserExist = await User.findOne({
+      $or: [{ uid: req.body.uid }, { email: req.body.email }],
+    }).exec();
+    if (!doesUserExist) {
+      const newUserOb = {
         uid: req.body.uid,
         name: req.body.displayName,
         email: req.body.email.toLowerCase(),
         confirmed: false,
         authTime: req.body.auth_time,
-      }
-      if(req.body.photoURL){
-        newUserOb.picture=req.body.photoURL;
+      };
+      if (req.body.photoURL) {
+        newUserOb.picture = req.body.photoURL;
       }
       const user = new User(newUserOb);
       const createdUser = await user.save();
       return res.send(createdUser);
     } else {
-      doesUserExist.authTime=req.body.auth_time;
+      doesUserExist.authTime = req.body.auth_time;
       await doesUserExist.save();
       return res.send(doesUserExist);
     }
@@ -671,7 +776,7 @@ exports.twitter_access_token = async (req, res) => {
     const oauth_token = req.session.oauthRequestToken;
     const oauth_token_secret = req.session.oauthRequestTokenSecret;
     if (oauth_token !== req_oauth_token) {
-      res.status(403).json({ message: "Request tokens do not match" });
+      res.status(403).json({ message: 'Request tokens do not match' });
       return;
     }
 
@@ -683,8 +788,8 @@ exports.twitter_access_token = async (req, res) => {
       );
     const { user_id } = results;
     const { data: stringifyData, response } = await getProtectedResource(
-      "https://api.twitter.com/1.1/account/verify_credentials.json?include_email=true",
-      "GET",
+      'https://api.twitter.com/1.1/account/verify_credentials.json?include_email=true',
+      'GET',
       oauth_access_token,
       oauth_access_token_secret
     );
@@ -695,16 +800,16 @@ exports.twitter_access_token = async (req, res) => {
     const email = data.email;
     const email_verified = data.verified;
 
-    const user = await User.findOne({ email: email }).select("password").exec();
+    const user = await User.findOne({ email: email }).select('password').exec();
     var password = email + process.env.TWITTER_APP_ID.substring(2, 6);
-    if (user && user.password != "") {
+    if (user && user.password != '') {
       if (bcrypt.compareSync(password, user.password)) {
         req.session.uid = user._id;
         return res.json(req.session.uid);
       } else {
         return res.json({ error: 417 });
       }
-    } else if (user && user.password == "") {
+    } else if (user && user.password == '') {
       password = await bcrypt.hashSync(password, saltRounds);
       await user.update({ password: password });
       req.session.uid = user._id;
@@ -712,7 +817,7 @@ exports.twitter_access_token = async (req, res) => {
     } else {
       password = await bcrypt.hashSync(password, saltRounds);
       const checkusername = await User.findOne({ username: username }).exec();
-      let newusername = checkusername ? "" : username;
+      let newusername = checkusername ? '' : username;
       const newUser = await User.create({
         username: newusername,
         password: password,
@@ -727,7 +832,7 @@ exports.twitter_access_token = async (req, res) => {
       return res.json({ success: true, uid: req.session.uid });
     }
   } catch (error) {
-    res.status(403).json({ message: "Missing access token" });
+    res.status(403).json({ message: 'Missing access token' });
   }
 };
 
@@ -735,18 +840,18 @@ exports.twitter_access_token = async (req, res) => {
 exports.registerToken = async (req, res) => {
   try {
     const { token } = req.body;
-    if (!token || token === "") {
-      return res.status(400).json({ message: "Please provide device token" });
+    if (!token || token === '') {
+      return res.status(400).json({ message: 'Please provide device token' });
     }
-    const user = await User.findById(req.params.userId).select("+tokens");
+    const user = await User.findById(req.params.userId).select('+tokens');
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: 'User not found' });
     }
 
     if (!user.tokens.includes(token)) {
       user.tokens.push(token);
       await user.save();
-      return res.status(200).json({ message: "Token register successfully" });
+      return res.status(200).json({ message: 'Token register successfully' });
     }
   } catch (e) {
     return res.status(500).json({ error: e });
@@ -756,23 +861,25 @@ exports.registerToken = async (req, res) => {
 //get all users for chat
 exports.getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({}).select(" username picture");
+    const users = await User.find({}).select(' username picture');
     return res.json(users);
   } catch (e) {
     return res.status(500).json({ error: e });
   }
-}
+};
 
 //update user
 exports.update = async (req, res) => {
+  console.log('req.body', req.body);
   try {
-    const user = await User.findById(req.params.userId).exec();
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    const newUser = await User.findByIdAndUpdate(req.params.userId, req.body, {
+      new: true,
+    });
+    if (!newUser) {
+      return res.status(404).json({ message: 'User not found' });
     }
-    await user.update(req.body);
-    return res.status(200).json({ message: "User updated successfully" });
+    return res.status(200).json(newUser);
   } catch (e) {
     return res.status(500).json({ error: e });
   }
-}
+};

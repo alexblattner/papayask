@@ -1,9 +1,12 @@
 .profile-page {
     position: relative;
+    width: 60%;
+    margin: 0 auto;
 }
 .cover-img-container {
     width: 100%;
-    height: 384px;
+    height: 300px;
+    max-height: 300px;
 }
 .cover-img {
     object-fit: cover;
@@ -12,12 +15,12 @@
 }
 .profile-img-container {
     position: absolute;
-    top: 192px;
+    top: 150px;
     left: 64px;
     right: 0;
     bottom: 0;
-    width: 344px;
-    height: 346px;
+    width: 250px;
+    height: 250px;
     border: 1px solid #fff;
     border-radius: 8px;
     overflow: hidden;
@@ -29,8 +32,8 @@
     z-index: 99;
 }
 .profile-info {
-    margin-top: 192px;
-    padding: 0 64px;
+    margin-top: 135px;
+    padding: 0 0 0 64px;
 }
 .info-head {
     display: flex;
@@ -40,30 +43,30 @@
 
 .user-rating {
     display: flex;
-    gap: 16px;
+    gap: 12px;
     align-items: center;
 }
 .rating-number {
-    color: #e9635d;
+    color: var(--primary);
 }
 
 .edit-profile {
     display: flex;
     align-items: center;
-    gap: 16px;
-    background-color: #e9635d;
+    gap: 12px;
+    background-color: var(--primary);
     color: white;
     font-weight: bold;
-    font-size: 24px;
+    font-size: 20px;
     cursor: pointer;
     border: none;
     border-radius: 8px;
-    padding: 16px 32px;
+    padding: 12px 24px;
 }
 
 .actions-buttons-group {
     display: flex;
-    gap: 16px;
+    gap: 12px;
     align-items: center;
 }
 
@@ -71,15 +74,14 @@
     background-color: #f8cbc9;
     border: none;
     border-radius: 8px;
-    padding: 25px;
+    padding: 12px;
 }
 .name {
-    font-size: 72px;
+    font-size: 46px;
     font-weight: bold;
 }
 .title {
-    font-size: 42px;
-    font-weight: bold;
+    font-size: 32px;
 }
 .profile-details {
     display: flex;
@@ -91,11 +93,16 @@
     display: flex;
     flex-direction: column;
     gap: 24px;
+    width: 50%;
 }
 .sub-title  {
-    font-size: 36px;
+    font-size: 32px;
     font-weight: bold;
     margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
 }
 .exp {
     margin-bottom: 12px;
@@ -106,6 +113,7 @@
 }
 .social-icons {
     display: flex;
+    flex-wrap: wrap;
     gap: 16px;
     align-items: center;
 }
@@ -113,23 +121,38 @@
     display: flex;
     flex-wrap: wrap;
     gap: 16px;
-    width: 250px;
+    width: 100%;
 }
 .skill-badge {
     background-color: #f8cbc9;
-    color: #e9635d;
+    color: var(--primary);
     font-size: 16px;
     font-weight: bold;
     padding: 8px 16px;
     border-radius: 8px;
     display: flex;
+    align-items: center;
     gap: 16;
 }
 
 /* profile setup */
+.setup-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #fff;
+    z-index: 999;
+    transform: translateY(100%);
+    transition: transform 0.3s ease-in-out;
+}
+.modal-loaded {
+    transform: translateY(0);
+}
 .setup-container {
     width: 99%;
-    height: 85vh;
+    height: 100%;
     margin: auto;
     margin-top: 0.5vh;
     border-radius: 5px;
@@ -165,17 +188,17 @@
 }
 .done {
     background-color: #f8cbc9;
-    color: #e9635d;
-    border: 2px solid #e9635d;
+    color: var(--primary);
+    border: 2px solid var(--primary);
 }
 .active {
-    background-color: #e9635d;
+    background-color: var(--primary);
     color: #fff;
 }
 
 .todo {
     background-color: #f8cbc9;
-    color: #e9635d;
+    color: var(--primary);
 }
 
 .setup-content {
@@ -213,19 +236,48 @@
 
 .setup-textarea:focus, .setup-textarea:focus-within, .years-input:focus, .years-input:focus-within, .setup-input:focus, .setup-input:focus-within {
     outline: none;
-    border: 1px solid #e9635d;
+    border: 1px solid var(--primary);
+}
+.skills-table-head {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    border-bottom: 1px solid var(--primary);
 }
 
-.skills-container {
+.skill-name {
+    width: 200px;
+    border-right: 1px solid #f8cbc9;
+}
+
+.related-education, .related-experience {
+   width: calc(50% - 112px);
+   padding-inline: 16px;
+   display: flex;
+   align-items: center;
+   gap: 16px;
+}
+
+.related-education {
+    border-right: 1px solid #f8cbc9;
+}
+
+
+.skill-row {
     display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
     align-items: center;
+    border-bottom: 1px solid #f8cbc9;
+    padding-block: 16px;
+}
+
+.plus-icon {
+    margin-left: auto;
+    width: 25px;
 }
 .vertical-divider {
     width: 1px;
     height: 20px;
-    background-color: #e9635d;
+    background-color: var(--primary);
     margin: 0 8px;
 }
 .delete-skill {
@@ -239,7 +291,7 @@
     gap: 16px;
 }
 .footer-button {
-    background-color: #e9635d;
+    background-color: var(--primary);
     color: #fff;
     font-size: 18px;
     font-weight: bold;
@@ -255,7 +307,7 @@
 }
 .skip {
     background-color: #f8cbc9;
-    color: #e9635d;
+    color: var(--primary);
 }
 
 .second-step-container {
@@ -303,7 +355,7 @@
 
 .add-button {
     width: 330px;
-    background-color: #e9635d;
+    background-color: var(--primary);
     color: #fff;
     font-size: 18px;
     font-weight: bold;
@@ -327,16 +379,36 @@
     padding: 16px;
     position: relative;
 }
+
 .field-of-study {
     font-size: 18px;
     font-weight: bold;
 }
 
-.remove-button {
+.remove-button, .check-button {
     position: absolute;
     top: 10px;
     right: 15px;
     cursor: pointer;
+}
+
+.check-button {
+    border: 1px solid var(--primary);
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+}
+
+.selected {
+    background-color: var(--primary);
+    
+}
+
+.years input {
+    width: 100px;
+    border: 1px solid #f8cbc9;
+    border-radius: 8px;
+    padding: 2px 10px;
 }
 
 .social-container {
@@ -347,5 +419,9 @@
     position: absolute;
     top: -10px;
     right: -10px;
+    cursor: pointer;
+}
+
+.social-icon-wrapper {
     cursor: pointer;
 }

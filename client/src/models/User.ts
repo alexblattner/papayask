@@ -1,8 +1,37 @@
+export interface UserExperience {
+    position: string;
+    company: string;
+    years: String;
+}
+
+export interface UserEducation {
+    school: string;
+    fieldOfStudy: string;
+    years: String;
+}
+
+export interface RelatedExperience {
+    experience: UserExperience;
+    years: number
+}
+
+export interface RelatedEducation {
+    education: UserEducation;
+    years: number
+}
+
+export interface UserSkill {
+    name: string;
+    relatedEducation:  RelatedEducation[];
+    relatedExperience: RelatedExperience[];
+}
+
 export interface UserProps {
     id: string;
     confirmed: boolean;
     createdAt: Date;
     updatedAt: Date;
+    title: string;
     uid: string;
     name: string;
     reputation: number;
@@ -13,7 +42,7 @@ export interface UserProps {
     picture: string;
     coverPicture: string;
     social: string[];
-    skills: string[];
-    experience: string[];
-    education: string[];
+    skills: UserSkill[];
+    experience: UserExperience[];
+    education: UserEducation[];
 }

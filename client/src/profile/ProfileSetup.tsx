@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Modal } from 'react-bootstrap';
 
 import { AuthContext } from '../Auth/ContextProvider';
 import Icon from '../shared/Icon';
 import { socialName } from '../utils/socialName';
 import { auth } from '../firebase-auth';
+import { UserEducation, UserExperience, UserSkill } from '../models/User';
+import ProfileSetupFooter from './ProfileSetupFooter';
+import ProfileSetupPagination from './ProfileSetupPagination';
+import SkillRow from './SkillRow';
 
 interface ProfileSetupProps {
-  showProfileSetup: boolean;
-  setShowProfileSetup: (show: boolean) => void;
+  setShowProfileSetup: React.Dispatch<React.SetStateAction<boolean>>;
+  type: 'initial' | 'edit-all' | 'edit-one';
+  initialStep?: number | null;
 }
 
 interface Education {
@@ -26,24 +30,31 @@ interface Experience {
 }
 
 const ProfileSetup = ({
-  showProfileSetup,
   setShowProfileSetup,
+  type,
+  initialStep,
 }: ProfileSetupProps) => {
+  const [title, setTitle] = useState<string>('');
   const [token, setToken] = useState<string>('');
-  const { updateUser } = React.useContext(AuthContext);
+  const [pageLoaded, setPageLoaded] = useState<boolean>(false);
+  const { user, updateUser } = React.useContext(AuthContext);
   const [step, setStep] = useState<number>(0);
   const [stepsDone, setStepsDone] = useState<number[]>([0]);
   const [bio, setBio] = useState<string>('');
-  const [skills, setSkills] = useState<string[]>([]);
-  const [inputSkill, setInputSkill] = useState<string>('');
-  const [education, setEducation] = useState<Education[]>([]);
+  const [skills, setSkills] = useState<UserSkill[]>([]);
+  const [inputSkill, setInputSkill] = useState<UserSkill>({
+    name: '',
+    relatedEducation: [],
+    relatedExperience: [],
+  });
+  const [education, setEducation] = useState<UserEducation[]>([]);
   const [inputEducation, setInputEducation] = useState<Education>({
     school: '',
     fieldOfStudy: '',
     startYear: 0,
     endYear: 0,
   });
-  const [experience, setExperience] = useState<Experience[]>([]);
+  const [experience, setExperience] = useState<UserExperience[]>([]);
   const [inputExperience, setInputExperience] = useState<Experience>({
     company: '',
     position: '',
@@ -57,25 +68,6 @@ const ProfileSetup = ({
     const newSkills = [...skills];
     newSkills.splice(index, 1);
     setSkills(newSkills);
-  };
-
-  const stepUp = () => {
-    if (step < 2) {
-      setStep(step + 1);
-      setStepsDone([...stepsDone, step + 1]);
-    }
-  };
-
-  const stepDown = () => {
-    if (step > 0) {
-      setStep(step - 1);
-    }
-  };
-
-  const moveToStep = (step: number) => {
-    if (step >= 0 && step <= 2 && stepsDone.includes(step)) {
-      setStep(step);
-    }
   };
 
   const onChangeEducation = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,7 +85,12 @@ const ProfileSetup = ({
   };
 
   const addEducation = () => {
-    setEducation([...education, inputEducation]);
+    const newEducation: UserEducation = {
+      school: inputEducation.school,
+      fieldOfStudy: inputEducation.fieldOfStudy,
+      years: `${inputEducation.startYear} - ${inputEducation.endYear}`,
+    };
+    setEducation([...education, newEducation]);
     setInputEducation({
       school: '',
       fieldOfStudy: '',
@@ -103,7 +100,12 @@ const ProfileSetup = ({
   };
 
   const addExperience = () => {
-    setExperience([...experience, inputExperience]);
+    const newExperience: UserExperience = {
+      company: inputExperience.company,
+      position: inputExperience.position,
+      years: `${inputExperience.startYear} - ${inputExperience.endYear}`,
+    };
+    setExperience([...experience, newExperience]);
     setInputExperience({
       company: '',
       position: '',
@@ -130,12 +132,18 @@ const ProfileSetup = ({
     setSocial(newSocial);
   };
 
-  const skip = () => {
-    updateUser(token, { isSetUp: true });
+  const submit = () => {
+    updateUser(token, {
+      isSetUp: true,
+      title: title,
+      bio: bio !== '' ? bio : undefined,
+      skills: skills.length > 0 ? skills : undefined,
+      education: education.length > 0 ? education : undefined,
+      experience: experience.length > 0 ? experience : undefined,
+      social: social.length > 0 ? social : undefined,
+    });
     setShowProfileSetup(false);
   };
-
-  const submit = () => {};
 
   useEffect(() => {
     auth.currentUser?.getIdToken().then((token) => {
@@ -143,58 +151,79 @@ const ProfileSetup = ({
     });
   }, []);
 
+  useEffect(() => {
+    if (user) {
+      setBio(user.bio);
+      setSkills(user.skills);
+      setEducation(user.education);
+      setExperience(user.experience);
+      setSocial(user.social);
+      setTitle(user.title);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (initialStep) {
+      setStep(initialStep);
+    }
+  }, [initialStep]);
+
+  useEffect(() => {
+    if (type !== 'initial') {
+      setStepsDone([0, 1, 2, 3]);
+    }
+  }, [type]);
+
+  useEffect(() => {
+    setPageLoaded(true);
+  }, []);
+
   return (
-    <Modal show={showProfileSetup} dialogClassName="fullscreen-modal">
-      <Modal.Body className="setup-container">
-        <div className="pagination">
-          {Array(3)
-            .fill(0)
-            .map((_, i) => (
-              <React.Fragment key={i}>
-                <div
-                  className={`pagination-button  ${
-                    stepsDone.includes(i) ? 'done' : ''
-                  } ${step === i ? 'active' : ''} ${
-                    !stepsDone.includes(i) ? 'todo' : ''
-                  }`}
-                  onClick={() => moveToStep(i)}
-                >
-                  {i + 1}
-                </div>
-                {i < 2 && <div className={`pagination-line `}></div>}
-              </React.Fragment>
-            ))}
-        </div>
+    <div className={`setup-modal ${pageLoaded ? 'modal-loaded' : ''}`}>
+      <div className="setup-container">
+        <ProfileSetupPagination
+          setStep={setStep}
+          step={step}
+          stepsDone={stepsDone}
+        />
         <div className="setup-content">
           {step === 0 && (
             <>
-              <div className="step-title">Tell your clients about yourself</div>
-              <textarea
-                className="setup-textarea"
-                onChange={(e) => setBio(e.target.value)}
-              ></textarea>
-              <div className="step-title">What skills do you have?</div>
+              <div className="step-title">Headline</div>
               <input
                 className="setup-input"
                 type="text"
-                value={inputSkill}
-                placeholder="Type a skill and press enter"
-                onChange={(e) => setInputSkill(e.target.value)}
+                value={title}
+                placeholder="Enter a link and press enter"
+                onChange={(e) => setTitle(e.target.value)}
+              />
+              <div className="step-title">Tell your clients about yourself</div>
+              <textarea
+                className="setup-textarea"
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
+              />
+              <div className="step-title">Add your social links</div>
+              <input
+                className="setup-input"
+                type="text"
+                value={inputSocial}
+                placeholder="Enter a link and press enter"
+                onChange={(e) => setInputSocial(e.target.value)}
                 onKeyPress={(e) => {
                   if (e.key === 'Enter') {
-                    setSkills([...skills, inputSkill]);
-                    setInputSkill('');
+                    setSocial([...social, inputSocial]);
+                    setInputSocial('');
                   }
                 }}
               />
-              <div className="skills-container">
-                {skills.map((skill, i) => (
-                  <div className="skill-badge" key={skill}>
-                    {skill}
-                    <div className="vertical-divider"></div>
+              <div className="social-list">
+                {social.map((social, i) => (
+                  <div className="social-container" key={social}>
+                    <Icon src={socialName(social)} width={32} height={32} />
                     <div
-                      className="delete-skill"
-                      onClick={() => removeSkill(i)}
+                      className="delete-social"
+                      onClick={() => removeSocial(i)}
                     >
                       <Icon src="close" width={12} height={12} />
                     </div>
@@ -256,9 +285,7 @@ const ProfileSetup = ({
                     <div key={i} className="education-box">
                       <div className="field-of-study">{edu.fieldOfStudy}</div>
                       <div className="school">{edu.school}</div>
-                      <div className="years">
-                        {edu.startYear} - {edu.endYear ? edu.endYear : 'Now'}
-                      </div>
+                      <div className="years">{edu.years}</div>
                       <div
                         onClick={() => removeEducation(i)}
                         className="remove-button"
@@ -321,9 +348,7 @@ const ProfileSetup = ({
                       <div key={i} className="experience-box">
                         <div className="position">{exp.position}</div>
                         <div className="company">{exp.company}</div>
-                        <div className="years">
-                          {exp.startYear} - {exp.endYear ? exp.endYear : 'Now'}
-                        </div>
+                        <div className="years">{exp.years}</div>
                         <div
                           onClick={() => removeExperience(i)}
                           className="remove-button"
@@ -339,64 +364,56 @@ const ProfileSetup = ({
           )}
           {step === 2 && (
             <div className="third-step-container">
-              <div className="step-title">Add your social links</div>
+              <div className="step-title">What skills do you have?</div>
               <input
                 className="setup-input"
                 type="text"
-                value={inputSocial}
-                placeholder="Enter a link and press enter"
-                onChange={(e) => setInputSocial(e.target.value)}
+                value={inputSkill.name}
+                placeholder="Type a skill and press enter"
+                onChange={(e) =>
+                  setInputSkill({ ...inputSkill, name: e.target.value })
+                }
                 onKeyPress={(e) => {
                   if (e.key === 'Enter') {
-                    setSocial([...social, inputSocial]);
-                    setInputSocial('');
+                    setSkills([...skills, inputSkill]);
+                    setInputSkill({
+                      name: '',
+                      relatedEducation: [],
+                      relatedExperience: [],
+                    });
                   }
                 }}
               />
-              <div className="social-list">
-                {social.map((social, i) => (
-                  <div className="social-container" key={social}>
-                    <Icon src={socialName(social)} width={32} height={32} />
-                    <div
-                      className="delete-social"
-                      onClick={() => removeSocial(i)}
-                    >
-                      <Icon src="close" width={12} height={12} />
-                    </div>
-                  </div>
+              <div className="skills-container">
+                <div className="skills-table-head">
+                  <div className="skill-name">Skill</div>
+                  <div className="related-education">Related Education</div>
+                  <div className="related-experience">Related Experience</div>
+                </div>
+                {skills.map((skill, i) => (
+                  <SkillRow
+                    skill={skill}
+                    key={i}
+                    education={education}
+                    experience={experience}
+                  />
                 ))}
               </div>
             </div>
           )}
         </div>
-        <div className="setup-footer">
-          <button className="footer-button skip" onClick={skip}>
-            Skip
-          </button>
-          <button
-            className="footer-button"
-            disabled={step === 0}
-            onClick={stepDown}
-          >
-            Back
-          </button>
-          {step !== 2 && (
-            <button
-              className="footer-button"
-              disabled={step === 2}
-              onClick={stepUp}
-            >
-              Next
-            </button>
-          )}
-          {step === 2 && (
-            <button className="footer-button" onClick={submit}>
-              Submit
-            </button>
-          )}
-        </div>
-      </Modal.Body>
-    </Modal>
+        <ProfileSetupFooter
+          step={step}
+          submit={submit}
+          setStep={setStep}
+          stepsDone={stepsDone}
+          setStepsDone={setStepsDone}
+          token={token}
+          setShowProfileSetup={setShowProfileSetup}
+          type={type}
+        />
+      </div>
+    </div>
   );
 };
 

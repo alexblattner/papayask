@@ -4,3 +4,7 @@
   --secondary: rgb(3, 128, 143);
   --background: #fff;
 }
+
+.app-container  {
+  padding-top: 100px;
+}
