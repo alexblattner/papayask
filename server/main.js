@@ -90,6 +90,7 @@ db.once("open", () => {
 const Question = require("./models/question");
 const Note = require("./models/note");
 const User = require("./models/user");
+const Institution = require("./models/institution");
 function removeext(str) {
   let noext = "";
   let extarr = str.split(".");
@@ -103,15 +104,8 @@ function removeext(str) {
 const streamSessions = {};
 exports.streamSessionsList = streamSessions;
 
-app.get("/loggedIn?", userController.loggedIn);
-
-app.get("/username/:username", userController.getByUsername);
-app.get("/email/:email", userController.getByEmail);
-app.post("/username", userController.changeUsername);
-app.post("/login", userController.login);
 app.post("/user",middleware.decodeToken, userController.createOrLogin);
 app.patch("/user/:userId",middleware.decodeToken, userController.update);
-app.get("/user/:idorusername", userController.getByIdOrUsername);
 app.get("/question/:pid", questionController.getById);
 // app.get('/post/:id/:tag', postController.getById, (req, res, next) => {
 //   return res.send(req.data);
@@ -126,6 +120,7 @@ app.get("/logout", (req, res, next) => {
 // });
 
 app.post("/user/:userId/register-token", userController.registerToken);
+app.get("/search/:search", userController.search);
 // app.post("/deleteReviews", async (req, res, next) => {
 //   if (req.session.uid) {
 //     ids = req.body.ids.split("/");

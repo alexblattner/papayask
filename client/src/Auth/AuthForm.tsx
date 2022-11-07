@@ -56,7 +56,7 @@ const AuthForm = (props:Props) => {//this helps mediate login and signup. they u
         });
       }
     }
-    async function validateEmail(e:React.FocusEvent<HTMLInputElement, Element>){
+    function validateEmail(e:React.FocusEvent<HTMLInputElement, Element>){
       var email = (e.target as HTMLInputElement).value;
       const regex =
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -83,7 +83,7 @@ const AuthForm = (props:Props) => {//this helps mediate login and signup. they u
           <input onFocus={()=>setCorrectPassword(true)} placeholder="Password" type="password"  onBlur={validatePassword}/>
           <input type="submit" value={type=="login"?"Log In!":"Sign Up!"} />
           </form>
-        {type=="login"?<span id="forgot-password">I forgot my password</span>:null}
+        {type=="login"?<span id="forgot-password">Forgot password?</span>:null}
         <p>{type=="login"?<>Don't have an account? <span onClick={()=>setType("signup")}>Sign Up</span></>:<>Already have an account? <span onClick={()=>setType("login")}>Log In</span></>}</p>
         {error}
       </div>
