@@ -7,6 +7,7 @@ import { auth } from '../firebase-auth';
 import { UserEducation, UserExperience, UserSkill } from '../models/User';
 import ProfileSetupFooter from './ProfileSetupFooter';
 import ProfileSetupPagination from './ProfileSetupPagination';
+import SkillRow from './SkillRow';
 
 interface ProfileSetupProps {
   setShowProfileSetup: React.Dispatch<React.SetStateAction<boolean>>;
@@ -43,8 +44,8 @@ const ProfileSetup = ({
   const [skills, setSkills] = useState<UserSkill[]>([]);
   const [inputSkill, setInputSkill] = useState<UserSkill>({
     name: '',
-    relatedEducation: '',
-    relatedExperience: '',
+    relatedEducation: [],
+    relatedExperience: [],
   });
   const [education, setEducation] = useState<UserEducation[]>([]);
   const [inputEducation, setInputEducation] = useState<Education>({
@@ -377,25 +378,25 @@ const ProfileSetup = ({
                     setSkills([...skills, inputSkill]);
                     setInputSkill({
                       name: '',
-                      relatedEducation: '',
-                      relatedExperience: '',
+                      relatedEducation: [],
+                      relatedExperience: [],
                     });
                   }
                 }}
               />
               <div className="skills-container">
-                <div className='skills-table-head'></div>
+                <div className="skills-table-head">
+                  <div className="skill-name">Skill</div>
+                  <div className="related-education">Related Education</div>
+                  <div className="related-experience">Related Experience</div>
+                </div>
                 {skills.map((skill, i) => (
-                  <div className="skill-row" key={skill.name}>
-                    {skill.name}
-                    {/* <div className="vertical-divider"></div>
-                    <div
-                      className="delete-skill"
-                      onClick={() => removeSkill(i)}
-                    >
-                      <Icon src="close" width={12} height={12} />
-                    </div> */}
-                  </div>
+                  <SkillRow
+                    skill={skill}
+                    key={i}
+                    education={education}
+                    experience={experience}
+                  />
                 ))}
               </div>
             </div>

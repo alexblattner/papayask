@@ -10,10 +10,20 @@ export interface UserEducation {
     years: String;
 }
 
+export interface RelatedExperience {
+    experience: UserExperience;
+    years: number
+}
+
+export interface RelatedEducation {
+    education: UserEducation;
+    years: number
+}
+
 export interface UserSkill {
     name: string;
-    relatedEducation: string;
-    relatedExperience: string;
+    relatedEducation:  RelatedEducation[];
+    relatedExperience: RelatedExperience[];
 }
 
 export interface UserProps {

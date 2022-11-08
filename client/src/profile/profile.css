@@ -238,11 +238,41 @@
     outline: none;
     border: 1px solid var(--primary);
 }
+.skills-table-head {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    border-bottom: 1px solid var(--primary);
+}
+
+.skill-name {
+    width: 200px;
+    border-right: 1px solid #f8cbc9;
+}
+
+.related-education, .related-experience {
+   width: calc(50% - 112px);
+   padding-inline: 16px;
+   display: flex;
+   align-items: center;
+   gap: 16px;
+}
+
+.related-education {
+    border-right: 1px solid #f8cbc9;
+}
+
 
 .skill-row {
     display: flex;
     align-items: center;
     border-bottom: 1px solid #f8cbc9;
+    padding-block: 16px;
+}
+
+.plus-icon {
+    margin-left: auto;
+    width: 25px;
 }
 .vertical-divider {
     width: 1px;
@@ -349,16 +379,36 @@
     padding: 16px;
     position: relative;
 }
+
 .field-of-study {
     font-size: 18px;
     font-weight: bold;
 }
 
-.remove-button {
+.remove-button, .check-button {
     position: absolute;
     top: 10px;
     right: 15px;
     cursor: pointer;
+}
+
+.check-button {
+    border: 1px solid var(--primary);
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+}
+
+.selected {
+    background-color: var(--primary);
+    
+}
+
+.years input {
+    width: 100px;
+    border: 1px solid #f8cbc9;
+    border-radius: 8px;
+    padding: 2px 10px;
 }
 
 .social-container {

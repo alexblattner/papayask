@@ -12,6 +12,7 @@ const Icon = ({ src, width, height }: IconProps) => {
       src={`/icons/${src}.svg`}
       width={width ? width : 24}
       height={height ? height : 24}
+      style={{ cursor: 'pointer' }}
     />
   );
 };
