@@ -3,7 +3,6 @@ const mongoose = require('mongoose'),
   universitySchema = new Schema(
     {   
         name: { type: Schema.Types.String},
-        members: [{ type: Schema.Types.ObjectId, ref: 'User' }],
         country: { type: Schema.Types.String},
         rank: { type: Schema.Types.Number }
     },
