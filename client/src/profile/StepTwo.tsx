@@ -1,6 +1,7 @@
 import React from 'react';
-import { UserEducation, UserExperience } from '../models/User';
+import { School, UserEducation, UserExperience } from '../models/User';
 import Icon from '../shared/Icon';
+import api from '../utils/api';
 import { Button } from './components/Button';
 import { Container } from './components/Container';
 import { Input } from './components/Input';
@@ -17,8 +18,7 @@ interface Props {
   onChangeExperience: (e: React.ChangeEvent<HTMLInputElement>) => void;
   addExperience: () => void;
   experience: UserExperience[];
-
-    removeExperience: (index: number) => void;
+  removeExperience: (index: number) => void;
 }
 
 const StepTwo = (props: Props) => {
@@ -34,6 +34,22 @@ const StepTwo = (props: Props) => {
     experience,
     removeExperience,
   } = props;
+
+  const [universities, setUniversities] = React.useState<School[]>([]);
+
+  console.log(universities);
+
+  const searchUniversity = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChangeEducation(e);
+    const { value } = e.target;
+    if (value.length) {
+      const { data } = await api.get(`/university/${value}`);
+      setUniversities(data);
+    } else {
+      setUniversities([]);
+    }
+  };
+
   return (
     <Container flex justify="space-between" height="100%">
       <Container width="50%">
@@ -48,13 +64,27 @@ const StepTwo = (props: Props) => {
             name="fieldOfStudy"
             onChange={(e) => onChangeEducation(e)}
           />
-          <Input
-            type="text"
-            value={inputEducation.school}
-            placeholder="School"
-            name="school"
-            onChange={(e) => onChangeEducation(e)}
-          />
+          <Container position="relative">
+            <Input
+              type="text"
+              value={inputEducation.school}
+              placeholder="School"
+              name="school"
+              onChange={(e) => searchUniversity(e)}
+            />
+            <Container
+              position="absolute"
+              top={32}
+              left={0}
+              right={0}
+              maxH="250px"
+              height='250px'
+              width='300px'
+              border='1px solid black'
+            >
+              {}
+            </Container>
+          </Container>
 
           <Container flex gap={12} align="center">
             <Input

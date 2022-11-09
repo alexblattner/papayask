@@ -1,15 +1,8 @@
 
 export interface School {
     name: string;
-    description?: string;
-    logo?: string;
-    website?: string;
-    email?: string;
     country?: string;
-    members?: UserProps[];
-    reputation?: number;
-    foundingDate?: Date;
-    closedDate?: Date;
+    rank?: number;
 }
 
 export interface Company {

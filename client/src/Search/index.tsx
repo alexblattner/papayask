@@ -1,67 +1,36 @@
 import React, { useContext, useState, useEffect } from "react";
+import "./search.css";
+import Education from "./Education";
+import Experience from "./Experience";
+import MinMax from "./MinMax";
+import Personal from "./Personal";
 const Search = () => {
+    const [search, setSearch] = useState("");
+    const [results, setResults] = useState([]);
+    const [budget,setBudget] = useState<[number,number]>([0,100]);
+    const [experience,setExperience] = useState<{}>({});
+    const [showExperience,setShowExperience] = useState<boolean>(false);
+    const [education,setEducation] = useState<{}>({});
+    const [showEducation,setShowEducation] = useState<boolean>(false);
+    const [personal,setPersonal] = useState<boolean>(false);
+    const [showPersonal,setShowPersonal] = useState<boolean>(false);
     return (
       <div>
-        <h1>Search</h1>
         <div id="top">
-            <div id="search">
-                <select>
-                    <option disabled>Experience type</option>
-                    <option value="0">Any</option>
-                    <option value="1">Owner/Entrepeneurial</option>
-                    <option value="2">Freelance</option>
-                    <option value="3">Employment</option>
-                    <option value="4">Education</option>
-                </select>
-                <input type="text" placeholder="Search for experience"/>
+            <input id="search" type="search" placeholder="What experience and skills are you looing for?"/>
                 <div>
                     <span>Budget</span>
-                    <input type="text" placeholder="Min."/>
-                    <input type="text" placeholder="Max."/>
+                    <MinMax values={budget} setValues={setBudget} min={0} max={100}/>
                 </div>
-                <div>
-                    <span>Years of Experience</span>
-                    <input type="text" placeholder="Min."/>
-                    <input type="text" placeholder="Max."/>
-                </div>
-                <div>
-                    <span>Geographic Specialization </span>
-                    <input type="text" placeholder="Country"/>
-                </div>
-                <div>
-                    <span>Institution</span>
-                    <input type="text" placeholder="Search for institution"/>
-                    <input type="text" placeholder="Search for country of institution"/>
-                    <div>
-                        <span>Yearly Revenue</span>
-                        <input type="text" placeholder="Min."/>
-                        <input type="text" placeholder="Max."/>
-                    </div>
-                    <div>
-                        <span>Net Worth</span>
-                        <input type="text" placeholder="Min."/>
-                        <input type="text" placeholder="Max."/>
-                    </div>
-                    <div>
-                        <span>Age of Institution</span>
-                        <input type="text" placeholder="Min."/>
-                        <input type="text" placeholder="Max."/>
-                    </div>
-                    <div>
-                        <span>Rating</span>
-                        <input type="text" placeholder="Min."/>
-                        <input type="text" placeholder="Max."/>
-                    </div>
-                </div>
-                <input type="text" placeholder="Search for location"/>
-                <input type="text" placeholder="Search for language"/>
-                <div>
-                    <span>Amount of connections</span>
-                    <input type="text" placeholder="Min."/>
-                    <input type="text" placeholder="Max."/>
-                </div>
+                {showExperience&&<Experience/>}
+                {showEducation&&<Education/>}
+                {showPersonal&&<Personal/>}
+                <button onClick={()=>setShowExperience(!showExperience)}>
+                    Experience Details
+                </button>
+                <button onClick={()=>setShowEducation(!showEducation)}>Education Details</button>
+                <button onClick={()=>setShowPersonal(!showPersonal)}>Personal Details</button>
                 <button>Search</button>
-            </div>
         </div>
         <div id="results"></div>
       </div>
