@@ -20,7 +20,7 @@ header {
 }
 
 #logo img {
-  margin-top: 0.4rem;
+  margin-top: 0.5rem;
   height: 2.3rem;
 }
 
@@ -30,7 +30,7 @@ header {
 }
 
 .header-img {
-  margin-top: 0.4rem;
+  margin-top: 0.5rem;
   height: 2rem;
   /* width: 100%; */
 }
@@ -41,7 +41,7 @@ header {
 
 #search-bar {
   /* height: 100%; */
-  margin: 0.2rem 0.5rem;
+  margin: 0.2rem 1rem 0.2rem 0px;
   display: flex;
   border-radius: 8px;
   width: 50%;

@@ -23,9 +23,12 @@ function Header() {
   const { user } = useContext(AuthContext);
   const [showSignUp, setShowSignUp] = useState(false);
   const [showLogIn, setShowLogIn] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
   const logout = () => {
     auth.signOut();
   };
+
+  const handleSearch = () => {};
 
   function isJSON(str: string) {
     try {
@@ -62,7 +65,7 @@ function Header() {
           </Link>
 
           <Form id="search-bar">
-            <Button variant="success" id="search-button">
+            <Button onClick={handleSearch} variant="success" id="search-button">
               <img src={"/assets/images/search.svg"} />
             </Button>
             <FormControl
@@ -70,6 +73,8 @@ function Header() {
               placeholder="Search..."
               className="mr-sm-2"
               id="search-input"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
             />
             <Button variant="success" id="speaker-button">
               <img src={"/assets/images/speaker.svg"} />
