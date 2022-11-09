@@ -3,15 +3,9 @@ import axios from "axios";
 import Max from "./Max";
 const Education = () => {
     const [rank,setRank]=useState<number>(100);
-    useEffect(()=>{
-      alert(1)
-      axios.get("https://www.timeshighereducation.com/world-university-rankings/2023/world-ranking#!/page/0/length/-1/sort_by/rank/sort_order/asc/cols/scores",{headers: {"Access-Control-Allow-Origin": "*"}}).then((res)=>{
-        alert(333)  
-        const html = res.data.split('.js-row');
-        alert(html[0])  
-
-      });
-    },[]);
+    const [school,setSchool]=useState<string>("");
+    const [degree,setDegree]=useState<string>("");
+    const [results,setResults]=useState<string[]>([]);
     return (
       <div  className="filter-popup">
         <div>Education</div>
@@ -26,12 +20,15 @@ const Education = () => {
           </select>
         </div>
         <div>
-          <span>Subject</span>
+          <span>Degree</span>
           <input type="text" placeholder="Search for subject expert studied"/>
         </div>
         <div>
           <span>University</span>
-          <input type="text" placeholder="Search for university expert studied at"/>
+          <div>
+            <input type="text" placeholder="Search for university expert studied at"/>
+            {results.map((result:string)=><div>{result}</div>)}
+          </div>
         </div>
         <div>
           <span>University Rank</span>
