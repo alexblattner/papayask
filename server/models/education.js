@@ -1,11 +1,10 @@
 const mongoose = require('mongoose'),
   { Schema } = mongoose,
-  institutionSchema = new Schema(
+  educationSchema = new Schema(
     {
         name: { type: Schema.Types.String },
         description: { type: Schema.Types.String },
         logo: { type: Schema.Types.ObjectId, ref: 'File' },
-        type: { type: Schema.Types.String },
         website: { type: Schema.Types.String },
         email: { type: Schema.Types.String },
         country: { type: Schema.Types.String },
@@ -18,4 +17,4 @@ const mongoose = require('mongoose'),
       timestamps: true,
     }
   );
-module.exports = mongoose.model('Institution', institutionSchema);
+module.exports = mongoose.model('Education', educationSchema);

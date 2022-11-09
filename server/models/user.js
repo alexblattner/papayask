@@ -4,7 +4,6 @@ const mongoose = require('mongoose'),
     {
       bio: { type: String, default: '' },
       social: [{ type: String }],
-      skills: [{ type: String }],
       experience: [{ type: Schema.Types.ObjectId, ref: 'Experience' }],
       education: [{ type: Schema.Types.ObjectId, ref: 'Experience' }],
       name: { type: String, required: false },

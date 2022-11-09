@@ -1,11 +1,37 @@
+
+export interface School {
+    name: string;
+    description?: string;
+    logo?: string;
+    website?: string;
+    email?: string;
+    country?: string;
+    members?: UserProps[];
+    reputation?: number;
+    foundingDate?: Date;
+    closedDate?: Date;
+}
+
+export interface Company {
+    name: string;
+    description?: string;
+    logo?: string;
+    website?: string;
+    email?: string;
+    country?: string;
+    members?: UserProps[];
+    foundingDate?: Date;
+    closedDate?: Date;
+}
+
 export interface UserExperience {
     position: string;
-    company: string;
+    company: Company;
     years: String;
 }
 
 export interface UserEducation {
-    school: string;
+    school: School;
     fieldOfStudy: string;
     years: String;
 }
@@ -24,6 +50,8 @@ export interface UserSkill {
     name: string;
     relatedEducation:  RelatedEducation[];
     relatedExperience: RelatedExperience[];
+    totalEducationYears?: number;
+    totalExperienceYears?: number;
 }
 
 export interface UserProps {
@@ -45,4 +73,5 @@ export interface UserProps {
     skills: UserSkill[];
     experience: UserExperience[];
     education: UserEducation[];
+    lastLogIn: Date;
 }

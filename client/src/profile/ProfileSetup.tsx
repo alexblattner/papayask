@@ -1,13 +1,34 @@
 import React, { useState, useEffect } from 'react';
 
 import { AuthContext } from '../Auth/ContextProvider';
-import Icon from '../shared/Icon';
-import { socialName } from '../utils/socialName';
 import { auth } from '../firebase-auth';
-import { UserEducation, UserExperience, UserSkill } from '../models/User';
+import styled from 'styled-components';
+
+import {
+  Company,
+  School,
+  UserEducation,
+  UserExperience,
+  UserSkill,
+} from '../models/User';
 import ProfileSetupFooter from './ProfileSetupFooter';
 import ProfileSetupPagination from './ProfileSetupPagination';
-import SkillRow from './SkillRow';
+import { Container } from './components/Container';
+import StepOne from './StepOne';
+import StepTwo from './StepTwo';
+import StepThree from './StepThree';
+
+const SetupModal = styled('div')<{ pageLoaded: boolean }>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #fff;
+  width: 100%;
+  z-index: 999;
+  transform: translateY(${(props) => (props.pageLoaded ? '0' : '100%')});
+  transition: transform 0.3s ease-in-out;
+`;
 
 interface ProfileSetupProps {
   setShowProfileSetup: React.Dispatch<React.SetStateAction<boolean>>;
@@ -15,14 +36,14 @@ interface ProfileSetupProps {
   initialStep?: number | null;
 }
 
-interface Education {
+export interface Education {
   school: string;
   fieldOfStudy: string;
   startYear: number;
   endYear: number;
 }
 
-interface Experience {
+export interface Experience {
   company: string;
   position: string;
   startYear: number;
@@ -86,9 +107,11 @@ const ProfileSetup = ({
 
   const addEducation = () => {
     const newEducation: UserEducation = {
-      school: inputEducation.school,
+      school: { name: inputEducation.school } as School,
       fieldOfStudy: inputEducation.fieldOfStudy,
-      years: `${inputEducation.startYear} - ${inputEducation.endYear}`,
+      years: `${inputEducation.startYear} - ${
+        inputEducation.endYear || 'Present'
+      }`,
     };
     setEducation([...education, newEducation]);
     setInputEducation({
@@ -101,9 +124,11 @@ const ProfileSetup = ({
 
   const addExperience = () => {
     const newExperience: UserExperience = {
-      company: inputExperience.company,
+      company: { name: inputExperience.company } as Company,
       position: inputExperience.position,
-      years: `${inputExperience.startYear} - ${inputExperience.endYear}`,
+      years: `${inputExperience.startYear} - ${
+        inputExperience.endYear || 'Present'
+      }`,
     };
     setExperience([...experience, newExperience]);
     setInputExperience({
@@ -158,7 +183,7 @@ const ProfileSetup = ({
       setEducation(user.education);
       setExperience(user.experience);
       setSocial(user.social);
-      setTitle(user.title);
+      setTitle(user.title ?? '');
     }
   }, [user]);
 
@@ -179,229 +204,61 @@ const ProfileSetup = ({
   }, []);
 
   return (
-    <div className={`setup-modal ${pageLoaded ? 'modal-loaded' : ''}`}>
-      <div className="setup-container">
+    <SetupModal pageLoaded={pageLoaded}>
+      <Container
+        width="100%"
+        minH="100vh"
+        flex
+        dir="column"
+        justify="space-between"
+        align="center"
+        pt={100}
+        pb={50}
+      >
         <ProfileSetupPagination
           setStep={setStep}
           step={step}
           stepsDone={stepsDone}
         />
-        <div className="setup-content">
+        <Container width="75%" height="75%">
           {step === 0 && (
-            <>
-              <div className="step-title">Headline</div>
-              <input
-                className="setup-input"
-                type="text"
-                value={title}
-                placeholder="Enter a link and press enter"
-                onChange={(e) => setTitle(e.target.value)}
-              />
-              <div className="step-title">Tell your clients about yourself</div>
-              <textarea
-                className="setup-textarea"
-                value={bio}
-                onChange={(e) => setBio(e.target.value)}
-              />
-              <div className="step-title">Add your social links</div>
-              <input
-                className="setup-input"
-                type="text"
-                value={inputSocial}
-                placeholder="Enter a link and press enter"
-                onChange={(e) => setInputSocial(e.target.value)}
-                onKeyPress={(e) => {
-                  if (e.key === 'Enter') {
-                    setSocial([...social, inputSocial]);
-                    setInputSocial('');
-                  }
-                }}
-              />
-              <div className="social-list">
-                {social.map((social, i) => (
-                  <div className="social-container" key={social}>
-                    <Icon src={socialName(social)} width={32} height={32} />
-                    <div
-                      className="delete-social"
-                      onClick={() => removeSocial(i)}
-                    >
-                      <Icon src="close" width={12} height={12} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </>
+            <StepOne
+              bio={bio}
+              inputSocial={inputSocial}
+              removeSocial={removeSocial}
+              setBio={setBio}
+              setInputSocial={setInputSocial}
+              setSocial={setSocial}
+              setTitle={setTitle}
+              social={social}
+              title={title}
+            />
           )}
           {step === 1 && (
-            <div className="second-step-container">
-              <div className="education-section">
-                <div className="step-title">Education</div>
-                <div className="education-form">
-                  <input
-                    className="setup-input"
-                    type="text"
-                    value={inputEducation.fieldOfStudy}
-                    placeholder="field of study"
-                    name="fieldOfStudy"
-                    onChange={(e) => onChangeEducation(e)}
-                  />
-                  <input
-                    className="setup-input"
-                    type="text"
-                    value={inputEducation.school}
-                    placeholder="School"
-                    name="school"
-                    onChange={(e) => onChangeEducation(e)}
-                  />
-
-                  <div className="years-input-group">
-                    <input
-                      className="years-input"
-                      type="number"
-                      value={
-                        inputEducation.startYear ? inputEducation.startYear : ''
-                      }
-                      placeholder="Start year"
-                      name="startYear"
-                      onChange={(e) => onChangeEducation(e)}
-                    />
-                    <input
-                      className="years-input"
-                      type="number"
-                      value={
-                        inputEducation.endYear ? inputEducation.endYear : ''
-                      }
-                      placeholder="End year"
-                      name="endYear"
-                      onChange={(e) => onChangeEducation(e)}
-                    />
-                  </div>
-                  <button className="add-button" onClick={addEducation}>
-                    Add
-                  </button>
-                </div>
-                <div className="education-list">
-                  {education.map((edu, i) => (
-                    <div key={i} className="education-box">
-                      <div className="field-of-study">{edu.fieldOfStudy}</div>
-                      <div className="school">{edu.school}</div>
-                      <div className="years">{edu.years}</div>
-                      <div
-                        onClick={() => removeEducation(i)}
-                        className="remove-button"
-                      >
-                        <Icon src="close" width={20} height={20} />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="experience-section">
-                <div className="step-title">Experience</div>
-                <div className="experience-form">
-                  <input
-                    className="setup-input"
-                    type="text"
-                    value={inputExperience.position}
-                    placeholder="Position"
-                    name="position"
-                    onChange={(e) => onChangeExperience(e)}
-                  />
-                  <input
-                    className="setup-input"
-                    type="text"
-                    value={inputExperience.company}
-                    placeholder="Company"
-                    name="company"
-                    onChange={(e) => onChangeExperience(e)}
-                  />
-
-                  <div className="years-input-group">
-                    <input
-                      className="years-input"
-                      type="number"
-                      value={
-                        inputExperience.startYear
-                          ? inputExperience.startYear
-                          : ''
-                      }
-                      placeholder="Start year"
-                      name="startYear"
-                      onChange={(e) => onChangeExperience(e)}
-                    />
-                    <input
-                      className="years-input"
-                      type="number"
-                      value={
-                        inputExperience.endYear ? inputExperience.endYear : ''
-                      }
-                      placeholder="End year"
-                      name="endYear"
-                      onChange={(e) => onChangeExperience(e)}
-                    />
-                  </div>
-                  <button className="add-button" onClick={addExperience}>
-                    Add
-                  </button>
-                  <div className="experience-list">
-                    {experience.map((exp, i) => (
-                      <div key={i} className="experience-box">
-                        <div className="position">{exp.position}</div>
-                        <div className="company">{exp.company}</div>
-                        <div className="years">{exp.years}</div>
-                        <div
-                          onClick={() => removeExperience(i)}
-                          className="remove-button"
-                        >
-                          <Icon src="close" width={20} height={20} />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
+            <StepTwo
+              addEducation={addEducation}
+              education={education}
+              inputEducation={inputEducation}
+              onChangeEducation={onChangeEducation}
+              removeEducation={removeEducation}
+              addExperience={addExperience}
+              experience={experience}
+              inputExperience={inputExperience}
+              onChangeExperience={onChangeExperience}
+              removeExperience={removeExperience}
+            />
           )}
           {step === 2 && (
-            <div className="third-step-container">
-              <div className="step-title">What skills do you have?</div>
-              <input
-                className="setup-input"
-                type="text"
-                value={inputSkill.name}
-                placeholder="Type a skill and press enter"
-                onChange={(e) =>
-                  setInputSkill({ ...inputSkill, name: e.target.value })
-                }
-                onKeyPress={(e) => {
-                  if (e.key === 'Enter') {
-                    setSkills([...skills, inputSkill]);
-                    setInputSkill({
-                      name: '',
-                      relatedEducation: [],
-                      relatedExperience: [],
-                    });
-                  }
-                }}
-              />
-              <div className="skills-container">
-                <div className="skills-table-head">
-                  <div className="skill-name">Skill</div>
-                  <div className="related-education">Related Education</div>
-                  <div className="related-experience">Related Experience</div>
-                </div>
-                {skills.map((skill, i) => (
-                  <SkillRow
-                    skill={skill}
-                    key={i}
-                    education={education}
-                    experience={experience}
-                  />
-                ))}
-              </div>
-            </div>
+            <StepThree
+              inputSkill={inputSkill}
+              setInputSkill={setInputSkill}
+              skills={skills}
+              setSkills={setSkills}
+              education={education}
+              experience={experience}
+            />
           )}
-        </div>
+        </Container>
         <ProfileSetupFooter
           step={step}
           submit={submit}
@@ -412,8 +269,8 @@ const ProfileSetup = ({
           setShowProfileSetup={setShowProfileSetup}
           type={type}
         />
-      </div>
-    </div>
+      </Container>
+    </SetupModal>
   );
 };
 

@@ -1,6 +1,8 @@
 import React from 'react';
 
 import { AuthContext } from '../Auth/ContextProvider';
+import { Button } from './components/Button';
+import { Container } from './components/Container';
 
 interface Props {
   step: number;
@@ -45,33 +47,26 @@ const ProfileSetupFooter = ({
   };
 
   return (
-    <div className="setup-footer">
-      <button className="footer-button skip" onClick={skip}>
+    <Container flex align="center" gap={16} width="75%">
+      <Button variant="secondary" onClick={skip}>
         {type === 'initial' ? 'Skip' : 'Cancel'}
-      </button>
+      </Button>
       {type !== 'edit-one' && (
-        <button
-          className="footer-button"
-          disabled={step === 0}
-          onClick={prevStep}
-        >
+        <Button variant="primary" disabled={step === 0} onClick={prevStep}>
           Back
-        </button>
+        </Button>
       )}
       {step !== 3 && type !== 'edit-one' && (
-        <button
-          className="footer-button"
-          onClick={nextStep}
-        >
+        <Button variant="primary" onClick={nextStep}>
           Next
-        </button>
+        </Button>
       )}
       {(step === 3 || type === 'edit-one') && (
-        <button className="footer-button" onClick={submit}>
+        <Button variant="primary" onClick={submit}>
           Submit
-        </button>
+        </Button>
       )}
-    </div>
+    </Container>
   );
 };
 

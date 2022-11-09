@@ -19,11 +19,7 @@ const Main = () => {
 
   return (
     <div className="main-app">
-      {user?
-      <ProfileSetup
-        type='initial'
-        setShowProfileSetup={setShowProfileSetup}
-      />:<Landing/>}
+      <Landing/>
     </div>
   );
 };
