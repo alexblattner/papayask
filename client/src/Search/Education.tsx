@@ -5,19 +5,25 @@ import api from "../utils/api";
 import { UniversityProps } from "../models/University";
 const Education = () => {
     const [rank,setRank]=useState<number>(100);
-    const [school,setSchool]=useState<string>("");
+    const [schools,setSchools]=useState<UniversityProps[]>([]);
     const [degree,setDegree]=useState<string>("");
     const [results,setResults]=useState<string[]>([]);
+    const [searchVal,setSearchVal]=useState<string>("");
     const educationSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { value } = e.target;
+      const { value } = e.target;
+      setSearchVal(value)
         if(value.length>0){
           const res = await api.get("/university/"+value);
           setResults(res.data);
         }else{
           setResults([]);
         }
-    };
-
+    }
+    const addUniversity = (school:UniversityProps) => {
+        setSchools([...schools,school]);
+        setResults([]);
+        setSearchVal("");
+    }
     return (
       <div  className="filter-popup">
         <div>Education</div>
@@ -38,8 +44,8 @@ const Education = () => {
         <div>
           <span>University</span>
           <div>
-            <input type="text" onChange={educationSearch} placeholder="Search for university expert studied at"/>
-            {results.map((result:any)=><div>{result.name}</div>)}
+            <input type="text" value={searchVal} onChange={educationSearch} placeholder="Search for university expert studied at"/>
+            {results.map((result:any)=><div onClick={()=>addUniversity(result)}>{result.name}</div>)}
           </div>
         </div>
         <div>
