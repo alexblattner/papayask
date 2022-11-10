@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import styled from 'styled-components';
 import { School, UserEducation, UserExperience } from '../models/User';
 import Icon from '../shared/Icon';
 import api from '../utils/api';
@@ -7,6 +8,24 @@ import { Container } from './components/Container';
 import { Input } from './components/Input';
 import { Text } from './components/Text';
 import { Education, Experience } from './ProfileSetup';
+
+const Suggestions = styled('div')<{ show: boolean }>`
+  position: absolute;
+  top: 35px;
+  left: 0;
+  max-height: 240px;
+  pointer-events: ${(props) => (props.show ? 'auto' : 'none')};
+  height: 200px;
+  background-color: #fff;
+  width: 300px;
+  z-index: 999;
+  transform: translateY(${(props) => (props.show ? '0' : '-100%')});
+  transition: transform 0.3s ease-in-out;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+  overflow: hidden;
+  opacity: ${(props) => (props.show ? '1' : '0')};
+`;
 
 interface Props {
   inputEducation: Education;
@@ -36,18 +55,23 @@ const StepTwo = (props: Props) => {
   } = props;
 
   const [universities, setUniversities] = React.useState<School[]>([]);
+  const [showSuggestions, setShowSuggestions] = React.useState<boolean>(false);
 
-  console.log(universities);
+  useEffect(() => {
+    if (inputEducation.school !== '') {
+      console.log(inputEducation.school);
+      api.get(`/university/${inputEducation.school}`).then((res) => {
+        setUniversities(res.data);
+      });
+      setShowSuggestions(true);
+    } else {
+      setUniversities([]);
+      setShowSuggestions(false);
+    }
+  }, [inputEducation]);
 
   const searchUniversity = async (e: React.ChangeEvent<HTMLInputElement>) => {
     onChangeEducation(e);
-    const { value } = e.target;
-    if (value.length) {
-      const { data } = await api.get(`/university/${value}`);
-      setUniversities(data);
-    } else {
-      setUniversities([]);
-    }
   };
 
   return (
@@ -72,18 +96,26 @@ const StepTwo = (props: Props) => {
               name="school"
               onChange={(e) => searchUniversity(e)}
             />
-            <Container
-              position="absolute"
-              top={32}
-              left={0}
-              right={0}
-              maxH="250px"
-              height='250px'
-              width='300px'
-              border='1px solid black'
-            >
-              {}
-            </Container>
+            <Suggestions show={showSuggestions}>
+              {universities.map((university, index) => (
+                <Container
+                  key={index}
+                  py={8}
+                  onClick={() => {
+                    onChangeEducation({
+                      target: {
+                        name: 'school',
+                        value: university.name,
+                      },
+                    } as React.ChangeEvent<HTMLInputElement>);
+                    setShowSuggestions(false);
+                  }}
+                >
+                  <Text>{university.name}</Text>
+                  <Text>{university.country}</Text>
+                </Container>
+              ))}
+            </Suggestions>
           </Container>
 
           <Container flex gap={12} align="center">
