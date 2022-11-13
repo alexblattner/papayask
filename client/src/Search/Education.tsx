@@ -32,7 +32,7 @@ const Education = () => {
         </div>
         <div>
           <span>University Rank</span>
-          <Max value={rank} setValue={setRank} min={1} step={1} max={100}/>
+          <Max value={rank} setValue={setRank} min={1} step={1} max={1800}/>
         </div>
       </div>
     );

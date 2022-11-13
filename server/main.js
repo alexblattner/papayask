@@ -104,6 +104,11 @@ function removeext(str) {
 // SAVE STREAM SESSIONS UID
 const streamSessions = {};
 exports.streamSessionsList = streamSessions;
+app.get("/university", async (req, res,next) => {
+  const universities = await University.find({
+  });
+  res.send(universities);
+});
 app.get("/university/:search", async (req, res,next) => {
   const search = req.params.search;
   const universities = await University.find({
@@ -192,7 +197,8 @@ app.get("/logout", (req, res, next) => {
 // });
 
 app.post("/user/:userId/register-token", userController.registerToken);
-app.get("/search/:search", userController.search);
+app.get("/search", userController.search);
+app.post("/search", userController.search);
 // app.post("/deleteReviews", async (req, res, next) => {
 //   if (req.session.uid) {
 //     ids = req.body.ids.split("/");
