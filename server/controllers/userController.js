@@ -154,26 +154,16 @@ exports.search = async (req, res, next) => {
       toallob.user.language=req.query.personal.language;//add language to user object
     }
   }
-  let eduob={};
-  let expob={};
-  let skillob={};
+  let search={};
   if(req.query.search){
     const regex = new RegExp(escapeRegex(req.query.search), "gi");
-    eduob=req.query.degree?{
-      $match: {
-        'experience.name': req.query.degree,
-      },
-    }:{};
-    expob={
-      $match: {
-        'experience.name': regex,
-      },
-    };
-    skillob.name={
-      $match: {
-        'skills.name': regex,
-      },
-    };
+    search = {
+      $or: [
+        { $and:[{'experience.name': {$exists:true} , 'experience.name': regex}] },
+        { $and:[{'skills.name': {$exists:true} , 'skills.name': regex}] },
+        { $and:[{'education.name': {$exists:true} , 'education.name': regex}] },
+      ]
+    }
   }
   if(req.query.budget){
     
@@ -196,7 +186,23 @@ exports.search = async (req, res, next) => {
         as: "experience",
       },
     },
-    expob
+    {
+      $lookup: {
+        from: "educations",
+        localField: "education",
+        foreignField: "_id",
+        as: "education",
+      },
+    },
+    {
+      $lookup: {
+        from: "skills",
+        localField: "skills",
+        foreignField: "_id",
+        as: "skills",
+      },
+    },
+    {$match:search},
   ]).exec();
 
   return res.send(users);

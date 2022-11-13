@@ -1,6 +1,10 @@
 import React, { useContext, useState, useEffect } from "react";
 import MinMax from "./MinMax";
-const Personal = () => {
+interface Props {
+    setValues: Function;
+    countries: string[] | Promise<string[]>;
+}
+const Personal = (props:Props) => {
     const [netWorth,setNetWorth] = useState<[number,number]>([0,100]);
     const [yearlyRevenue,setYearlyRevenue] = useState<[number,number]>([0,100]);
     const [location,setLocation] = useState<string>("");

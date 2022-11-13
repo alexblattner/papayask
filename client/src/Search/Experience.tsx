@@ -1,6 +1,10 @@
 import React, { useContext, useState, useEffect } from "react";
 import MinMax from "./MinMax";
-const Experience = () => {
+interface Props {
+    setValues: Function;
+    countries: string[] | Promise<string[]>;
+  }
+const Experience = (props:Props) => {
     const [type,setType] = useState<number|null>(null);
     const [experience,setExperience] = useState<[number,number]>([0,100]);
     const [geoExpertise,setGeoExpertise] = useState<string | number | readonly string[] | undefined>("");

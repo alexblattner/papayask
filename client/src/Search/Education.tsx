@@ -3,7 +3,11 @@ import axios from "axios";
 import Max from "./Max";
 import api from "../utils/api";
 import { UniversityProps } from "../models/University";
-const Education = () => {
+interface Props {
+  setValues: Function;
+  countries: string[] | Promise<string[]>;
+}
+const Education = (props:Props) => {
     const [rank,setRank]=useState<number>(100);
     const [schools,setSchools]=useState<UniversityProps[]>([]);
     const [degree,setDegree]=useState<string>("");

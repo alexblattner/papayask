@@ -1,11 +1,16 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useMemo } from "react";
 import "./search.css";
 import Education from "./Education";
 import Experience from "./Experience";
 import MinMax from "./MinMax";
 import Personal from "./Personal";
 import api from "../utils/api";
+import  countryList from 'react-select-country-list';
 const Search = () => {
+    const countries = useMemo(async() => {
+      const temp=await countryList().getData()
+      return temp.map((country:any)=>country.label)
+    }, [])
     const [search, setSearch] = useState("");
     const [results, setResults] = useState([]);
     const [budget,setBudget] = useState<[number,number]>([0,100]);
@@ -20,6 +25,9 @@ const Search = () => {
         setShowEducation(false);
         setShowPersonal(false);
     };
+    useEffect(() => {
+      console.log("searching",countries);
+    }, [countries]);
     const getSearch=async()=>{
         console.log(194,{
             params:{
@@ -53,9 +61,9 @@ const Search = () => {
                     <span>Budget</span>
                     <MinMax values={budget} setValues={setBudget} min={0} max={100}/>
                 </div>
-                {showExperience&&<Experience/>}
-                {showEducation&&<Education/>}
-                {showPersonal&&<Personal/>}
+                {showExperience&&<Experience setValues={setExperience} countries={countries}/>}
+                {showEducation&&<Education setValues={setEducation} countries={countries}/>}
+                {showPersonal&&<Personal setValues={setPersonal} countries={countries}/>}
                 <button onClick={()=>{
                   let ogvalue = showExperience;
                   turnOffOthers();
