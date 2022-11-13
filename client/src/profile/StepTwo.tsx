@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { School, UserEducation, UserExperience } from '../models/User';
+import CountriesSelect from '../shared/CountriesSelect';
 import Icon from '../shared/Icon';
 import api from '../utils/api';
 import { Button } from './components/Button';
@@ -34,7 +35,7 @@ const Suggestion = styled('div')`
 
 interface Props {
   inputEducation: Education;
-  onChangeEducation: (name: string, value: string) => void;
+  onChangeEducation: (name: string, value: string | School) => void;
   addEducation: () => void;
   education: UserEducation[];
   removeEducation: (index: number) => void;
@@ -63,14 +64,16 @@ const StepTwo = (props: Props) => {
   const [focused, setFocused] = React.useState<boolean>(false);
 
   useEffect(() => {
-    if (inputEducation.school !== '' && focused) {
-      api.get(`/university/${inputEducation.school}`).then((res) => {
+    if (inputEducation.school.name !== '' && focused) {
+      api.get(`/university/${inputEducation.school.name}`).then((res) => {
+        console.log(res.data);
+
         setUniversities(res.data);
       });
     } else {
       setUniversities([]);
     }
-  }, [inputEducation]);
+  }, [inputEducation, focused]);
 
   return (
     <Container flex justify="space-between" height="100%">
@@ -89,10 +92,10 @@ const StepTwo = (props: Props) => {
           <Container position="relative">
             <Input
               type="text"
-              value={inputEducation.school}
+              value={inputEducation.school.name}
               placeholder="School"
-              name="school"
-              onChange={(e) => onChangeEducation('school', e.target.value)}
+              name="school-name"
+              onChange={(e) => onChangeEducation('school-name', e.target.value)}
               onFocus={() => setFocused(true)}
               onBlur={() => setFocused(false)}
             />
@@ -101,8 +104,8 @@ const StepTwo = (props: Props) => {
               {universities.map((university, index) => (
                 <Suggestion
                   key={index}
-                  onClick={() => {
-                    onChangeEducation('school', university.name);
+                  onClick={() => {                    
+                    onChangeEducation('school-name', university);
                     setUniversities([]);
                   }}
                 >
@@ -114,6 +117,8 @@ const StepTwo = (props: Props) => {
               ))}
             </Suggestions>
           </Container>
+
+          <CountriesSelect value={inputEducation.school.country} onChange= {onChangeEducation} inputName = "school-country"/>
 
           <Container flex gap={12} align="center">
             <Input
@@ -139,7 +144,7 @@ const StepTwo = (props: Props) => {
           {education.map((edu, i) => (
             <Container
               key={i}
-              width="200px"
+              width="220px"
               border="1px solid #f8cbc9"
               borderRadius="8px"
               position="relative"
@@ -149,7 +154,7 @@ const StepTwo = (props: Props) => {
               <Text fontSize={18} fontWeight="bold">
                 {edu.fieldOfStudy}
               </Text>
-              <Text fontSize={18}>{edu.school.name}</Text>
+              <Text fontSize={16}>{edu.school.name}</Text>
               <Text>{edu.years}</Text>
               <Container
                 position="absolute"

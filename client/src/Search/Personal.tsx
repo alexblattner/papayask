@@ -9,22 +9,22 @@ const Personal = () => {
     return (
         <div className="filter-popup">
             <div>Personal</div>
-            <div>{/*all */}
+            {false&&<><div>{/*all */}
                 <span>Net Worth($)</span>
                 <MinMax values={netWorth} setValues={setNetWorth} min={0} max={100}/>
             </div>
             <div>{/*all */}
                 <span>Yearly Revenue($)</span>
                 <MinMax values={yearlyRevenue} setValues={setYearlyRevenue} min={0} max={100}/>
-            </div>
+            </div></>}
             {/*all */}
-            <input type="text" value={location} onChange={(e:React.ChangeEvent<HTMLInputElement>)=>setLocation((e.target as HTMLInputElement).value)} placeholder="Search for location"/>
+            <input type="text" value={location} onChange={(e:React.ChangeEvent<HTMLInputElement>)=>setLocation((e.target as HTMLInputElement).value)} placeholder="Search for country of residence"/>
             {/*all */}
             <input type="text" placeholder="Search for language"/>
-            <div>{/*all */}
+            {false&&<><div>{/*all */}
                 <span>Amount of connections</span>
                 <MinMax values={connections} setValues={setConnections} min={0} max={100}/>
-            </div>
+            </div></>}
         </div>
     );
 };

@@ -37,7 +37,7 @@ interface ProfileSetupProps {
 }
 
 export interface Education {
-  school: string;
+  school: School;
   fieldOfStudy: string;
   startYear: number;
   endYear: number;
@@ -70,7 +70,12 @@ const ProfileSetup = ({
   });
   const [education, setEducation] = useState<UserEducation[]>([]);
   const [inputEducation, setInputEducation] = useState<Education>({
-    school: '',
+    school: {
+      name: '',
+      id: '',
+      country: '',
+      rank: 1800,
+    },
     fieldOfStudy: '',
     startYear: 0,
     endYear: 0,
@@ -85,18 +90,38 @@ const ProfileSetup = ({
   const [social, setSocial] = useState<string[]>([]);
   const [inputSocial, setInputSocial] = useState<string>('');
 
+  console.log(inputEducation);
+  
+
   const removeSkill = (index: number) => {
     const newSkills = [...skills];
     newSkills.splice(index, 1);
     setSkills(newSkills);
   };
 
-  const onChangeEducation = (name: string, value: string) => {
+  const onChangeEducation = (name: string, value: string | School) => {
+    
+    if (value instanceof Object) {
+      setInputEducation({
+        ...inputEducation,
+        school: value,
+      });
+    } else if (name.includes('school')) {
+      name = name.split('-')[1];
 
-    setInputEducation({
-      ...inputEducation,
-      [name]: value,
-    });
+      setInputEducation({
+        ...inputEducation,
+        school: {
+          ...inputEducation.school,
+          [name]: value,
+        },
+      });
+    } else {
+      setInputEducation({
+        ...inputEducation,
+        [name]: value,
+      });
+    }
   };
 
   const onChangeExperience = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -108,7 +133,12 @@ const ProfileSetup = ({
 
   const addEducation = () => {
     const newEducation: UserEducation = {
-      school: { name: inputEducation.school } as School,
+      school: {
+        name: inputEducation.school.name,
+        id: inputEducation.school.id,
+        country: inputEducation.school.country,
+        rank: inputEducation.school.rank,
+      },
       fieldOfStudy: inputEducation.fieldOfStudy,
       years: `${inputEducation.startYear} - ${
         inputEducation.endYear || 'Present'
@@ -116,7 +146,7 @@ const ProfileSetup = ({
     };
     setEducation([...education, newEducation]);
     setInputEducation({
-      school: '',
+      school: { name: '', id: '', country: '', rank: 1800 },
       fieldOfStudy: '',
       startYear: 0,
       endYear: 0,

@@ -1,7 +1,8 @@
 
 export interface School {
+    id?: string;
     name: string;
-    country?: string;
+    country: string;
     rank?: number;
 }
 

@@ -29,7 +29,7 @@ const Experience = () => {
             <span>Geographic Specialization</span>
             <input type="text" value={geoExpertise} onChange={(e:React.ChangeEvent<HTMLInputElement>)=>setGeoExpertise((e.target as HTMLInputElement).value)} placeholder="Country"/>
         </div>
-        {(type==1||type==3)&&
+        {false&&(type==1||type==3)&&
         <div>{/*owner/employee */}
             <span>Company</span>
             <input type="text" placeholder="Search for company"/>
@@ -52,7 +52,7 @@ const Experience = () => {
                 <input type="text" placeholder="Max."/>
             </div>*/}
         </div>}
-        {(type==2)&&
+        {false&&(type==2)&&
         <>
         <div>{/*freelance */}
             <span>Number of Projects</span>
