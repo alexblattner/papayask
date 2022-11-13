@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useContext } from "react";
-import "./Header.css";
-import api, { baseURL } from "../utils/api"; //axios with necessary configurations
-import { auth } from "../firebase-auth";
+import React, { useState, useEffect, useContext } from 'react';
+import './Header.css';
+import api, { baseURL } from '../utils/api'; //axios with necessary configurations
+import { auth } from '../firebase-auth';
 import {
   Navbar,
   Form,
@@ -11,14 +11,14 @@ import {
   Nav,
   Container,
   Modal,
-} from "react-bootstrap";
+} from 'react-bootstrap';
 // import UsernamePopup from "./UsernamePopup";
-// import default_profile from "../default_profile.svg";
-// import useDevice from "../Hooks/useDevice";
-import { Link } from "react-router-dom";
-import { AuthContext } from "../Auth/ContextProvider";
-import SignUp from "../Auth/SignUp";
-import LogIn from "../Auth/LogIn";
+import default_profile from '../default_profile.svg';
+import useDevice from '../Hooks/useDevice';
+import { Link } from 'react-router-dom';
+import { AuthContext } from '../Auth/ContextProvider';
+import SignUp from '../Auth/SignUp';
+import LogIn from '../Auth/LogIn';
 function Header() {
   const { user } = useContext(AuthContext);
   const [showSignUp, setShowSignUp] = useState(false);
@@ -55,67 +55,50 @@ function Header() {
   return (
     <>
       {!(
-        window.location.href.includes("/sign-up") ||
-        window.location.href.includes("/log-in")
+        window.location.href.includes('/sign-up') ||
+        window.location.href.includes('/log-in')
       ) && (
-        <header className="header-container">
+        <header>
           <Link id="logo" to="/">
-            <img src="/assets/images/PapayaLogo.svg" />
             Papayask
           </Link>
-
-          <Form id="search-bar">
-            <Button onClick={handleSearch} variant="success" id="search-button">
-              <img src={"/assets/images/search.svg"} />
-            </Button>
-            <FormControl
-              type="text"
-              placeholder="Search..."
-              className="mr-sm-2"
-              id="search-input"
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-            />
-            <Button variant="success" id="speaker-button">
-              <img src={"/assets/images/speaker.svg"} />
-            </Button>
-          </Form>
-
-          <div className="images-header-container">
-            <img
-              className="header-img"
-              src={"/assets/images/directRequest.svg"}
-            />
-            <img className="header-img" src={"/assets/images/bell.svg"} />
-            <img className="header-img" src={"/assets/images/message.svg"} />
-            <img className="header-img" src={"/assets/images/heart.svg"} />
-            <img className="header-img" src={"/assets/images/user.svg"} />
+          <div id="search-bar">
+            <Form>
+              <FormControl
+                type="text"
+                placeholder="Search"
+                className="mr-sm-2"
+                id="search-input"
+              />
+              <Button variant="success" id="search-button">
+                Search
+              </Button>
+            </Form>
           </div>
-
-          {/* {user ? (
+          {user ? (
             <Button onClick={logout}>Log Out</Button>
           ) : (
             <>
               <Button onClick={() => setShowSignUp(true)}>Sign Up</Button>
               <Button onClick={() => setShowLogIn(true)}>Log In</Button>
             </>
-          )} */}
+          )}
         </header>
       )}
       {showSignUp ? (
         <Modal
-          show={showSignUp && !user}
+          show={showSignUp}
           onHide={() => setShowSignUp(false)}
-          dialogClassName="register-modal"
+          dialogClassName="review-modal"
         >
           <SignUp />
         </Modal>
       ) : null}
       {showLogIn ? (
         <Modal
-          show={showLogIn && !user}
+          show={showLogIn}
           onHide={() => setShowLogIn(false)}
-          dialogClassName="register-modal"
+          dialogClassName="review-modal"
         >
           <LogIn />
         </Modal>

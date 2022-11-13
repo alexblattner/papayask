@@ -1,173 +1,225 @@
 import React from 'react';
+import styled from 'styled-components';
+import { AuthContext } from '../Auth/ContextProvider';
 import Icon from '../shared/Icon';
-import { socialName } from '../utils/socialName';
+import { Button } from './components/Button';
+import { Container } from './components/Container';
+import { Text } from './components/Text';
 
-import './profile.css';
+import ProfileSetup from './ProfileSetup';
 
-const user = {
-  name: 'John Doe',
-  title: 'Software Engineer',
-  photo: 'https://source.unsplash.com/random',
-  coverPhoto: 'https://source.unsplash.com/random/2000x500',
-  bio: 'I am a software engineer',
-  skills: ['JavaScript', 'React', 'Node.js'],
-  education: [
-    {
-      school: 'University of California, Los Angeles',
-      degree: 'B.S. Computer Science',
-      years: '2014-2018',
-    },
-    {
-      school: 'University of California, Los Angeles',
-      degree: 'B.S. Mathematics',
-      years: '2014-2018',
-    },
-  ],
-  experience: [
-    {
-      company: 'Google',
-      position: 'Frontend Developer',
-      years: '2016 - 2018',
-    },
-    {
-      company: 'Facebook',
-      position: 'Frontend Developer',
-      years: '2018 - 2020',
-    },
-    {
-      company: 'Amazon',
-      position: 'Frontend Developer',
-      years: '2020 - Present',
-    },
-  ],
-  socials: [
-    'https://facebook.com',
-    'https://instagram.com',
-    'https://youtube.com',
-  ],
-};
+const SkillBadge = styled.div`
+  background-color: ${(props) => props.theme.colors.primary20};
+  color: ${(props) => props.theme.colors.primary};
+  font-size: 16px;
+  font-weight: bold;
+  padding: 8px 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 16;
+`;
+
+const CoverImage = styled.img`
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+`;
+
+const ProfileImage = styled.img`
+  position: absolute;
+  top: 150px;
+  left: 64px;
+  right: 0;
+  bottom: 0;
+  width: 250px;
+  height: 250px;
+  border: 1px solid #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  object-fit: cover;
+  z-index: 99;
+`;
 
 const Profile = () => {
   const [isOwner, setIsOwner] = React.useState<boolean>(true);
+  const [editType, setEditType] = React.useState<
+    'initial' | 'edit-all' | 'edit-one'
+  >('edit-all');
+  const [initialSetupStep, setInitialSetupStep] = React.useState<number | null>(
+    null
+  );
+  const [showProfileSetup, setShowProfileSetup] =
+    React.useState<boolean>(false);
+  const { user } = React.useContext(AuthContext);
+
+  const openProfileSetup = () => {
+    setEditType('edit-all');
+    setShowProfileSetup(true);
+  };
+
+  const openProfileSetupInStep = (step: number) => {
+    setEditType('edit-one');
+    setInitialSetupStep(step);
+    setShowProfileSetup(true);
+  };
+
+  if (!user) return null;
   return (
-    <section className="profile-page">
-      <div className="cover-img-container">
-        <img className="cover-img" src={user.coverPhoto} alt="cover-img" />
-      </div>
-      <div className="profile-img-container">
-        <img className="profile-img" src={user.photo} alt="profile-img" />
-      </div>
-      <div className="profile-info">
-        <div className="info-head">
-          <div className="user-rating">
+    <Container width='65%' mx={'auto'}>
+      {showProfileSetup && (
+        <ProfileSetup
+          setShowProfileSetup={setShowProfileSetup}
+          type={editType}
+          initialStep={initialSetupStep}
+        />
+      )}
+      <Container width="100%" height="300px" position="relative" maxH="300px">
+        <CoverImage
+          src={user.picture ?? 'https://source.unsplash.com/random'}
+          alt="cover-img"
+        />
+        <ProfileImage
+          src={
+            user.coverPicture ?? 'https://source.unsplash.com/random/2000x500'
+          }
+          alt="profile-img"
+        />
+      </Container>
+
+      <Container mt={135} pl={64}>
+        <Container flex align="center" justify="space-between">
+          <Container flex align="center" gap={12}>
             {Array(5)
               .fill(0)
               .map((_, i) => (
-                <Icon src="Star_Fill" width={41} height={41} key={i} />
+                <Icon src="Star_Fill" width={30} height={30} key={i} />
               ))}
-            <p className="rating-number">(12)</p>
-          </div>
-          <div className="actoins">
+            <Text color="primary">(12)</Text>
+          </Container>
+          <Container>
             {isOwner ? (
-              <button className="edit-profile">
-                {' '}
-                <Icon src="Edit_White" /> EDIT
-              </button>
+              <Button variant="primary" onClick={openProfileSetup}>
+                <Container flex align="center" gap={8}>
+                  <Icon src="Edit_White" width={20} height={20} /> EDIT
+                </Container>
+              </Button>
             ) : (
-              <div className="actions-buttons-group">
-                <button>
-                  <Icon src="Send" width={41} height={41} />
-                </button>
-                <button>
-                  <Icon src="Share" width={41} height={41} />
-                </button>
-                <button>
-                  <Icon src="Heart" width={41} height={41} />
-                </button>
-              </div>
+              <Container flex align="center" gap={12}>
+                <Button variant="secondary" onClick={() => {}}>
+                  <Icon src="Send" width={25} height={25} />
+                </Button>
+                <Button variant="secondary" onClick={() => {}}>
+                  <Icon src="Share" width={25} height={25} />
+                </Button>
+                <Button variant="secondary" onClick={() => {}}>
+                  <Icon src="Heart" width={25} height={25} />
+                </Button>
+              </Container>
             )}
-          </div>
-        </div>
-        <div className="name">{user.name}</div>
-        <div className="title">{user.title}</div>
-        <div className="profile-details">
-          <div className="left">
-            {user.experience.length && (
+          </Container>
+        </Container>
+        <Text fontSize={46} fontWeight={600}>
+          {user.name}
+        </Text>
+        <Text fontSize={32} fontWeight={600}>
+          {user.title}
+        </Text>
+        <Container flex flexWrap justify="space-between" mt={24}>
+          <Container flex dir="column" gap={24} width="50%">
+            {user.experience.length > 0 && (
               <div>
-                <div className="sub-title">
-                  {isOwner && <Icon src="Edit_Black" width={20} height={20} />}{' '}
-                  Experience:
-                </div>
+                <Container
+                  flex
+                  align="center"
+                  gap={16}
+                  mb={16}
+                  onClick={() => openProfileSetupInStep(1)}
+                >
+                  {isOwner && <Icon src="Edit_Black" width={25} height={25} />}{' '}
+                  <Text fontSize={32} fontWeight={600}>
+                    Experience
+                  </Text>
+                </Container>
                 {user.experience.map((exp, i) => (
-                  <div key={i} className="exp">
-                    <div className="position">{exp.position}</div>
-                    <div className="company">{exp.company}</div>
-                    <div className="years">{exp.years}</div>
-                  </div>
+                  <Container mb={12} key={i}>
+                    <Text fontSize={18} fontWeight="bold">
+                      {exp.position}
+                    </Text>
+                    {/* <Text fontSize={18}>{exp.company.name}</Text> */}
+                    <Text>{exp.years}</Text>
+                  </Container>
                 ))}
               </div>
             )}
-            {user.education.length && (
+            {user.education.length > 0 && (
               <div>
-                <div className="sub-title">
-                  {isOwner && <Icon src="Edit_Black" width={20} height={20} />}{' '}
-                  Education:
-                </div>
+                <Container
+                  flex
+                  align="center"
+                  gap={16}
+                  mb={16}
+                  onClick={() => openProfileSetupInStep(1)}
+                >
+                  {isOwner && <Icon src="Edit_Black" width={25} height={25} />}{' '}
+                  <Text fontSize={32} fontWeight={600}>
+                    Education
+                  </Text>
+                </Container>
                 {user.education.map((edu, i) => (
-                  <div key={i} className="exp">
-                    <div className="position">{edu.degree}</div>
-                    <div className="company">{edu.school}</div>
-                    <div className="years">{edu.years}</div>
-                  </div>
+                  <Container mb={12} key={i}>
+                    <Text fontSize={18} fontWeight="bold">
+                      {edu.fieldOfStudy}
+                    </Text>
+                    <Text fontSize={18}>{edu.school.name}</Text>
+                    <Text>{edu.years}</Text>
+                  </Container>
                 ))}
               </div>
             )}
             <div>
-              <div className="sub-title">
+              <Container
+                flex
+                align="center"
+                gap={16}
+                onClick={() => openProfileSetupInStep(2)}
+              >
                 {' '}
-                {isOwner && <Icon src="Edit_Black" width={20} height={20} />}
+                {isOwner && <Icon src="Edit_Black" width={25} height={25} />}
                 {'  '}
-                Skills:
-              </div>
-              <div className="skills">
+                <Text fontSize={32} fontWeight={600}>
+                  Skills
+                </Text>
+              </Container>
+              <Container width="100%" flex flexWrap gap={16}>
                 {user.skills.map((skill, i) => (
-                  <div className="skill-badge" key={i}>{skill}</div>
+                  <SkillBadge key={i}>{skill.name}</SkillBadge>
                 ))}
-              </div>
+              </Container>
             </div>
-          </div>
-          <div className="right">
+          </Container>
+          <Container flex align="center" gap={12}>
             <div>
-              <div className="sub-title">
+              <Container
+                flex
+                align="center"
+                gap={16}
+                onClick={() => openProfileSetupInStep(0)}
+              >
                 {' '}
-                {isOwner && <Icon src="Edit_Black" width={20} height={20} />}
+                {isOwner && <Icon src="Edit_Black" width={25} height={25} />}
                 {'  '}
-                Bio:
-              </div>
-              <p className="text">{user.bio}</p>
+                <Text fontSize={32} fontWeight={600}>
+                  {' '}
+                  Bio:
+                </Text>
+              </Container>
+              <Text fontSize={18}>{user.bio}</Text>
             </div>
-            <div>
-              <div className="sub-title">
-                {' '}
-                {isOwner && <Icon src="Edit_Black" width={20} height={20} />}
-                {'  '}
-                Social:
-              </div>
-              <div className="social-icons">
-                {user.socials.map((social, i) => (
-                  <Icon
-                    src={socialName(social)}
-                    width={32}
-                    height={32}
-                    key={i}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+          </Container>
+        </Container>
+      </Container>
+    </Container>
   );
 };
 

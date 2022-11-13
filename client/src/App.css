@@ -78,3 +78,7 @@ h2 {
   --tertiary: #dedede;
   --background: #fff;
 }
+
+.app-container  {
+  padding-top: 100px;
+}
