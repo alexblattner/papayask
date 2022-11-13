@@ -4,6 +4,7 @@ import Education from "./Education";
 import Experience from "./Experience";
 import MinMax from "./MinMax";
 import Personal from "./Personal";
+import api from "../utils/api";
 const Search = () => {
     const [search, setSearch] = useState("");
     const [results, setResults] = useState([]);
@@ -14,6 +15,36 @@ const Search = () => {
     const [showEducation,setShowEducation] = useState<boolean>(false);
     const [personal,setPersonal] = useState<boolean>(false);
     const [showPersonal,setShowPersonal] = useState<boolean>(false);
+    const turnOffOthers = () => {
+        setShowExperience(false);
+        setShowEducation(false);
+        setShowPersonal(false);
+    };
+    const getSearch=async()=>{
+        console.log(194,{
+            params:{
+                search,
+                budget,
+                experience,
+                education,
+                personal
+            }
+        })
+        const res = await api.get("/search/",{
+            params:{
+                search,
+                budget,
+                experience,
+                education,
+                personal
+            }
+        });
+        setResults(res.data);
+    };
+    useEffect(()=>{
+      alert(99)
+        getSearch();
+    },[search,budget,experience,education,personal]);
     return (
       <div>
         <div id="top">
@@ -25,11 +56,23 @@ const Search = () => {
                 {showExperience&&<Experience/>}
                 {showEducation&&<Education/>}
                 {showPersonal&&<Personal/>}
-                <button onClick={()=>setShowExperience(!showExperience)}>
+                <button onClick={()=>{
+                  let ogvalue = showExperience;
+                  turnOffOthers();
+                  setShowExperience(!ogvalue)
+                  }}>
                     Experience Details
                 </button>
-                <button onClick={()=>setShowEducation(!showEducation)}>Education Details</button>
-                <button onClick={()=>setShowPersonal(!showPersonal)}>Personal Details</button>
+                <button onClick={()=>{
+                  let ogvalue = showEducation;
+                  turnOffOthers();
+                  setShowEducation(!ogvalue)
+                  }}>Education Details</button>
+                <button  onClick={()=>{
+                  let ogvalue = showPersonal;
+                  turnOffOthers();
+                  setShowPersonal(!ogvalue)
+                  }}>Personal Details</button>
                 <button>Search</button>
         </div>
         <div id="results"></div>

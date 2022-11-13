@@ -9,7 +9,7 @@ const Max: React.FC<{value:number,setValue:Function,step:number,min:number, max:
       style={{
         display: 'flex',
         justifyContent: 'center',
-        flexWrap: 'wrap'
+        flexWrap: 'wrap',
       }}
     >
       <Range
@@ -29,7 +29,8 @@ const Max: React.FC<{value:number,setValue:Function,step:number,min:number, max:
               ...props.style,
               height: '36px',
               display: 'flex',
-              width: '100%'
+              width: '100%',
+
             }}
           >
             <div
@@ -40,10 +41,9 @@ const Max: React.FC<{value:number,setValue:Function,step:number,min:number, max:
                 borderRadius: '4px',
                 background: getTrackBackground({
                   values: [value],
-                  colors: ['#ccc', '#548BF4', '#ccc'],
+                  colors: ['#548BF4', '#ccc'],
                   min: min,
                   max: max,
-                  rtl:false
                 }),
                 alignSelf: 'center'
               }}
@@ -71,7 +71,7 @@ const Max: React.FC<{value:number,setValue:Function,step:number,min:number, max:
         )}
       />
       <output className="output">
-        {value.toFixed(1)}
+        {value.toFixed(1)+(value==max?"+":"")}
       </output>
     </div>
   );

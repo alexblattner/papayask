@@ -4,6 +4,9 @@ const fetch = require("node-fetch");
 const Question = require("../models/question");
 const Note = require("../models/note");
 const User = require("../models/user");
+const Education = require("../models/education");
+const Experience = require("../models/experience");
+const Skill = require("../models/skill");
 const { OAuth2Client } = require("google-auth-library");
 const client = new OAuth2Client(process.env.GOOGLE_APP_ID);
 const mongoose = require("mongoose");
@@ -12,6 +15,8 @@ function escapeRegex(text) {
 }
 
 const Session = require("../models/session");
+const education = require("../models/education");
+const experience = require("../models/experience");
 exports.encourageMail = async (req, res, next) => {
   const users = await User.find({
     "posts.0": { $exists: true },
@@ -140,14 +145,59 @@ exports.update = async (req, res) => {
   }
 }
 exports.search = async (req, res, next) => {
-  const { fuzzy } = req.body;
-  const regex = new RegExp(escapeRegex(req.params.search), "gi");
-  const userS = [];
-  const userSearch = await User.find({experience:{$exists:true},education:{$exists:true}}).populate({
-    path: 'experience.company',
-  }).populate({
-    path: 'education.school',
-    }).find({$or:[{name: regex},{email: regex},{experience: regex},{education:regex}]}).exec();
-  console.log(121,userSearch);
-  return res.send(userSearch);
+  const toallob={}//starting object for education, skill and experience to filter undesired data
+  if(req.query.personal){
+    if(req.query.personal.country){//if country is present in query
+      toallob.user.country=req.query.personal.country;//add country to user object
+    }
+    if(req.query.personal.language){//if language is present in query
+      toallob.user.language=req.query.personal.language;//add language to user object
+    }
+  }
+  let eduob={};
+  let expob={};
+  let skillob={};
+  if(req.query.search){
+    const regex = new RegExp(escapeRegex(req.query.search), "gi");
+    eduob=req.query.degree?{
+      $match: {
+        'experience.name': req.query.degree,
+      },
+    }:{};
+    expob={
+      $match: {
+        'experience.name': regex,
+      },
+    };
+    skillob.name={
+      $match: {
+        'skills.name': regex,
+      },
+    };
+  }
+  if(req.query.budget){
+    
+  }
+  if(req.query.education){
+
+  }
+  if(req.query.experience){
+
+  }
+  const users = await User.aggregate([
+    {
+      $match:toallob
+    },
+    {
+      $lookup: {
+        from: "experiences",
+        localField: "experience",
+        foreignField: "_id",
+        as: "experience",
+      },
+    },
+    expob
+  ]).exec();
+
+  return res.send(users);
 };

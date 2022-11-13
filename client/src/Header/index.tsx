@@ -63,34 +63,65 @@ function Header() {
             <img src="/assets/images/PapayaLogo.svg" />
             Papayask
           </Link>
+          {user ? (
+            <>
+              <Form id="search-bar">
+                <Button
+                  onClick={handleSearch}
+                  variant="success"
+                  id="search-button"
+                >
+                  <img src={"/assets/images/search.svg"} />
+                </Button>
+                <FormControl
+                  type="text"
+                  placeholder="Search..."
+                  className="mr-sm-2"
+                  id="search-input"
+                  value={searchInput}
+                  onChange={(e) => setSearchInput(e.target.value)}
+                />
+                <Button variant="success" id="speaker-button">
+                  <img src={"/assets/images/speaker.svg"} />
+                </Button>
+              </Form>
 
-          <Form id="search-bar">
-            <Button onClick={handleSearch} variant="success" id="search-button">
-              <img src={"/assets/images/search.svg"} />
-            </Button>
-            <FormControl
-              type="text"
-              placeholder="Search..."
-              className="mr-sm-2"
-              id="search-input"
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-            />
-            <Button variant="success" id="speaker-button">
-              <img src={"/assets/images/speaker.svg"} />
-            </Button>
-          </Form>
-
-          <div className="images-header-container">
-            <img
-              className="header-img"
-              src={"/assets/images/directRequest.svg"}
-            />
-            <img className="header-img" src={"/assets/images/bell.svg"} />
-            <img className="header-img" src={"/assets/images/message.svg"} />
-            <img className="header-img" src={"/assets/images/heart.svg"} />
-            <img className="header-img" src={"/assets/images/user.svg"} />
-          </div>
+              <div className="images-header-container">
+                <img
+                  className="header-img"
+                  src={"/assets/images/directRequest.svg"}
+                />
+                <img className="header-img" src={"/assets/images/bell.svg"} />
+                <img
+                  className="header-img"
+                  src={"/assets/images/message.svg"}
+                />
+                <img className="header-img" src={"/assets/images/heart.svg"} />
+                <img className="header-img" src={"/assets/images/user.svg"} />
+              </div>
+            </>
+          ) : (
+            <div className="images-header-container">
+              <img
+                className="header-img"
+                src={"/assets/images/direction.svg"}
+              />
+              <img className="header-img" src={"/assets/images/dollar.svg"} />
+              <div className="give">Become a giver</div>
+              <button
+                className="auth-button"
+                onClick={() => setShowLogIn(true)}
+              >
+                Log In
+              </button>
+              <button
+                className="auth-button sign-up"
+                onClick={() => setShowSignUp(true)}
+              >
+                Sign Up
+              </button>
+            </div>
+          )}
 
           {/* {user ? (
             <Button onClick={logout}>Log Out</Button>

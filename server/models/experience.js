@@ -3,7 +3,7 @@ const mongoose = require('mongoose'),
   experienceSchema = new Schema(
     {   
         user: { type: Schema.Types.ObjectId, ref: 'User' },
-        position: { type: Schema.Types.String},
+        name: { type: Schema.Types.String,required:true },
         institution: { type: Schema.Types.ObjectId, ref: 'Institution', required: true },
         geographic_specialization: [{type: Schema.Types.String}],
         type: { type: Schema.Types.String },
