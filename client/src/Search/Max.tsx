@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Range, getTrackBackground } from 'react-range';
-import { NumericLiteral } from 'typescript';
 
 
 const Max: React.FC<{value:number,setValue:Function,step:number,min:number, max: number }> = ({value,setValue,step,min,max }) => {
