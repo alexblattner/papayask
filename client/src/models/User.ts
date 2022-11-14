@@ -21,13 +21,16 @@ export interface Company {
 export interface UserExperience {
     position: string;
     company: Company;
-    years: String;
+    startDate: Date;
+    endDate?: Date| string;
+    type: string;
 }
 
 export interface UserEducation {
     school: School;
     fieldOfStudy: string;
-    years: String;
+    startDate: Date;
+    endDate?: Date | string;
 }
 
 export interface RelatedExperience {

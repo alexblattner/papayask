@@ -6,6 +6,8 @@ const mongoose = require('mongoose'),
         level: { type: Schema.Types.String, required: true },
         user: { type: Schema.Types.ObjectId, ref: 'User' },
         university: { type: Schema.Types.ObjectId, ref: 'University' },
+        startDate: { type: Schema.Types.Date, required: true },
+        endDate: { type: Schema.Types.Date},
     },
     {
       timestamps: true,

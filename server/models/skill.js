@@ -3,12 +3,15 @@ const mongoose = require('mongoose'),
   skillSchema = new Schema(
     {   
         user: { type: Schema.Types.ObjectId, ref: 'User' },
-        name: { type: Schema.Types.String},
+        name: { type: Schema.Types.String, required: true },
         experiences: [{
           time:{ type: Schema.Types.Number },
-          experience:{ type: Schema.Types.ObjectId, ref: 'Institution', required: true }
+          experience:{ type: Schema.Types.ObjectId, ref: 'Experience', required: true }
         }],
-        total: { type: Schema.Types.Number }
+        education: [{
+          time:{ type: Schema.Types.Number },
+          education:{ type: Schema.Types.ObjectId, ref: 'Education', required: true }
+        }],
     },
     {
       timestamps: true,

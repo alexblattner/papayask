@@ -30,15 +30,15 @@ const PaginationButton = styled('div')<PaginationButtonProps>`
     props.status === 'active'
       ? props.theme.colors.primary
       : props.status === 'done'
-      ? props.theme.colors.primary20
+      ? props.theme.colors.primary_L2
       : '#fff'};
-  border: 2px solid ${(props) => props.theme.colors.primary20};
+  border: 2px solid ${(props) => props.theme.colors.primary_L2};
 `;
 
 const PaginationLine = styled('div')`
   width: 50px;
   height: 2px;
-  background-color: ${(props) => props.theme.colors.primary20};
+  background-color: ${(props) => props.theme.colors.primary_L2};
   margin: 10px;
 `;
 
@@ -63,7 +63,7 @@ const ProfileSetupPagination = ({ step, stepsDone, setStep }: Props) => {
     }
   };
   return (
-    <Container flex align='center'>
+    <Container flex align="center">
       {Array(4)
         .fill(0)
         .map((_, i) => (

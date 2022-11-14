@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Modal } from 'react-bootstrap';
 
 import {
@@ -13,6 +13,7 @@ import Icon from '../shared/Icon';
 import { Text } from './components/Text';
 import styled from 'styled-components';
 import { Button } from './components/Button';
+import { Input } from './components/Input';
 
 const ListItem = styled('div')`
   cursor: pointer;
@@ -24,7 +25,7 @@ const ListItem = styled('div')`
   justify-content: space-between;
 
   &:hover {
-    background-color: ${(props) => props.theme.colors.primary20};
+    background-color: ${(props) => props.theme.colors.primary_L2};
   }
 `;
 
@@ -55,7 +56,7 @@ const SkillRow = ({ skill, education, experience }: Props) => {
   const [experienceIndexSelected, setexperienceIndexSelected] = React.useState<
     number[]
   >([]);
-  const [yearsInput, setYearsInput] = React.useState<string>('');
+  const [yearsInputs, setYearsInput] = React.useState<number[]>([]);
 
   const selectEducation = (index: number) => {
     if (educationIndexSelected.includes(index)) {
@@ -67,30 +68,41 @@ const SkillRow = ({ skill, education, experience }: Props) => {
     }
   };
 
-  const selectExperience = (index: number) => {
+  const selectExperience = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    index: number
+  ) => {
+    if (event.target instanceof HTMLInputElement) {
+      return;
+    }
     if (experienceIndexSelected.includes(index)) {
       setexperienceIndexSelected(
         experienceIndexSelected.filter((i) => i !== index)
       );
+      const newYears = [...yearsInputs];
+      newYears[index] = 0;
+      setYearsInput(newYears);
     } else {
       setexperienceIndexSelected([...experienceIndexSelected, index]);
     }
   };
 
   const numberOfYears = (field: UserEducation | UserExperience): number => {
-    const start = field.years.split('-')[0];
+    const start = field.startDate.getFullYear();
     const end =
-      field.years.split('-')[1].trim() !== 'Present'
-        ? field.years.split('-')[1]
-        : new Date().getFullYear().toString();
-    const diff = parseInt(end) - parseInt(start);
+      field.endDate  && field.endDate !== 'Present'
+        ? (field.endDate as Date).getFullYear() 
+        : new Date().getFullYear();
+    const diff = end - start;
     return diff;
   };
+
+  console.log(yearsInputs);
 
   const closeModal = () => {
     setShowRelatedEducation(false);
     setShowRelatedExperience(false);
-    setYearsInput('');
+    setYearsInput([]);
     setEducationIndexSelected([]);
     setexperienceIndexSelected([]);
   };
@@ -113,7 +125,11 @@ const SkillRow = ({ skill, education, experience }: Props) => {
     } else {
       let newRelatedExperience: RelatedExperience[] = [];
       experienceIndexSelected.forEach((index) => {
-        const years = numberOfYears(experience[index]);
+        const years =
+          numberOfYears(experience[index]) < yearsInputs[index] ||
+          yearsInputs[index] === 0
+            ? numberOfYears(experience[index])
+            : yearsInputs[index];
         const related = {
           experience: experience[index],
           years: years,
@@ -124,6 +140,27 @@ const SkillRow = ({ skill, education, experience }: Props) => {
       setShowRelatedExperience(false);
     }
   };
+
+  const setYears = (index: number, value: string) => {
+    if (!experienceIndexSelected.includes(index)) {
+      return;
+    }
+    const years = parseInt(value);
+    if (years) {
+      const newYears = [...yearsInputs];
+      newYears[index] = years;
+      setYearsInput(newYears);
+    } else {
+      const newYears = [...yearsInputs];
+      newYears[index] = 0;
+      setYearsInput(newYears);
+    }
+  };
+
+  useEffect(() => {
+    const years = experience.map(() => 0);
+    setYearsInput(years);
+  }, [experience]);
 
   return (
     <>
@@ -148,7 +185,7 @@ const SkillRow = ({ skill, education, experience }: Props) => {
                         {edu.fieldOfStudy}
                       </Text>
                       <Text fontSize={18}>{edu.school.name}</Text>
-                      <Text>{edu.years}</Text>
+                      <Text>{edu.startDate.toString()} - {edu.endDate?.toString() ?? 'Present'}</Text>
                     </div>
                     <CheckIcon selected={educationIndexSelected.includes(i)}>
                       <Icon src="check" width={30} height={30} />
@@ -160,13 +197,22 @@ const SkillRow = ({ skill, education, experience }: Props) => {
             {showRelatedExperience && (
               <div>
                 {experience.map((exp, i) => (
-                  <ListItem key={i} onClick={() => selectExperience(i)}>
+                  <ListItem key={i} onClick={(e) => selectExperience(e, i)}>
                     <div>
-                      <Text fontSize={18} fontWeight="bold">
-                        {exp.position}
-                      </Text>
-                      <Text fontSize={18}>{exp.company.name}</Text>
-                      <Text>{exp.years}</Text>
+                      <Container flex gap={3} align="flex-end" mb={10}>
+                        <Text fontSize={18} fontWeight="bold">
+                          {exp.position}
+                        </Text>
+                        <Text>/</Text>
+                        <Text fontSize={16}>{exp.company.name}</Text>
+                      </Container>
+                      <Input
+                        name="years"
+                        value={yearsInputs[i] === 0 ? '' : yearsInputs[i]}
+                        onChange={(e) => setYears(i, e.target.value)}
+                        placeholder="Years"
+                        type="number"
+                      />
                     </div>
                     <CheckIcon selected={experienceIndexSelected.includes(i)}>
                       <Icon src="check" width={30} height={30} />
@@ -204,14 +250,16 @@ const SkillRow = ({ skill, education, experience }: Props) => {
           gap={16}
           borderRight="1px solid #f8cbc9"
         >
-          {relatedEducation.map((edu, i) => (
-            <div key={i}>
-              <Text fontSize={18} fontWeight="bold">
-                {edu.education.school.name}
-              </Text>
-              <Text>{edu.years} Years</Text>
-            </div>
-          ))}
+          <Container flex align="center" gap={16} flexWrap>
+            {relatedEducation.map((edu, i) => (
+              <div key={i}>
+                <Text fontSize={18} fontWeight="bold">
+                  {edu.education.school.name}
+                  {i !== relatedEducation.length - 1 && `,`}
+                </Text>
+              </div>
+            ))}
+          </Container>
 
           <Container
             width="25px"
@@ -231,9 +279,14 @@ const SkillRow = ({ skill, education, experience }: Props) => {
         >
           {relatedExperience.map((exp, i) => (
             <div key={i}>
-              <Text fontSize={18} fontWeight={'bold'}>
-                {exp.experience.company.name}
-              </Text>
+              <Container flex>
+                <Text fontSize={18} fontWeight={'bold'}>
+                  {exp.experience.company.name}
+                </Text>
+                <Text fontSize={18}>/</Text>
+                <Text fontSize={14}>{exp.experience.position}</Text>
+              </Container>
+
               <Text>{exp.years} Years</Text>
             </div>
           ))}

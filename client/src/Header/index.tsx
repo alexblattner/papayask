@@ -23,7 +23,7 @@ function Header() {
   const { user } = useContext(AuthContext);
   const [showSignUp, setShowSignUp] = useState(false);
   const [showLogIn, setShowLogIn] = useState(false);
-  const [searchInput, setSearchInput] = useState("");
+  const [searchInput, setSearchInput] = useState('');
   const logout = () => {
     auth.signOut();
   };
@@ -70,7 +70,7 @@ function Header() {
                   variant="success"
                   id="search-button"
                 >
-                  <img src={"/assets/images/search.svg"} />
+                  <img src={'/assets/images/search.svg'} />
                 </Button>
                 <FormControl
                   type="text"
@@ -81,31 +81,34 @@ function Header() {
                   onChange={(e) => setSearchInput(e.target.value)}
                 />
                 <Button variant="success" id="speaker-button">
-                  <img src={"/assets/images/speaker.svg"} />
+                  <img src={'/assets/images/speaker.svg'} />
                 </Button>
               </Form>
 
               <div className="images-header-container">
                 <img
                   className="header-img"
-                  src={"/assets/images/directRequest.svg"}
+                  src={'/assets/images/directRequest.svg'}
                 />
-                <img className="header-img" src={"/assets/images/bell.svg"} />
+                <img className="header-img" src={'/assets/images/bell.svg'} />
                 <img
                   className="header-img"
-                  src={"/assets/images/message.svg"}
+                  src={'/assets/images/message.svg'}
                 />
-                <img className="header-img" src={"/assets/images/heart.svg"} />
-                <img className="header-img" src={"/assets/images/user.svg"} />
+                <img className="header-img" src={'/assets/images/heart.svg'} />
+                <Link to={'/profile'}>
+                  {' '}
+                  <img className="header-img" src={'/assets/images/user.svg'} />
+                </Link>
               </div>
             </>
           ) : (
             <div className="images-header-container">
               <img
                 className="header-img"
-                src={"/assets/images/direction.svg"}
+                src={'/assets/images/direction.svg'}
               />
-              <img className="header-img" src={"/assets/images/dollar.svg"} />
+              <img className="header-img" src={'/assets/images/dollar.svg'} />
               <div className="give">Become a giver</div>
               <button
                 className="auth-button"

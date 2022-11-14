@@ -9,7 +9,7 @@ import { Text } from './components/Text';
 import ProfileSetup from './ProfileSetup';
 
 const SkillBadge = styled.div`
-  background-color: ${(props) => props.theme.colors.primary20};
+  background-color: ${(props) => props.theme.colors.primary_L2};
   color: ${(props) => props.theme.colors.primary};
   font-size: 16px;
   font-weight: bold;
@@ -147,7 +147,7 @@ const Profile = () => {
                       {exp.position}
                     </Text>
                     {/* <Text fontSize={18}>{exp.company.name}</Text> */}
-                    <Text>{exp.years}</Text>
+                    <Text>{exp.startDate.toString()} - {exp.endDate?.toString() ?? 'Present'}</Text>
                   </Container>
                 ))}
               </div>
@@ -172,7 +172,7 @@ const Profile = () => {
                       {edu.fieldOfStudy}
                     </Text>
                     <Text fontSize={18}>{edu.school.name}</Text>
-                    <Text>{edu.years}</Text>
+                    <Text>{edu.startDate.toString()} - {edu.endDate?.toString() ?? 'Present'}</Text>
                   </Container>
                 ))}
               </div>

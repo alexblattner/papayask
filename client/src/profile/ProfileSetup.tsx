@@ -5,7 +5,6 @@ import { auth } from '../firebase-auth';
 import styled from 'styled-components';
 
 import {
-  Company,
   School,
   UserEducation,
   UserExperience,
@@ -39,15 +38,16 @@ interface ProfileSetupProps {
 export interface Education {
   school: School;
   fieldOfStudy: string;
-  startYear: number;
-  endYear: number;
+  startDate: Date ;
+  endDate: Date | string | null;
 }
 
 export interface Experience {
   company: string;
   position: string;
-  startYear: number;
-  endYear: number;
+  startDate: Date ;
+  endDate: Date | string | null;
+  type: string;
 }
 
 const ProfileSetup = ({
@@ -77,21 +77,17 @@ const ProfileSetup = ({
       rank: 1800,
     },
     fieldOfStudy: '',
-    startYear: 0,
-    endYear: 0,
+    startDate: new Date(),
+    endDate: null,
   });
   const [experience, setExperience] = useState<UserExperience[]>([]);
   const [inputExperience, setInputExperience] = useState<Experience>({
     company: '',
     position: '',
-    startYear: 0,
-    endYear: 0,
+    startDate: new Date(),
+    endDate: null,
+    type: '',
   });
-  const [social, setSocial] = useState<string[]>([]);
-  const [inputSocial, setInputSocial] = useState<string>('');
-
-  console.log(inputEducation);
-  
 
   const removeSkill = (index: number) => {
     const newSkills = [...skills];
@@ -100,7 +96,6 @@ const ProfileSetup = ({
   };
 
   const onChangeEducation = (name: string, value: string | School) => {
-    
     if (value instanceof Object) {
       setInputEducation({
         ...inputEducation,
@@ -140,33 +135,34 @@ const ProfileSetup = ({
         rank: inputEducation.school.rank,
       },
       fieldOfStudy: inputEducation.fieldOfStudy,
-      years: `${inputEducation.startYear} - ${
-        inputEducation.endYear || 'Present'
-      }`,
+      startDate: inputEducation.startDate,
+      endDate: inputEducation.endDate || 'Present',
     };
     setEducation([...education, newEducation]);
     setInputEducation({
       school: { name: '', id: '', country: '', rank: 1800 },
       fieldOfStudy: '',
-      startYear: 0,
-      endYear: 0,
+      startDate: new Date(),
+      endDate: null,
     });
   };
 
   const addExperience = () => {
     const newExperience: UserExperience = {
-      company: { name: inputExperience.company } as Company,
+      company: { name: inputExperience.company },
       position: inputExperience.position,
-      years: `${inputExperience.startYear} - ${
-        inputExperience.endYear || 'Present'
-      }`,
+      startDate: inputExperience.startDate,
+      endDate: inputExperience.endDate || 'Present',
+
+      type: inputExperience.type,
     };
     setExperience([...experience, newExperience]);
     setInputExperience({
       company: '',
       position: '',
-      startYear: 0,
-      endYear: 0,
+      startDate: new Date(),
+      endDate: null,
+      type: '',
     });
   };
 
@@ -182,12 +178,6 @@ const ProfileSetup = ({
     setExperience(newExperience);
   };
 
-  const removeSocial = (index: number) => {
-    const newSocial = [...social];
-    newSocial.splice(index, 1);
-    setSocial(newSocial);
-  };
-
   const submit = () => {
     updateUser(token, {
       isSetUp: true,
@@ -196,7 +186,6 @@ const ProfileSetup = ({
       skills: skills.length > 0 ? skills : undefined,
       education: education.length > 0 ? education : undefined,
       experience: experience.length > 0 ? experience : undefined,
-      social: social.length > 0 ? social : undefined,
     });
     setShowProfileSetup(false);
   };
@@ -213,7 +202,6 @@ const ProfileSetup = ({
       setSkills(user.skills);
       setEducation(user.education);
       setExperience(user.experience);
-      setSocial(user.social);
       setTitle(user.title ?? '');
     }
   }, [user]);
@@ -255,13 +243,8 @@ const ProfileSetup = ({
           {step === 0 && (
             <StepOne
               bio={bio}
-              inputSocial={inputSocial}
-              removeSocial={removeSocial}
               setBio={setBio}
-              setInputSocial={setInputSocial}
-              setSocial={setSocial}
               setTitle={setTitle}
-              social={social}
               title={title}
             />
           )}

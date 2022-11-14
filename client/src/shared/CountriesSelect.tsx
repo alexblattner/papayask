@@ -25,7 +25,7 @@ const Suggestion = styled('div')`
   padding: 8px 16px;
   cursor: pointer;
   &:hover {
-    background-color: ${(props) => props.theme.colors.primary20};
+    background-color: ${(props) => props.theme.colors.primary_L2};
   }
 `;
 
