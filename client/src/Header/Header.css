@@ -1,28 +1,30 @@
 header {
   width: 100%;
-  height: 56px;
+  height: 80px;
   top: 0;
   left: 0;
-  padding-right: 2.5%;
+  border-bottom: 1px solid #e4e5e7;
+}
+header .inner{
   position: fixed;
   display: flex;
   justify-content: space-between;
-  padding-left: 2.5%;
-  margin-top: 0.5%;
+  width: 80%;
+  left: 10%;
+  padding: 20px 0px;
 }
 #logo {
-  display: flex;
-  gap: 8px;
-  width: 20%;
-  text-decoration: none;
-  color: var(--primary);
-  font-weight: bold;
-  font-size: 2.3rem;
+	display: flex;
+	gap: 8px;
+	/* width: 20%; */
+	text-decoration: none;
+	color: black;
+	font-weight: bold;
+	font-size: 24px;
 }
 
 #logo img {
-  margin-top: 0.5rem;
-  height: 2.3rem;
+  height: 34px;
 }
 
 .give {

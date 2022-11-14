@@ -2,86 +2,50 @@ import React, { useContext, useState, useEffect, useMemo } from "react";
 import "./search.css";
 import Education from "./Education";
 import Experience from "./Experience";
+import YearsOfExperience from "./YearsOfExperience";
 import MinMax from "./MinMax";
-import Personal from "./Personal";
+import Location from "./Location";
 import api from "../utils/api";
-import  countryList from 'react-select-country-list';
 const Search = () => {
-    const countries = useMemo(async() => {
-      const temp=await countryList().getData()
-      return temp.map((country:any)=>country.label)
-    }, [])
     const [search, setSearch] = useState("");
     const [results, setResults] = useState([]);
     const [budget,setBudget] = useState<[number,number]>([0,100]);
-    const [experience,setExperience] = useState<{}>({});
-    const [showExperience,setShowExperience] = useState<boolean>(false);
+    const [yearsOfExperience,setYearsOfExperience] = useState<[number,number]>([0,15]);
     const [education,setEducation] = useState<{}>({});
-    const [showEducation,setShowEducation] = useState<boolean>(false);
-    const [personal,setPersonal] = useState<boolean>(false);
-    const [showPersonal,setShowPersonal] = useState<boolean>(false);
-    const turnOffOthers = () => {
-        setShowExperience(false);
-        setShowEducation(false);
-        setShowPersonal(false);
-    };
-    useEffect(() => {
-      console.log("searching",countries);
-    }, [countries]);
+    const [location,setLocation] = useState<{}>({});
     const getSearch=async()=>{
         console.log(194,{
             params:{
                 search,
                 budget,
-                experience,
+                yearsOfExperience,
                 education,
-                personal
+                location
             }
         })
         const res = await api.get("/search/",{
             params:{
                 search,
                 budget,
-                experience,
                 education,
-                personal
+                location
             }
         });
         setResults(res.data);
     };
     useEffect(()=>{
-      alert(99)
         getSearch();
-    },[search,budget,experience,education,personal]);
+    },[search,budget,education,location]);
     return (
       <div>
         <div id="top">
-            <input id="search" type="search" placeholder="What experience and skills are you looing for?"/>
-                <div>
-                    <span>Budget</span>
-                    <MinMax values={budget} setValues={setBudget} min={0} max={100}/>
-                </div>
-                {showExperience&&<Experience setValues={setExperience} countries={countries}/>}
-                {showEducation&&<Education setValues={setEducation} countries={countries}/>}
-                {showPersonal&&<Personal setValues={setPersonal} countries={countries}/>}
-                <button onClick={()=>{
-                  let ogvalue = showExperience;
-                  turnOffOthers();
-                  setShowExperience(!ogvalue)
-                  }}>
-                    Experience Details
-                </button>
-                <button onClick={()=>{
-                  let ogvalue = showEducation;
-                  turnOffOthers();
-                  setShowEducation(!ogvalue)
-                  }}>Education Details</button>
-                <button  onClick={()=>{
-                  let ogvalue = showPersonal;
-                  turnOffOthers();
-                  setShowPersonal(!ogvalue)
-                  }}>Personal Details</button>
-                <button>Search</button>
+            <div>
+                <span>Budget</span>
+                <MinMax values={budget} step={100/100} setValues={setBudget} min={0} max={100}/>
+            </div>
+            <YearsOfExperience setValues={setYearsOfExperience} range={yearsOfExperience}/>
+            <Education setValues={setEducation}/>
+            <Location setValues={setLocation}/>
         </div>
         <div id="results"></div>
       </div>

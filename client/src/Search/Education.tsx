@@ -3,11 +3,14 @@ import axios from "axios";
 import Max from "./Max";
 import api from "../utils/api";
 import { UniversityProps } from "../models/University";
+import arrow from "./arrow.svg";
+import { OptionsInput } from "../shared/OptionsInput";
+
 interface Props {
   setValues: Function;
-  countries: string[] | Promise<string[]>;
 }
 const Education = (props:Props) => {
+    const [menu,setMenu]=useState<boolean>(false);
     const [rank,setRank]=useState<number>(100);
     const [schools,setSchools]=useState<UniversityProps[]>([]);
     const [degree,setDegree]=useState<string>("");
@@ -30,19 +33,10 @@ const Education = (props:Props) => {
     }
     return (
       <div  className="filter-popup">
-        <div>Education</div>
+        <button onClick={()=>setMenu(!menu)}>Education<img className={menu?"upside-down":""} src={arrow} /></button>
+        {menu&&<>      
         <div>
-          <span>Education Level</span>
-          <select>
-            <option value="any">Any</option>
-            <option value="certificated">Course and above</option>
-            <option value="bachelors">Bachelors and above</option>
-            <option value="masters">Masters and above</option>
-            <option value="phd">PhD</option>
-          </select>
-        </div>
-        <div>
-          <span>Degree</span>
+          <span>Degree</span><br/>
           <input type="text" placeholder="Search for subject expert studied"/>
         </div>
         <div>
@@ -55,7 +49,7 @@ const Education = (props:Props) => {
         <div>
           <span>University Rank</span>
           <Max value={rank} setValue={setRank} min={1} step={1} max={1800}/>
-        </div>
+        </div></>}
       </div>
     );
 };

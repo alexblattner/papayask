@@ -2,20 +2,15 @@ import * as React from 'react';
 import { Range, getTrackBackground } from 'react-range';
 import { NumericLiteral } from 'typescript';
 
-const STEP = 0.1;
 
-const MinMax: React.FC<{values:[number,number],setValues:Function, min: number,max: number }> = ({values,setValues, min,max }) => {
+const MinMax: React.FC<{values:[number,number],setValues:Function, min: number,max: number, step:number }> = ({values,setValues, min,max,step }) => {
   return (
     <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        flexWrap: 'wrap'
-      }}
+      className="range-holder"
     >
       <Range
         values={values}
-        step={STEP}
+        step={step}
         min={min}
         max={max}
         rtl={false}
@@ -41,7 +36,7 @@ const MinMax: React.FC<{values:[number,number],setValues:Function, min: number,m
                 borderRadius: '4px',
                 background: getTrackBackground({
                   values,
-                  colors: ['#ccc', '#548BF4', '#ccc'],
+                  colors: ['#ccc', 'var(--primary-l2)', '#ccc'],
                   min: min,
                   max: max,
                   rtl:false
@@ -61,7 +56,7 @@ const MinMax: React.FC<{values:[number,number],setValues:Function, min: number,m
               height: '20px',
               width: '10px',
               borderRadius: '4px',
-              backgroundColor: '#FFF',
+              backgroundColor: 'var(--primary-l1)',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',

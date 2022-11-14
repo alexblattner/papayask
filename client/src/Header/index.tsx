@@ -59,33 +59,30 @@ function Header() {
         window.location.href.includes("/log-in")
       ) && (
         <header className="header-container">
+          <div className="inner">
           <Link id="logo" to="/">
             <img src="/assets/images/PapayaLogo.svg" />
             Papayask
           </Link>
+          <Form id="search-bar">
+            <Button
+              onClick={handleSearch}
+              variant="success"
+              id="search-button"
+            >
+              <img src={"/assets/images/search.svg"} />
+            </Button>
+            <FormControl
+              type="text"
+              placeholder="Search..."
+              className="mr-sm-2"
+              id="search-input"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+            />
+          </Form>
           {user ? (
             <>
-              <Form id="search-bar">
-                <Button
-                  onClick={handleSearch}
-                  variant="success"
-                  id="search-button"
-                >
-                  <img src={"/assets/images/search.svg"} />
-                </Button>
-                <FormControl
-                  type="text"
-                  placeholder="Search..."
-                  className="mr-sm-2"
-                  id="search-input"
-                  value={searchInput}
-                  onChange={(e) => setSearchInput(e.target.value)}
-                />
-                <Button variant="success" id="speaker-button">
-                  <img src={"/assets/images/speaker.svg"} />
-                </Button>
-              </Form>
-
               <div className="images-header-container">
                 <img
                   className="header-img"
@@ -131,6 +128,7 @@ function Header() {
               <Button onClick={() => setShowLogIn(true)}>Log In</Button>
             </>
           )} */}
+          </div>
         </header>
       )}
       {showSignUp ? (

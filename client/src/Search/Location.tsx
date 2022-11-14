@@ -1,10 +1,15 @@
 import React, { useContext, useState, useEffect } from "react";
 import MinMax from "./MinMax";
+import countries from "../shared/countries";
+import arrow from "./arrow.svg";
+
 interface Props {
     setValues: Function;
-    countries: string[] | Promise<string[]>;
 }
-const Personal = (props:Props) => {
+
+const Location = (props:Props) => {
+    const country_names = countries.map((country:any)=>country.name)
+    const [menu,setMenu]=useState<boolean>(false);
     const [netWorth,setNetWorth] = useState<[number,number]>([0,100]);
     const [yearlyRevenue,setYearlyRevenue] = useState<[number,number]>([0,100]);
     const [location,setLocation] = useState<string>("");
@@ -12,14 +17,13 @@ const Personal = (props:Props) => {
     const [connections,setConnections] = useState<[number,number]>([0,100]);
     return (
         <div className="filter-popup">
-            <div>Personal</div>
+            <button onClick={()=>setMenu(!menu)}>Location<img className={menu?"upside-down":""} src={arrow} /></button>
+            {menu&&<>
             {false&&<><div>{/*all */}
                 <span>Net Worth($)</span>
-                <MinMax values={netWorth} setValues={setNetWorth} min={0} max={100}/>
             </div>
             <div>{/*all */}
                 <span>Yearly Revenue($)</span>
-                <MinMax values={yearlyRevenue} setValues={setYearlyRevenue} min={0} max={100}/>
             </div></>}
             {/*all */}
             <input type="text" value={location} onChange={(e:React.ChangeEvent<HTMLInputElement>)=>setLocation((e.target as HTMLInputElement).value)} placeholder="Search for country of residence"/>
@@ -27,10 +31,9 @@ const Personal = (props:Props) => {
             <input type="text" placeholder="Search for language"/>
             {false&&<><div>{/*all */}
                 <span>Amount of connections</span>
-                <MinMax values={connections} setValues={setConnections} min={0} max={100}/>
-            </div></>}
+            </div></>}</>}
         </div>
     );
 };
 
-export default Personal;
+export default Location;
