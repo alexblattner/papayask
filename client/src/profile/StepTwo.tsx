@@ -1,37 +1,14 @@
-import React, { useEffect } from 'react';
-import styled from 'styled-components';
+import React from 'react';
+
 import { School, UserEducation, UserExperience } from '../models/User';
 import CountriesSelect from '../shared/CountriesSelect';
 import Icon from '../shared/Icon';
-import api from '../utils/api';
+import UniversitiesSelect from '../shared/UniversitiesSelect';
 import { Button } from './components/Button';
 import { Container } from './components/Container';
 import { Input } from './components/Input';
 import { Text } from './components/Text';
 import { Education, Experience } from './ProfileSetup';
-
-const Suggestions = styled('div')<{ show: boolean }>`
-  position: absolute;
-  top: 35px;
-  left: 0;
-  max-height: 240px;
-  pointer-events: ${(props) => (props.show ? 'auto' : 'none')};
-  background-color: #fff;
-  width: 300px;
-  z-index: 999;
-  transition: all 0.2s ease-in-out;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  border-radius: 4px;
-  overflow: scroll;
-`;
-
-const Suggestion = styled('div')`
-  padding: 8px 16px;
-  cursor: pointer;
-  &:hover {
-    background-color: ${(props) => props.theme.colors.primary_L2};
-  }
-`;
 
 interface Props {
   inputEducation: Education;
@@ -44,6 +21,7 @@ interface Props {
   addExperience: () => void;
   experience: UserExperience[];
   removeExperience: (index: number) => void;
+  onChangeCountry: (country: string) => void;
 }
 
 const StepTwo = (props: Props) => {
@@ -58,22 +36,9 @@ const StepTwo = (props: Props) => {
     addExperience,
     experience,
     removeExperience,
+    onChangeCountry,
   } = props;
 
-  const [universities, setUniversities] = React.useState<School[]>([]);
-  const [focused, setFocused] = React.useState<boolean>(false);
-
-  useEffect(() => {
-    if (inputEducation.school.name !== '' && focused) {
-      api.get(`/university/${inputEducation.school.name}`).then((res) => {
-        setUniversities(res.data);
-      });
-    } else {
-      setTimeout(() => {
-        setUniversities([]);
-      }, 200);
-    }
-  }, [inputEducation, focused]);
 
   return (
     <Container flex justify="space-between" height="100%">
@@ -89,52 +54,37 @@ const StepTwo = (props: Props) => {
             name="fieldOfStudy"
             onChange={(e) => onChangeEducation('fieldOfStudy', e.target.value)}
           />
-          <Container position="relative">
-            <Input
-              type="text"
-              value={inputEducation.school.name}
-              placeholder="School"
-              name="school-name"
-              onChange={(e) => onChangeEducation('school-name', e.target.value)}
-              onFocus={() => setFocused(true)}
-              onBlur={() => setFocused(false)}
-            />
 
-            <Suggestions show={universities.length > 0}>
-              {universities.map((university, index) => (
-                <Suggestion
-                  key={index}
-                  onClick={() => {
-                    onChangeEducation('school-name', university);
-                    setUniversities([]);
-                  }}
-                >
-                  <Text fontSize={14} fontWeight={'bold'}>
-                    {university.name}
-                  </Text>
-                  <Text fontSize={13}>{university.country}</Text>
-                </Suggestion>
-              ))}
-            </Suggestions>
-          </Container>
+          <UniversitiesSelect
+            value={inputEducation.school.name}
+            onChange={onChangeEducation}
+          />
 
           <CountriesSelect
             value={inputEducation.school.country}
-            onChange={onChangeEducation}
+            onChange={onChangeCountry}
             inputName="school-country"
           />
 
           <Container flex gap={12} align="center">
             <Input
-              type="number"
-              value={inputEducation.startDate ? inputEducation.startDate.toDateString() : new Date().toDateString()}
+              type="date"
+              value={
+                inputEducation.startDate
+                  ? inputEducation.startDate.toString()
+                  : new Date().toString()
+              }
               placeholder="Start year"
               name="startDate"
               onChange={(e) => onChangeEducation('startDate', e.target.value)}
             />
             <Input
-              type="number"
-              value={inputEducation.endDate ? inputEducation.endDate.toString() : new Date().toDateString()}
+              type="date"
+              value={
+                inputEducation.endDate
+                  ? inputEducation.endDate.toString()
+                  : new Date().toString()
+              }
               placeholder="End year"
               name="endDate"
               onChange={(e) => onChangeEducation('endDate', e.target.value)}
@@ -204,15 +154,23 @@ const StepTwo = (props: Props) => {
 
           <Container flex gap={12} align="center">
             <Input
-              type="number"
-              value={inputExperience.startDate ? inputExperience.startDate.toDateString() : new Date().toDateString()}
+              type="date"
+              value={
+                inputExperience.startDate
+                  ? inputExperience.startDate.toString()
+                  : new Date().toString()
+              }
               placeholder="Start year"
               name="startDate"
               onChange={(e) => onChangeExperience(e)}
             />
             <Input
-              type="number"
-              value={inputExperience.endDate ? inputExperience.endDate.toString() : new Date().toDateString()}
+              type="date"
+              value={
+                inputExperience.endDate
+                  ? inputExperience.endDate.toString()
+                  : new Date().toString()
+              }
               placeholder="End year"
               name="endDate"
               onChange={(e) => onChangeExperience(e)}

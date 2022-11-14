@@ -38,14 +38,14 @@ interface ProfileSetupProps {
 export interface Education {
   school: School;
   fieldOfStudy: string;
-  startDate: Date ;
+  startDate: Date | null;
   endDate: Date | string | null;
 }
 
 export interface Experience {
   company: string;
   position: string;
-  startDate: Date ;
+  startDate: Date | null;
   endDate: Date | string | null;
   type: string;
 }
@@ -95,8 +95,8 @@ const ProfileSetup = ({
     setSkills(newSkills);
   };
 
-  const onChangeEducation = (name: string, value: string | School) => {
-    if (value instanceof Object) {
+  const onChangeEducation = (name: string, value: string | School | Date) => {
+    if (value instanceof Object && !(value instanceof Date)) {
       setInputEducation({
         ...inputEducation,
         school: value,
@@ -119,6 +119,16 @@ const ProfileSetup = ({
     }
   };
 
+  const onChangeCountry = (country: string) => {
+    setInputEducation({
+      ...inputEducation,
+      school: {
+        ...inputEducation.school,
+        country,
+      },
+    });
+  };
+
   const onChangeExperience = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputExperience({
       ...inputExperience,
@@ -127,6 +137,10 @@ const ProfileSetup = ({
   };
 
   const addEducation = () => {
+    if (!inputEducation.startDate) {
+      return;
+    }
+
     const newEducation: UserEducation = {
       school: {
         name: inputEducation.school.name,
@@ -148,6 +162,9 @@ const ProfileSetup = ({
   };
 
   const addExperience = () => {
+    if (!inputExperience.startDate) {
+      return;
+    }
     const newExperience: UserExperience = {
       company: { name: inputExperience.company },
       position: inputExperience.position,
@@ -260,6 +277,7 @@ const ProfileSetup = ({
               inputExperience={inputExperience}
               onChangeExperience={onChangeExperience}
               removeExperience={removeExperience}
+              onChangeCountry ={onChangeCountry}
             />
           )}
           {step === 2 && (

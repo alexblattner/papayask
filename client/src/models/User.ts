@@ -22,7 +22,7 @@ export interface UserExperience {
     position: string;
     company: Company;
     startDate: Date;
-    endDate?: Date| string;
+    endDate?: Date | string;
     type: string;
 }
 
