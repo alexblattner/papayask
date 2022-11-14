@@ -1,15 +1,16 @@
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 const fetch = require("node-fetch");
-const Question = require("../models/question");
-const Note = require("../models/note");
-const User = require("../models/user");
-const Education = require("../models/education");
-const Experience = require("../models/experience");
-const Skill = require("../models/skill");
 const { OAuth2Client } = require("google-auth-library");
 const client = new OAuth2Client(process.env.GOOGLE_APP_ID);
-const mongoose = require("mongoose");
+
+
+const User = require("../models/user");
+const experienceController = require("./experienceController");
+const educationController = require("./educationController");
+
+
+
 function escapeRegex(text) {
   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 }
@@ -138,12 +139,51 @@ exports.update = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    await user.update(req.body);
-    return res.status(200).json({ message: "User updated successfully" });
+
+    const { bio, experience, education, skills, title, isSetUp } = req.body;
+
+    //create experiences and store their ids in an array
+    let experienceIds = [];
+    if (experience) {
+      for (let i = 0; i < experience.length; i++) {
+        const newExperience = await experienceController.create(experience[i], user._id);
+        experienceIds.push(newExperience._id);
+      }
+    }
+
+    //create educations and store their ids in an array
+    const educationIds = [];
+    if (education) {
+      for (let i = 0; i < education.length; i++) {
+        const newEducation = await educationController.create(education[i],user._id);
+        educationIds.push(newEducation._id);
+      }
+    }
+
+    //create skills and store their ids in an array
+    const skillIds = [];
+    if (skills) {
+      for (let i = 0; i < skills.length; i++) {
+        const newSkill = await skillController.create(skills[i], user._id);
+        skillIds.push(newSkill._id);
+      }
+    }
+
+    await user.findByIdAndUpdate(req.params.userId, {
+      bio,
+      experience: [... user.experience, ...experienceIds],
+      education: [... user.education, ...educationIds],
+      skills: [... user.skills, ...skillIds],
+      title,
+      isSetUp,
+    }, { new: true }).exec();
+    return res.status(200).json({ message: "User updated successfully" , user});
   } catch (e) {
     return res.status(500).json({ error: e });
   }
 }
+
+
 exports.search = async (req, res, next) => {
   const toallob={}//starting object for education, skill and experience to filter undesired data
   if(req.query.personal){

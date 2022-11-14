@@ -90,7 +90,6 @@ db.once("open", () => {
 const Question = require("./models/question");
 const Note = require("./models/note");
 const User = require("./models/user");
-const Institution = require("./models/institution");
 const University = require("./models/university");
 function removeext(str) {
   let noext = "";

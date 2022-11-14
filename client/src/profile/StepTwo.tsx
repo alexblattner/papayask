@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { School, UserEducation, UserExperience } from '../models/User';
+import CountriesSelect from '../shared/CountriesSelect';
 import Icon from '../shared/Icon';
 import api from '../utils/api';
 import { Button } from './components/Button';
@@ -28,13 +29,13 @@ const Suggestion = styled('div')`
   padding: 8px 16px;
   cursor: pointer;
   &:hover {
-    background-color: ${(props) => props.theme.colors.primary20};
+    background-color: ${(props) => props.theme.colors.primary_L2};
   }
 `;
 
 interface Props {
   inputEducation: Education;
-  onChangeEducation: (name: string, value: string) => void;
+  onChangeEducation: (name: string, value: string | School) => void;
   addEducation: () => void;
   education: UserEducation[];
   removeEducation: (index: number) => void;
@@ -63,14 +64,16 @@ const StepTwo = (props: Props) => {
   const [focused, setFocused] = React.useState<boolean>(false);
 
   useEffect(() => {
-    if (inputEducation.school !== '' && focused) {
-      api.get(`/university/${inputEducation.school}`).then((res) => {
+    if (inputEducation.school.name !== '' && focused) {
+      api.get(`/university/${inputEducation.school.name}`).then((res) => {
         setUniversities(res.data);
       });
     } else {
-      setUniversities([]);
+      setTimeout(() => {
+        setUniversities([]);
+      }, 200);
     }
-  }, [inputEducation]);
+  }, [inputEducation, focused]);
 
   return (
     <Container flex justify="space-between" height="100%">
@@ -89,10 +92,10 @@ const StepTwo = (props: Props) => {
           <Container position="relative">
             <Input
               type="text"
-              value={inputEducation.school}
+              value={inputEducation.school.name}
               placeholder="School"
-              name="school"
-              onChange={(e) => onChangeEducation('school', e.target.value)}
+              name="school-name"
+              onChange={(e) => onChangeEducation('school-name', e.target.value)}
               onFocus={() => setFocused(true)}
               onBlur={() => setFocused(false)}
             />
@@ -102,7 +105,7 @@ const StepTwo = (props: Props) => {
                 <Suggestion
                   key={index}
                   onClick={() => {
-                    onChangeEducation('school', university.name);
+                    onChangeEducation('school-name', university);
                     setUniversities([]);
                   }}
                 >
@@ -115,20 +118,26 @@ const StepTwo = (props: Props) => {
             </Suggestions>
           </Container>
 
+          <CountriesSelect
+            value={inputEducation.school.country}
+            onChange={onChangeEducation}
+            inputName="school-country"
+          />
+
           <Container flex gap={12} align="center">
             <Input
               type="number"
-              value={inputEducation.startYear ? inputEducation.startYear : ''}
+              value={inputEducation.startDate ? inputEducation.startDate.toDateString() : new Date().toDateString()}
               placeholder="Start year"
-              name="startYear"
-              onChange={(e) => onChangeEducation('startYear', e.target.value)}
+              name="startDate"
+              onChange={(e) => onChangeEducation('startDate', e.target.value)}
             />
             <Input
               type="number"
-              value={inputEducation.endYear ? inputEducation.endYear : ''}
+              value={inputEducation.endDate ? inputEducation.endDate.toString() : new Date().toDateString()}
               placeholder="End year"
-              name="endYear"
-              onChange={(e) => onChangeEducation('endYear', e.target.value)}
+              name="endDate"
+              onChange={(e) => onChangeEducation('endDate', e.target.value)}
             />
           </Container>
           <Button width={300} variant="primary" onClick={addEducation}>
@@ -139,7 +148,7 @@ const StepTwo = (props: Props) => {
           {education.map((edu, i) => (
             <Container
               key={i}
-              width="200px"
+              width="220px"
               border="1px solid #f8cbc9"
               borderRadius="8px"
               position="relative"
@@ -149,8 +158,11 @@ const StepTwo = (props: Props) => {
               <Text fontSize={18} fontWeight="bold">
                 {edu.fieldOfStudy}
               </Text>
-              <Text fontSize={18}>{edu.school.name}</Text>
-              <Text>{edu.years}</Text>
+              <Text fontSize={16}>{edu.school.name}</Text>
+              <Text>
+                {edu.startDate.toString()} -{' '}
+                {edu.endDate?.toString() ?? 'Present'}
+              </Text>
               <Container
                 position="absolute"
                 top={10}
@@ -182,20 +194,27 @@ const StepTwo = (props: Props) => {
             name="company"
             onChange={(e) => onChangeExperience(e)}
           />
+          <Input
+            type="text"
+            value={inputExperience.type}
+            placeholder="Experience type"
+            name="type"
+            onChange={(e) => onChangeExperience(e)}
+          />
 
           <Container flex gap={12} align="center">
             <Input
               type="number"
-              value={inputExperience.startYear ? inputExperience.startYear : ''}
+              value={inputExperience.startDate ? inputExperience.startDate.toDateString() : new Date().toDateString()}
               placeholder="Start year"
-              name="startYear"
+              name="startDate"
               onChange={(e) => onChangeExperience(e)}
             />
             <Input
               type="number"
-              value={inputExperience.endYear ? inputExperience.endYear : ''}
+              value={inputExperience.endDate ? inputExperience.endDate.toString() : new Date().toDateString()}
               placeholder="End year"
-              name="endYear"
+              name="endDate"
               onChange={(e) => onChangeExperience(e)}
             />
           </Container>
@@ -217,7 +236,10 @@ const StepTwo = (props: Props) => {
                   {exp.position}
                 </Text>
                 <Text fontSize={18}>{exp.company.name}</Text>
-                <Text>{exp.years}</Text>
+                <Text>
+                  {exp.startDate.toString()} -{' '}
+                  {exp.endDate?.toString() ?? 'Present'}
+                </Text>
                 <Container
                   onClick={() => removeExperience(i)}
                   position="absolute"

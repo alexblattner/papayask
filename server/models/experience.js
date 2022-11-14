@@ -4,11 +4,11 @@ const mongoose = require('mongoose'),
     {   
         user: { type: Schema.Types.ObjectId, ref: 'User' },
         name: { type: Schema.Types.String,required:true },
-        institution: { type: Schema.Types.ObjectId, ref: 'Institution', required: true },
         geographic_specialization: [{type: Schema.Types.String}],
-        type: { type: Schema.Types.String },
+        type: { type: Schema.Types.String, required: true },
         startDate: { type: Schema.Types.Date, required: true },
         endDate: { type: Schema.Types.Date },
+
     },
     {
       timestamps: true,
