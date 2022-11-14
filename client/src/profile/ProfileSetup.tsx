@@ -77,14 +77,14 @@ const ProfileSetup = ({
       rank: 1800,
     },
     fieldOfStudy: '',
-    startDate: new Date(),
+    startDate: null,
     endDate: null,
   });
   const [experience, setExperience] = useState<UserExperience[]>([]);
   const [inputExperience, setInputExperience] = useState<Experience>({
     company: '',
     position: '',
-    startDate: new Date(),
+    startDate: null,
     endDate: null,
     type: '',
   });
@@ -156,7 +156,7 @@ const ProfileSetup = ({
     setInputEducation({
       school: { name: '', id: '', country: '', rank: 1800 },
       fieldOfStudy: '',
-      startDate: new Date(),
+      startDate: null,
       endDate: null,
     });
   };
@@ -177,7 +177,7 @@ const ProfileSetup = ({
     setInputExperience({
       company: '',
       position: '',
-      startDate: new Date(),
+      startDate: null,
       endDate: null,
       type: '',
     });
@@ -277,7 +277,7 @@ const ProfileSetup = ({
               inputExperience={inputExperience}
               onChangeExperience={onChangeExperience}
               removeExperience={removeExperience}
-              onChangeCountry ={onChangeCountry}
+              onChangeCountry={onChangeCountry}
             />
           )}
           {step === 2 && (

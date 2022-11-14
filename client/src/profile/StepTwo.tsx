@@ -2,6 +2,7 @@ import React from 'react';
 
 import { School, UserEducation, UserExperience } from '../models/User';
 import CountriesSelect from '../shared/CountriesSelect';
+import { DateInput } from '../shared/DateInput';
 import Icon from '../shared/Icon';
 import UniversitiesSelect from '../shared/UniversitiesSelect';
 import { Button } from './components/Button';
@@ -39,7 +40,6 @@ const StepTwo = (props: Props) => {
     onChangeCountry,
   } = props;
 
-
   return (
     <Container flex justify="space-between" height="100%">
       <Container width="50%">
@@ -67,7 +67,7 @@ const StepTwo = (props: Props) => {
           />
 
           <Container flex gap={12} align="center">
-            <Input
+            {/* <Input
               type="date"
               value={
                 inputEducation.startDate
@@ -77,6 +77,12 @@ const StepTwo = (props: Props) => {
               placeholder="Start year"
               name="startDate"
               onChange={(e) => onChangeEducation('startDate', e.target.value)}
+            /> */}
+            <DateInput
+              value={inputEducation.startDate}
+              onChange={(e) => onChangeEducation('startDate', e.target.value)}
+              name="startDate"
+              placeholder="Start Date"
             />
             <Input
               type="date"
