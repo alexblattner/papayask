@@ -5,6 +5,7 @@ import Experience from "./Experience";
 import YearsOfExperience from "./YearsOfExperience";
 import MinMax from "./MinMax";
 import Location from "./Location";
+import Budget from "./Budget";
 import api from "../utils/api";
 const Search = () => {
     const [search, setSearch] = useState("");
@@ -33,19 +34,27 @@ const Search = () => {
         });
         setResults(res.data);
     };
+    const expRange = ()=>{
+        // for(let i=0;i<results.length;i++){
+        //     if(results[i].experience){
+        //         return [0,results[i].experience.length];
+        //     }
+        // }
+        // const min = results.reduce((a,b)=>Math.min(a,b.yearsOfExperience),Infinity);
+        // const max = results.reduce((a,b)=>Math.max(a,b.yearsOfExperience),-Infinity);
+        // return [min,max];
+    }
     useEffect(()=>{
         getSearch();
     },[search,budget,education,location]);
     return (
       <div>
         <div id="top">
-            <div>
-                <span>Budget</span>
-                <MinMax values={budget} step={100/100} setValues={setBudget} min={0} max={100}/>
-            </div>
-            <YearsOfExperience setValues={setYearsOfExperience} range={yearsOfExperience}/>
+            
+            {results.length>0&&<YearsOfExperience setValues={setYearsOfExperience} range={yearsOfExperience}/>}
             <Education setValues={setEducation}/>
             <Location setValues={setLocation}/>
+            <Budget setValues={setBudget} range={budget}/>
         </div>
         <div id="results"></div>
       </div>

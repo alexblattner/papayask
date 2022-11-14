@@ -12,7 +12,7 @@ const StyledButton = styled('button')<ButtonProps>`
   background-color: ${(props) =>
     props.variant === 'primary'
       ? props.theme.colors.primary
-      : props.theme.colors.primary20};
+      : props.theme.colors.primary_L2};
   color: ${(props) =>
     props.variant === 'secondary' ? props.theme.colors.primary : 'white'};
   font-size: 18px;
@@ -32,7 +32,7 @@ const StyledButton = styled('button')<ButtonProps>`
 
   &:disabled {
     cursor: not-allowed;
-    background-color: ${(props) => props.theme.colors.secondary60};
+    background-color: ${(props) => props.theme.colors.secondary_D1};
   }
 `;
 

@@ -13,7 +13,7 @@ const Budget = (props:Props) => {
     const [budget,setBudget]=useState<[number,number]>(props.range);
     return (
         <div className="filter-popup">
-        <button onClick={()=>setMenu(!menu)}>Years of Experience<img className={menu?"upside-down":""} src={arrow} /></button>
+        <button onClick={()=>setMenu(!menu)}>Budget<img className={menu?"upside-down":""} src={arrow} /></button>
         {menu&&<MinMax values={budget} setValues={setBudget} min={props.range[0]} step={1} max={props.range[1]}/>}
         </div>
     );

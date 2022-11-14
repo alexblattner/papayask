@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import MinMax from "./MinMax";
-import countries from "../shared/countries";
+import CountriesSelect from "../shared/CountriesSelect";
 import arrow from "./arrow.svg";
 
 interface Props {
@@ -8,7 +8,6 @@ interface Props {
 }
 
 const Location = (props:Props) => {
-    const country_names = countries.map((country:any)=>country.name)
     const [menu,setMenu]=useState<boolean>(false);
     const [netWorth,setNetWorth] = useState<[number,number]>([0,100]);
     const [yearlyRevenue,setYearlyRevenue] = useState<[number,number]>([0,100]);
@@ -26,7 +25,7 @@ const Location = (props:Props) => {
                 <span>Yearly Revenue($)</span>
             </div></>}
             {/*all */}
-            <input type="text" value={location} onChange={(e:React.ChangeEvent<HTMLInputElement>)=>setLocation((e.target as HTMLInputElement).value)} placeholder="Search for country of residence"/>
+            <CountriesSelect value={location} onChange={setLocation} inputName=""/>
             {/*all */}
             <input type="text" placeholder="Search for language"/>
             {false&&<><div>{/*all */}
