@@ -5,10 +5,14 @@ import { auth } from '../firebase-auth';
 import styled from 'styled-components';
 
 import {
-  School,
+  University,
   UserEducation,
   UserExperience,
   UserSkill,
+  EducationLevel,
+  Company,
+  RelatedEducation,
+  RelatedExperience,
 } from '../models/User';
 import ProfileSetupFooter from './ProfileSetupFooter';
 import ProfileSetupPagination from './ProfileSetupPagination';
@@ -16,6 +20,7 @@ import { Container } from './components/Container';
 import StepOne from './StepOne';
 import StepTwo from './StepTwo';
 import StepThree from './StepThree';
+import StepFour from './StepFour';
 
 const SetupModal = styled('div')<{ pageLoaded: boolean }>`
   position: absolute;
@@ -36,18 +41,20 @@ interface ProfileSetupProps {
 }
 
 export interface Education {
-  school: School;
-  fieldOfStudy: string;
+  university: University;
+  name: string;
+  level: EducationLevel;
   startDate: Date | null;
   endDate: Date | string | null;
 }
 
 export interface Experience {
-  company: string;
-  position: string;
+  company: Company;
+  name: string;
   startDate: Date | null;
   endDate: Date | string | null;
   type: string;
+  geographic_specialization: string;
 }
 
 const ProfileSetup = ({
@@ -63,31 +70,37 @@ const ProfileSetup = ({
   const [stepsDone, setStepsDone] = useState<number[]>([0]);
   const [bio, setBio] = useState<string>('');
   const [skills, setSkills] = useState<UserSkill[]>([]);
+  const [languages, setLanguages] = useState<string[]>([]);
+  const [country, setCountry] = useState<string>('');
+
   const [inputSkill, setInputSkill] = useState<UserSkill>({
     name: '',
-    relatedEducation: [],
-    relatedExperience: [],
+    education: [],
+    experiences: [],
   });
   const [education, setEducation] = useState<UserEducation[]>([]);
   const [inputEducation, setInputEducation] = useState<Education>({
-    school: {
+    university: {
       name: '',
-      id: '',
+      _id: '',
       country: '',
       rank: 1800,
     },
-    fieldOfStudy: '',
+    level: '',
+    name: '',
     startDate: null,
     endDate: null,
   });
   const [experience, setExperience] = useState<UserExperience[]>([]);
   const [inputExperience, setInputExperience] = useState<Experience>({
-    company: '',
-    position: '',
+    company: { name: '' },
+    name: '',
     startDate: null,
     endDate: null,
     type: '',
+    geographic_specialization: '',
   });
+  
 
   const removeSkill = (index: number) => {
     const newSkills = [...skills];
@@ -95,19 +108,22 @@ const ProfileSetup = ({
     setSkills(newSkills);
   };
 
-  const onChangeEducation = (name: string, value: string | School | Date) => {
+  const onChangeEducation = (
+    name: string,
+    value: string | University | Date
+  ) => {
     if (value instanceof Object && !(value instanceof Date)) {
       setInputEducation({
         ...inputEducation,
-        school: value,
+        university: value,
       });
-    } else if (name.includes('school')) {
+    } else if (name.includes('university')) {
       name = name.split('-')[1];
 
       setInputEducation({
         ...inputEducation,
-        school: {
-          ...inputEducation.school,
+        university: {
+          ...inputEducation.university,
           [name]: value,
         },
       });
@@ -122,18 +138,30 @@ const ProfileSetup = ({
   const onChangeCountry = (country: string) => {
     setInputEducation({
       ...inputEducation,
-      school: {
-        ...inputEducation.school,
+      university: {
+        ...inputEducation.university,
         country,
       },
     });
   };
 
-  const onChangeExperience = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputExperience({
-      ...inputExperience,
-      [event.target.name]: event.target.value,
-    });
+  const onChangeExperience = (
+    name: string,
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (name === 'company') {
+      setInputExperience({
+        ...inputExperience,
+        company: {
+          name: event.target.value,
+        },
+      });
+    } else {
+      setInputExperience({
+        ...inputExperience,
+        [name]: event.target.value,
+      });
+    }
   };
 
   const addEducation = () => {
@@ -142,20 +170,22 @@ const ProfileSetup = ({
     }
 
     const newEducation: UserEducation = {
-      school: {
-        name: inputEducation.school.name,
-        id: inputEducation.school.id,
-        country: inputEducation.school.country,
-        rank: inputEducation.school.rank,
+      university: {
+        name: inputEducation.university.name,
+        _id: inputEducation.university._id,
+        country: inputEducation.university.country,
+        rank: inputEducation.university.rank,
       },
-      fieldOfStudy: inputEducation.fieldOfStudy,
+      level: inputEducation.level,
+      name: inputEducation.name,
       startDate: inputEducation.startDate,
-      endDate: inputEducation.endDate || 'Present',
+      endDate: inputEducation.endDate || undefined,
     };
     setEducation([...education, newEducation]);
     setInputEducation({
-      school: { name: '', id: '', country: '', rank: 1800 },
-      fieldOfStudy: '',
+      university: { name: '', _id: '', country: '', rank: 1800 },
+      name: '',
+      level: '',
       startDate: null,
       endDate: null,
     });
@@ -166,20 +196,21 @@ const ProfileSetup = ({
       return;
     }
     const newExperience: UserExperience = {
-      company: { name: inputExperience.company },
-      position: inputExperience.position,
+      company: inputExperience.company,
+      name: inputExperience.name,
       startDate: inputExperience.startDate,
-      endDate: inputExperience.endDate || 'Present',
-
+      endDate: inputExperience.endDate || undefined,
+      geographic_specialization: inputExperience.geographic_specialization,
       type: inputExperience.type,
     };
     setExperience([...experience, newExperience]);
     setInputExperience({
-      company: '',
-      position: '',
+      company: { name: '' },
+      name: '',
       startDate: null,
       endDate: null,
       type: '',
+      geographic_specialization: '',
     });
   };
 
@@ -195,14 +226,34 @@ const ProfileSetup = ({
     setExperience(newExperience);
   };
 
+  const addLanguage = (language: string) => {
+    setLanguages([...languages, language]);
+  };
+
+  const removeLanguage = (text: string) => {
+    const newLanguages = [...languages];
+    const index = newLanguages.indexOf(text);
+    newLanguages.splice(index, 1);
+    setLanguages(newLanguages);
+  };
+
+  const onChangeExperienceCountry = (country: string) => {
+    setInputExperience({
+      ...inputExperience,
+      geographic_specialization: country,
+    });
+  };
+
   const submit = () => {
     updateUser(token, {
       isSetUp: true,
       title: title,
-      bio: bio !== '' ? bio : undefined,
-      skills: skills.length > 0 ? skills : undefined,
-      education: education.length > 0 ? education : undefined,
-      experience: experience.length > 0 ? experience : undefined,
+      bio: bio,
+      skills: skills,
+      education: education,
+      experience: experience,
+      languages: languages,
+      country: country,
     });
     setShowProfileSetup(false);
   };
@@ -220,6 +271,8 @@ const ProfileSetup = ({
       setEducation(user.education);
       setExperience(user.experience);
       setTitle(user.title ?? '');
+      setLanguages(user.languages);
+      setCountry(user.country);
     }
   }, [user]);
 
@@ -246,7 +299,6 @@ const ProfileSetup = ({
         minH="100vh"
         flex
         dir="column"
-        justify="space-between"
         align="center"
         pt={100}
         pb={50}
@@ -256,7 +308,7 @@ const ProfileSetup = ({
           step={step}
           stepsDone={stepsDone}
         />
-        <Container width="75%" height="75%">
+        <Container width="75%" pt={50}>
           {step === 0 && (
             <StepOne
               bio={bio}
@@ -278,6 +330,7 @@ const ProfileSetup = ({
               onChangeExperience={onChangeExperience}
               removeExperience={removeExperience}
               onChangeCountry={onChangeCountry}
+              onChangeExperienceCountry={onChangeExperienceCountry}
             />
           )}
           {step === 2 && (
@@ -288,6 +341,16 @@ const ProfileSetup = ({
               setSkills={setSkills}
               education={education}
               experience={experience}
+            />
+          )}
+
+          {step === 3 && (
+            <StepFour
+              addLanguage={addLanguage}
+              languages={languages}
+              removeLanguage={removeLanguage}
+              country={country}
+              setCountry={setCountry}
             />
           )}
         </Container>

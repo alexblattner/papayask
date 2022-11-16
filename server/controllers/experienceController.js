@@ -3,20 +3,28 @@ const companyContriller = require('./companyController');
 
 exports.create = async (experience, userId) => {
   const { company } = experience;
+  let companyId;
+  console.log(experience);
+  console.log('company', company);
 
-  const existedCompany = await companyContriller.getByName(company);
+  const existedCompany = await companyContriller.getByName(company.name);
 
   if (!existedCompany) {
-    const newCompany = await companyContriller.create({ name: company });
-    experience.company = newCompany._id;
+    const newCompany = await companyContriller.create(company);
+    companyId = newCompany._id;
   } else {
-    experience.company = existedCompany._id;
+    companyId = existedCompany._id;
   }
-
-  const newExperience = await Experiernce.create({
+  const body = {
     user: userId,
-    name: experience.position,
     ...experience,
-  });
-  return newExperience;
+    company: companyId,
+    endDate: experience.endDate,
+  };
+  try {
+    const newExperience = await Experiernce.create(body);
+    return newExperience;
+  } catch (e) {
+    console.log(e);
+  }
 };

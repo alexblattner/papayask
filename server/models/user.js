@@ -4,12 +4,11 @@ const mongoose = require('mongoose'),
     {
       bio: { type: String, default: '' },
       social: [{ type: String }],
-      skills: [{ type: String }],
       experience: [
         { type: Schema.Types.ObjectId, ref: 'Experience' },
       ],
       education: [
-        { type: Schema.Types.ObjectId, ref: 'Experience' },
+        { type: Schema.Types.ObjectId, ref: 'Education' },
       ],
       name: { type: String, required: false },
       skills: [{ type: Schema.Types.ObjectId, ref: 'Skill' }],
@@ -27,6 +26,9 @@ const mongoose = require('mongoose'),
       requestCount: { type: Number, default: 0 },
       appleId: { type: String },
       uid: { type: String, required: true },
+      password: { type: String, required: true, select: false },
+      languages: [{ type: String }],
+      country: { type: String },
       isSetUp: {
         type: Boolean,
         default: false,

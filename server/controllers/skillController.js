@@ -3,29 +3,29 @@ const Experience = require('../models/experience');
 const Education = require('../models/education');
 
 exports.create = async (skill, userId) => {
-  const { relatedEducation, relatedExperience } = skill;
+  const { education, experiences } = skill;
   let experienceList = [];
-  for (let i = 0; i < relatedEducation.length; i++) {
-    const experience = await Experience.findOne({
-      name: relatedExperience[i].experience.position,
-      startDate: relatedExperience[i].experience.startDate,
-      endDate: relatedExperience[i].experience.endDate,
+  for (let i = 0; i < experiences.length; i++) {
+    const exp = await Experience.findOne({
+      name: experiences[i].experience.name,
+      startDate: experiences[i].experience.startDate,
+      endDate: experiences[i].experience.endDate,
     }).exec();
     experienceList.push({
-      time: relatedExperience[i].years,
-      experience: experience._id,
+      time: experiences[i].years,
+      experience: exp._id,
     });
   }
   let educationList = [];
-  for (let i = 0; i < relatedEducation.length; i++) {
-    const education = await Education.findOne({
-      name: relatedEducation[i].education.fieldOfStudy,
-      startDate: relatedEducation[i].education.startDate,
-      endDate: relatedEducation[i].education.endDate,
+  for (let i = 0; i < education.length; i++) {
+    const edu = await Education.findOne({
+      name: education[i].education.name,
+      startDate: education[i].education.startDate,
+      endDate: education[i].education.endDate,
     }).exec();
     educationList.push({
-      time: relatedEducation[i].years,
-      education: education._id,
+      time: education[i].years,
+      education: edu._id,
     });
   }
 

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 const StyledInput = styled('input')`
-  width: 143px;
+  width: 193px;
   height: 15px;
   border: 1px solid ${(props) => props.theme.colors.primary_L2};
   border-radius: 8px;
@@ -11,16 +11,33 @@ const StyledInput = styled('input')`
   font-weight: 500;
   margin-bottom: 30px;
   background-color: transparent;
+  position: relative;
+
+  &::before {
+    content: ${(props) => (!props.value ? 'attr(placeholder)' : 'none')};
+    position: absolute;
+    height: 100%;
+    left: 15px;
+    width: calc(100% - 50px);
+    padding-top: 4px;
+    color: #aaa;
+    background-color: white;
+    transition: all 0.2s;
+  }
 
   &:focus {
     outline: none;
     border: 2px solid ${(props) => props.theme.colors.primary};
+
+    &::before {
+      content: none;
+    }
   }
 `;
 
 interface InputProps {
   name: string;
-  value: Date | null;
+  value: Date | null | string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   error?: string;
   placeholder: string;
@@ -41,18 +58,18 @@ const formatedDate = (date: Date | null | string): string => {
     month = date.getMonth() + 1;
     day = date.getDate();
   }
-  return `${day}/${month}/${year}`;
+  return `${year}-${month}-${day}`;
 };
 
 export const DateInput = (props: InputProps) => {
-  const [inputType, setInputType] = useState('text');
   return (
     <StyledInput
       {...props}
       value={formatedDate(props.value)}
-      type={inputType}
-      onFocus={() => setInputType('date')}
-      onBlur={() => setInputType('text')}
+      type="date"
+      onChange={(e) => {
+        props.onChange(e);
+      }}
     />
   );
 };

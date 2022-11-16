@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import { School } from '../models/User';
+import { University } from '../models/User';
 import { Container } from '../profile/components/Container';
 import { Input } from '../profile/components/Input';
 import { Text } from '../profile/components/Text';
@@ -9,13 +9,13 @@ import { Suggestions, Suggestion } from './Suggestions';
 
 interface Props {
   value: string;
-  onChange: (name: string, value: string | School) => void;
+  onChange: (name: string, value: string | University) => void;
 }
 
 const UniversitiesSelect = (props: Props) => {
   const [focused, setFocused] = React.useState<boolean>(false);
-  const [universities, setUniversities] = React.useState<School[]>([]);
-  const { value, onChange, } = props;
+  const [universities, setUniversities] = React.useState<University[]>([]);
+  const { value, onChange } = props;
 
   useEffect(() => {
     if (value !== '' && focused) {
@@ -28,15 +28,15 @@ const UniversitiesSelect = (props: Props) => {
       }, 200);
     }
   }, [value, focused]);
-  
+
   return (
     <Container position="relative">
       <Input
         type="text"
         value={value}
-        placeholder="School"
-        name="school-name"
-        onChange={(e) => onChange('school-name', e.target.value)}
+        placeholder="University"
+        name="university-name"
+        onChange={(e) => onChange('university-name', e.target.value)}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
       />
@@ -46,7 +46,7 @@ const UniversitiesSelect = (props: Props) => {
           <Suggestion
             key={index}
             onClick={() => {
-              onChange('school-name', university);
+              onChange('university-name', university);
               setUniversities([]);
             }}
           >

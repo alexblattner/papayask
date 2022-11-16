@@ -1,10 +1,11 @@
 import React from 'react';
 
-import { School, UserEducation, UserExperience } from '../models/User';
+import { University, UserEducation, UserExperience } from '../models/User';
 import CountriesSelect from '../shared/CountriesSelect';
 import { DateInput } from '../shared/DateInput';
 import Icon from '../shared/Icon';
 import UniversitiesSelect from '../shared/UniversitiesSelect';
+import formatDate from '../utils/formatDate';
 import { Button } from './components/Button';
 import { Container } from './components/Container';
 import { Input } from './components/Input';
@@ -13,12 +14,16 @@ import { Education, Experience } from './ProfileSetup';
 
 interface Props {
   inputEducation: Education;
-  onChangeEducation: (name: string, value: string | School) => void;
+  onChangeEducation: (name: string, value: string | University) => void;
+  onChangeExperienceCountry: (country: string) => void;
   addEducation: () => void;
   education: UserEducation[];
   removeEducation: (index: number) => void;
   inputExperience: Experience;
-  onChangeExperience: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChangeExperience: (
+    name: string,
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => void;
   addExperience: () => void;
   experience: UserExperience[];
   removeExperience: (index: number) => void;
@@ -38,6 +43,7 @@ const StepTwo = (props: Props) => {
     experience,
     removeExperience,
     onChangeCountry,
+    onChangeExperienceCountry,
   } = props;
 
   return (
@@ -47,56 +53,51 @@ const StepTwo = (props: Props) => {
           Education
         </Text>
         <Container flex dir="column">
-          <Input
-            type="text"
-            value={inputEducation.fieldOfStudy}
-            placeholder="field of study"
-            name="fieldOfStudy"
-            onChange={(e) => onChangeEducation('fieldOfStudy', e.target.value)}
-          />
+          <Container flex gap={8}>
+            <Input
+              type="text"
+              value={inputEducation.name}
+              placeholder="field of study"
+              name="name"
+              width="282px"
+              onChange={(e) => onChangeEducation('name', e.target.value)}
+            />
+            <Input
+              type="text"
+              placeholder="Level"
+              name="level"
+              width="110px"
+              value={inputEducation.level}
+              onChange={(e) => onChangeEducation('level', e.target.value)}
+            />
+          </Container>
 
           <UniversitiesSelect
-            value={inputEducation.school.name}
+            value={inputEducation.university.name}
             onChange={onChangeEducation}
           />
 
           <CountriesSelect
-            value={inputEducation.school.country}
+            value={inputEducation.university.country}
             onChange={onChangeCountry}
-            inputName="school-country"
+            inputName="university-country"
           />
 
           <Container flex gap={12} align="center">
-            {/* <Input
-              type="date"
-              value={
-                inputEducation.startDate
-                  ? inputEducation.startDate.toString()
-                  : new Date().toString()
-              }
-              placeholder="Start year"
-              name="startDate"
-              onChange={(e) => onChangeEducation('startDate', e.target.value)}
-            /> */}
             <DateInput
               value={inputEducation.startDate}
               onChange={(e) => onChangeEducation('startDate', e.target.value)}
               name="startDate"
               placeholder="Start Date"
             />
-            <Input
-              type="date"
-              value={
-                inputEducation.endDate
-                  ? inputEducation.endDate.toString()
-                  : new Date().toString()
-              }
-              placeholder="End year"
-              name="endDate"
+            <DateInput
+              value={inputEducation.endDate}
               onChange={(e) => onChangeEducation('endDate', e.target.value)}
+              name="endDate"
+              placeholder="End Date"
             />
           </Container>
-          <Button width={300} variant="primary" onClick={addEducation}>
+          <Button width={'400px'} variant="primary" onClick={addEducation}>
             Add
           </Button>
         </Container>
@@ -112,12 +113,11 @@ const StepTwo = (props: Props) => {
               py={16}
             >
               <Text fontSize={18} fontWeight="bold">
-                {edu.fieldOfStudy}
+                {edu.name}
               </Text>
-              <Text fontSize={16}>{edu.school.name}</Text>
+              <Text fontSize={16}>{edu.university.name}</Text>
               <Text>
-                {edu.startDate.toString()} -{' '}
-                {edu.endDate?.toString() ?? 'Present'}
+                {formatDate(edu.startDate)} - {formatDate(edu.endDate)}
               </Text>
               <Container
                 position="absolute"
@@ -138,51 +138,49 @@ const StepTwo = (props: Props) => {
         <Container flex dir="column">
           <Input
             type="text"
-            value={inputExperience.position}
+            value={inputExperience.name}
             placeholder="Position"
-            name="position"
-            onChange={(e) => onChangeExperience(e)}
+            name="name"
+            onChange={(e) => onChangeExperience('name', e)}
           />
           <Input
             type="text"
-            value={inputExperience.company}
+            value={inputExperience.company.name}
             placeholder="Company"
             name="company"
-            onChange={(e) => onChangeExperience(e)}
+            onChange={(e) => onChangeExperience('company', e)}
           />
-          <Input
-            type="text"
-            value={inputExperience.type}
-            placeholder="Experience type"
-            name="type"
-            onChange={(e) => onChangeExperience(e)}
-          />
-
           <Container flex gap={12} align="center">
             <Input
-              type="date"
-              value={
-                inputExperience.startDate
-                  ? inputExperience.startDate.toString()
-                  : new Date().toString()
-              }
-              placeholder="Start year"
-              name="startDate"
-              onChange={(e) => onChangeExperience(e)}
+              type="text"
+              value={inputExperience.type}
+              placeholder="Experience type"
+              name="type"
+              width="200px"
+              onChange={(e) => onChangeExperience('type', e)}
             />
-            <Input
-              type="date"
-              value={
-                inputExperience.endDate
-                  ? inputExperience.endDate.toString()
-                  : new Date().toString()
-              }
-              placeholder="End year"
-              name="endDate"
-              onChange={(e) => onChangeExperience(e)}
+            <CountriesSelect
+              value={inputExperience.geographic_specialization}
+              onChange={onChangeExperienceCountry}
+              inputName="geographic_specialization"
+              size="small"
             />
           </Container>
-          <Button variant="primary" width={300} onClick={addExperience}>
+          <Container flex gap={12} align="center">
+            <DateInput
+              value={inputExperience.startDate}
+              onChange={(e) => onChangeExperience('startDate', e)}
+              name="startDate"
+              placeholder="Start Date"
+            />
+            <DateInput
+              value={inputExperience.endDate}
+              onChange={(e) => onChangeExperience('endDate', e)}
+              name="endDate"
+              placeholder="End Date"
+            />
+          </Container>
+          <Button variant="primary" width="400px" onClick={addExperience}>
             Add
           </Button>
           <Container flex flexWrap gap={20} my={20}>
@@ -197,12 +195,11 @@ const StepTwo = (props: Props) => {
                 py={16}
               >
                 <Text fontSize={18} fontWeight="bold">
-                  {exp.position}
+                  {exp.name}
                 </Text>
                 <Text fontSize={18}>{exp.company.name}</Text>
                 <Text>
-                  {exp.startDate.toString()} -{' '}
-                  {exp.endDate?.toString() ?? 'Present'}
+                  {formatDate(exp.startDate)} - {formatDate(exp.endDate)}
                 </Text>
                 <Container
                   onClick={() => removeExperience(i)}

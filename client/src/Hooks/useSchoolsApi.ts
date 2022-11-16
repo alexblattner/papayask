@@ -1,21 +1,21 @@
-import {useState} from 'react';
+import { useState } from 'react';
 
-interface School {
-    name: string;
-    country: string;
-    website: string;
+interface University {
+  name: string;
+  country: string;
+  website: string;
 }
 
-export const useSchoolsApi = () => {
-    const [schools, setSchools] = useState<School[]>([]);
+export const useUniversitysApi = () => {
+  const [universitys, setUniversitys] = useState<University[]>([]);
 
-    const baseUrl = 'http://universities.hipolabs.com/search?name='
+  const baseUrl = 'http://universities.hipolabs.com/search?name=';
 
-    const fetchSchools = async (query:string) => {
-        const response = await fetch(`${baseUrl}${query}`);
-        const data = await response.json();
-        setSchools(data);
-    }
+  const fetchUniversitys = async (query: string) => {
+    const response = await fetch(`${baseUrl}${query}`);
+    const data = await response.json();
+    setUniversitys(data);
+  };
 
-    return {schools, fetchSchools};
-}
+  return { universitys, fetchUniversitys };
+};

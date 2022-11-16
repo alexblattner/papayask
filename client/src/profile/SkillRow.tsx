@@ -14,6 +14,7 @@ import { Text } from './components/Text';
 import styled from 'styled-components';
 import { Button } from './components/Button';
 import { Input } from './components/Input';
+import formatDate from '../utils/formatDate';
 
 const ListItem = styled('div')`
   cursor: pointer;
@@ -38,15 +39,23 @@ interface Props {
   skill: UserSkill;
   education: UserEducation[];
   experience: UserExperience[];
+  skills: UserSkill[];
+  setSkills: React.Dispatch<React.SetStateAction<UserSkill[]>>;
 }
 
-const SkillRow = ({ skill, education, experience }: Props) => {
+const SkillRow = ({
+  skill,
+  education,
+  experience,
+  skills,
+  setSkills,
+}: Props) => {
   const [relatedEducation, setRelatedEducation] = React.useState<
     RelatedEducation[]
-  >([]);
+  >(skill.education);
   const [relatedExperience, setRelatedExperience] = React.useState<
     RelatedExperience[]
-  >([]);
+  >(skill.experiences);
   const [showRelatedEducation, setShowRelatedEducation] = React.useState(false);
   const [showRelatedExperience, setShowRelatedExperience] =
     React.useState(false);
@@ -88,16 +97,13 @@ const SkillRow = ({ skill, education, experience }: Props) => {
   };
 
   const numberOfYears = (field: UserEducation | UserExperience): number => {
-    const start = field.startDate.getFullYear();
-    const end =
-      field.endDate  && field.endDate !== 'Present'
-        ? (field.endDate as Date).getFullYear() 
-        : new Date().getFullYear();
+    const start = new Date(field.startDate).getFullYear();
+    const end = field.endDate
+      ? new Date(field.endDate).getFullYear()
+      : new Date().getFullYear();
     const diff = end - start;
     return diff;
   };
-
-  console.log(yearsInputs);
 
   const closeModal = () => {
     setShowRelatedEducation(false);
@@ -120,7 +126,19 @@ const SkillRow = ({ skill, education, experience }: Props) => {
         newRelatedEducation.push(related);
       });
 
-      setRelatedEducation(newRelatedEducation);
+      const updatedSkill = {
+        ...skill,
+        education: [...newRelatedEducation],
+      };
+
+      const newSkills = skills.map((s) => {
+        if (s.name === updatedSkill.name) {
+          return updatedSkill;
+        }
+        return s;
+      });
+
+      setSkills(newSkills);
       setShowRelatedEducation(false);
     } else {
       let newRelatedExperience: RelatedExperience[] = [];
@@ -136,7 +154,19 @@ const SkillRow = ({ skill, education, experience }: Props) => {
         };
         newRelatedExperience.push(related);
       });
-      setRelatedExperience(newRelatedExperience);
+      const updatedSkill = {
+        ...skill,
+        experiences: [...newRelatedExperience],
+      };
+
+      const newSkills = skills.map((s) => {
+        if (s.name === updatedSkill.name) {
+          return updatedSkill;
+        }
+        return s;
+      });
+
+      setSkills(newSkills);
       setShowRelatedExperience(false);
     }
   };
@@ -162,6 +192,11 @@ const SkillRow = ({ skill, education, experience }: Props) => {
     setYearsInput(years);
   }, [experience]);
 
+  useEffect(() => {
+    setRelatedEducation(skill.education);
+    setRelatedExperience(skill.experiences);
+  }, [skill]);
+
   return (
     <>
       {
@@ -182,10 +217,12 @@ const SkillRow = ({ skill, education, experience }: Props) => {
                   <ListItem key={i} onClick={() => selectEducation(i)}>
                     <div>
                       <Text fontSize={18} fontWeight="bold">
-                        {edu.fieldOfStudy}
+                        {edu.name}
                       </Text>
-                      <Text fontSize={18}>{edu.school.name}</Text>
-                      <Text>{edu.startDate.toString()} - {edu.endDate?.toString() ?? 'Present'}</Text>
+                      <Text fontSize={18}>{edu.university.name}</Text>
+                      <Text>
+                        {formatDate(edu.startDate)} - {formatDate(edu.endDate)}
+                      </Text>
                     </div>
                     <CheckIcon selected={educationIndexSelected.includes(i)}>
                       <Icon src="check" width={30} height={30} />
@@ -201,7 +238,7 @@ const SkillRow = ({ skill, education, experience }: Props) => {
                     <div>
                       <Container flex gap={3} align="flex-end" mb={10}>
                         <Text fontSize={18} fontWeight="bold">
-                          {exp.position}
+                          {exp.name}
                         </Text>
                         <Text>/</Text>
                         <Text fontSize={16}>{exp.company.name}</Text>
@@ -254,7 +291,7 @@ const SkillRow = ({ skill, education, experience }: Props) => {
             {relatedEducation.map((edu, i) => (
               <div key={i}>
                 <Text fontSize={18} fontWeight="bold">
-                  {edu.education.school.name}
+                  {edu.education.university.name}
                   {i !== relatedEducation.length - 1 && `,`}
                 </Text>
               </div>
@@ -284,7 +321,7 @@ const SkillRow = ({ skill, education, experience }: Props) => {
                   {exp.experience.company.name}
                 </Text>
                 <Text fontSize={18}>/</Text>
-                <Text fontSize={14}>{exp.experience.position}</Text>
+                <Text fontSize={14}>{exp.experience.name}</Text>
               </Container>
 
               <Text>{exp.years} Years</Text>
