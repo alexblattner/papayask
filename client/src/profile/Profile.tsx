@@ -144,7 +144,7 @@ const Profile = () => {
                 {user.experience.map((exp, i) => (
                   <Container mb={12} key={i}>
                     <Text fontSize={18} fontWeight="bold">
-                      {exp.position}
+                      {exp.name}
                     </Text>
                     {/* <Text fontSize={18}>{exp.company.name}</Text> */}
                     <Text>{exp.startDate.toString()} - {exp.endDate?.toString() ?? 'Present'}</Text>
@@ -169,9 +169,9 @@ const Profile = () => {
                 {user.education.map((edu, i) => (
                   <Container mb={12} key={i}>
                     <Text fontSize={18} fontWeight="bold">
-                      {edu.fieldOfStudy}
+                      {edu.name}
                     </Text>
-                    <Text fontSize={18}>{edu.school.name}</Text>
+                    <Text fontSize={18}>{edu.university.name}</Text>
                     <Text>{edu.startDate.toString()} - {edu.endDate?.toString() ?? 'Present'}</Text>
                   </Container>
                 ))}

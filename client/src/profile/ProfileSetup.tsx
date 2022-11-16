@@ -70,13 +70,12 @@ const ProfileSetup = ({
   });
   const [education, setEducation] = useState<UserEducation[]>([]);
   const [inputEducation, setInputEducation] = useState<Education>({
-    school: {
+    university: {
       name: '',
-      id: '',
       country: '',
       rank: 1800,
     },
-    fieldOfStudy: '',
+    name: '',
     startDate: new Date(),
     endDate: null,
   });
@@ -128,7 +127,7 @@ const ProfileSetup = ({
 
   const addEducation = () => {
     const newEducation: UserEducation = {
-      school: {
+      university: {
         name: inputEducation.school.name,
         id: inputEducation.school.id,
         country: inputEducation.school.country,

@@ -13,8 +13,8 @@ const YearsOfExperience = (props:Props) => {
     const [yearsOfExperience,setYearsOfExperience]=useState<[number,number]>(props.range);
     return (
         <div className="filter-popup">
-        <button onClick={()=>setMenu(!menu)}>Years of Experience<img className={menu?"upside-down":""} src={arrow} /></button>
-        {menu&&<MinMax values={yearsOfExperience} setValues={setYearsOfExperience} min={props.range[0]} step={1} max={props.range[1]}/>}
+          <button onClick={()=>setMenu(!menu)}>Years of Experience<img className={menu?"upside-down":""} src={arrow} /></button>
+          {menu&&<MinMax values={yearsOfExperience} setValues={setYearsOfExperience} min={props.range[0]} step={1} max={props.range[1]}/>}
         </div>
     );
 };

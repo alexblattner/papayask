@@ -185,6 +185,7 @@ exports.update = async (req, res) => {
 
 
 exports.search = async (req, res, next) => {
+  console.log(req.query);
   const toallob={}//starting object for education, skill and experience to filter undesired data
   if(req.query.personal){
     if(req.query.personal.country){//if country is present in query
@@ -229,8 +230,27 @@ exports.search = async (req, res, next) => {
     {
       $lookup: {
         from: "educations",
-        localField: "education",
-        foreignField: "_id",
+        let: { education: "$education" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $in: ["$_id", "$$education"],
+              }
+            }
+          },  
+          {
+            $lookup: {
+              from: "universities",
+              localField: "university",
+              foreignField: "_id",
+              as: "university",
+            },
+          },
+          {
+            $unwind: "$university"
+          }
+        ],
         as: "education",
       },
     },
@@ -244,6 +264,6 @@ exports.search = async (req, res, next) => {
     },
     {$match:search},
   ]).exec();
-
+  console.log(users);
   return res.send(users);
 };

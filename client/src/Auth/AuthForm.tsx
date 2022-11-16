@@ -33,6 +33,12 @@ const AuthForm = (props: Props) => {
         if (userCred) {
           window.localStorage.setItem('auth', 'true');
         }
+      }).catch((err) => {
+        let message = err.message;
+        if (message.includes('email')) {
+          message = 'Email already in use';
+        }
+        alert(message);
       });
   };
   const emailPassword = async (e: React.FormEvent<HTMLFormElement>) => {

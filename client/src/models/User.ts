@@ -1,4 +1,4 @@
-
+import { UniversityProps } from "./University";
 export interface School {
     id?: string;
     name: string;
@@ -19,7 +19,7 @@ export interface Company {
 }
 
 export interface UserExperience {
-    position: string;
+    name: string;
     company: Company;
     startDate: Date;
     endDate?: Date| string;
@@ -27,8 +27,9 @@ export interface UserExperience {
 }
 
 export interface UserEducation {
-    school: School;
-    fieldOfStudy: string;
+    university: UniversityProps;
+    name: string;
+    level: string;
     startDate: Date;
     endDate?: Date | string;
 }
@@ -70,5 +71,7 @@ export interface UserProps {
     skills: UserSkill[];
     experience: UserExperience[];
     education: UserEducation[];
+    country: string;
+    connections: UserProps[];
     lastLogIn: Date;
 }

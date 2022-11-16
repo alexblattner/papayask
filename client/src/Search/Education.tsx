@@ -5,32 +5,61 @@ import api from "../utils/api";
 import { UniversityProps } from "../models/University";
 import arrow from "./arrow.svg";
 import { OptionsInput } from "../shared/OptionsInput";
+import { setConstantValue } from "typescript";
 
 interface Props {
+  values: any;
   setValues: Function;
+  degrees: string[];
+  universities: UniversityProps[];
 }
 const Education = (props:Props) => {
     const [menu,setMenu]=useState<boolean>(false);
-    const [rank,setRank]=useState<number>(100);
-    const [schools,setSchools]=useState<UniversityProps[]>([]);
-    const [degree,setDegree]=useState<string>("");
-    const [results,setResults]=useState<string[]>([]);
-    const [searchVal,setSearchVal]=useState<string>("");
-    const educationSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { value } = e.target;
-      setSearchVal(value)
-        if(value.length>0){
-          const res = await api.get("/university/"+value);
-          setResults(res.data);
-        }else{
-          setResults([]);
+    const [rank,setRank]=useState<number>(1);
+    const [rankRange,setRankRange]=useState<[number,number]>([1,100]);//[min,max]
+    const [schools,setSchools]=useState<UniversityProps[]>([]);//available schools
+    const [school,setSchool]=useState<UniversityProps|null>(null);//selected school
+    const [degrees,setDegrees]=useState<string[]>(props.degrees);//available degrees
+    function escapeRegex(text:string) {
+      return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+    }
+    const rankSetter= ()=>{
+        let min=1800;
+        let max=1;
+        console.log(777,props.universities);
+        for(let i=0;i<props.universities.length;i++){
+            if(props.universities[i].rank>max){
+                max=props.universities[i].rank;
+            }else if(props.universities[i].rank<min){
+                min=props.universities[i].rank;
+            }
         }
+        setRank(max)
+        setRankRange([min,max])
     }
     const addUniversity = (school:UniversityProps) => {
-        setSchools([...schools,school]);
-        setResults([]);
-        setSearchVal("");
+      const ob=props.values
+      ob["university"]=school
+      props.setValues(ob)
     }
+    const universitySearch = (e: { target: { value: string; }; }) => {
+      const value = e.target.value;
+      if(value===""){
+        setSchools([]);
+      }else{
+        const regex = new RegExp(escapeRegex(value), "gi");
+        let displaySchools:UniversityProps[]=[];
+        for(let i=0;i<props.universities.length;i++){
+          if(props.universities[i].name.match(regex)){
+            displaySchools.push(props.universities[i]);
+          }
+        }
+        setSchools(displaySchools);
+      }
+    }
+    useEffect(()=>{
+        rankSetter();
+    },[])
     return (
       <div  className="filter-popup">
         <button onClick={()=>setMenu(!menu)}>Education<img className={menu?"upside-down":""} src={arrow} /></button>
@@ -42,13 +71,13 @@ const Education = (props:Props) => {
         <div>
           <span>University</span>
           <div>
-            <input type="text" value={searchVal} onChange={educationSearch} placeholder="Search for university expert studied at"/>
-            {results.map((result:any)=><div onClick={()=>addUniversity(result)}>{result.name}</div>)}
+            <input type="text" onChange={universitySearch} placeholder="Search for university expert studied at"/>
+            {schools.map((school:any)=><div onClick={()=>addUniversity(school)}>{school.name}</div>)}
           </div>
         </div>
         <div>
           <span>University Rank</span>
-          <Max value={rank} setValue={setRank} min={1} step={1} max={1800}/>
+          <Max value={rank} setValue={setRank} min={rankRange[0]} step={1} max={rankRange[1]}/>
         </div></>}
       </div>
     );

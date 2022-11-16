@@ -9,7 +9,7 @@ const mongoose = require('mongoose'),
         { type: Schema.Types.ObjectId, ref: 'Experience' },
       ],
       education: [
-        { type: Schema.Types.ObjectId, ref: 'Experience' },
+        { type: Schema.Types.ObjectId, ref: 'Education' },
       ],
       name: { type: String, required: false },
       skills: [{ type: Schema.Types.ObjectId, ref: 'Skill' }],

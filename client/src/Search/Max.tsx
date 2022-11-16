@@ -61,14 +61,12 @@ const Max: React.FC<{value:number,setValue:Function,step:number,min:number, max:
       <output className="output">
       <input value={value} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           const newval = e.target.value;
-          alert(newval);
           if (newval === '') {
             setValue(min);
           } else {
 
             const val = Number(newval);
             if (val >=min && val <= max) {
-              alert(1)
               setValue(val);
             }else if(max<=val){
               setValue(max);

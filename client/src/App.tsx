@@ -25,6 +25,7 @@ function App() {
             <Routes>
               <Route path="/profile" element={<Profile />} />
               <Route path="/search" element={<Search />}></Route>
+              <Route path="/search/:query" element={<Search />}></Route>
               <Route path="/" element={<Main />}></Route>
             </Routes>
           </div>
