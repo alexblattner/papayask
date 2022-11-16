@@ -14,7 +14,8 @@ export const AuthContext = createContext<AuthContextReturn>({
 });
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<UserProps | null>(null);
-  const register = async (token: any, body: any) => {//login and sign up are the same thing in this case
+  const register = async (token: any, body: any) => {
+    //login and sign up are the same thing in this case
     const res = await api({
       method: 'post',
       url: '/user',
@@ -52,7 +53,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       data: body,
     });
 
-    setUser(res.data);
+    setUser({ id: res.data.user._id, ...res.data.user });
   };
 
   const value: AuthContextReturn = {

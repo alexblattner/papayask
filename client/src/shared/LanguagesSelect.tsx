@@ -3,27 +3,31 @@ import React, { useEffect } from 'react';
 import { Container } from '../profile/components/Container';
 import { Input } from '../profile/components/Input';
 import { Text } from '../profile/components/Text';
-import countries, { Country } from '../data/countries';
+import languages, { Language } from '../data/languages';
 import { Suggestions, Suggestion } from './Suggestions';
 
 interface Props {
-  value: string;
-  onChange: (country: string) => void;
-  inputName: string;
-  size?: 'small' | 'large';
+  addLanguage: (language: string) => void;
 }
 
-const CountriesSelect = (props: Props) => {
+const LanguagesSelect = (props: Props) => {
   const [focused, setFocused] = React.useState<boolean>(false);
-  const [suggestions, setSuggestions] = React.useState<Country[]>([]);
-  const { value, onChange, inputName } = props;
+  const [value, setValue] = React.useState<string>('');
+  const [suggestions, setSuggestions] = React.useState<Language[]>([]);
+  const { addLanguage } = props;
+
+  const pickLanguage = (language: string) => {
+    addLanguage(language);
+    setValue('');
+    setSuggestions([]);
+  };
 
   useEffect(() => {
     if (value.length > 0 && focused) {
-      const filteredCountries = countries.filter((country) =>
-        country.name.toLowerCase().includes(value.toLowerCase())
+      const filteredlanguages = languages.filter((language) =>
+        language.name.toLowerCase().includes(value.toLowerCase())
       );
-      setSuggestions(filteredCountries);
+      setSuggestions(filteredlanguages);
     } else {
       setTimeout(() => {
         setSuggestions([]);
@@ -36,10 +40,9 @@ const CountriesSelect = (props: Props) => {
       <Input
         type="text"
         value={value}
-        placeholder="Country"
-        name={inputName}
-        width={props.size === 'small' ? '188px' : ''}
-        onChange={(e) => onChange(e.target.value)}
+        placeholder="Languages"
+        name=""
+        onChange={(e) => setValue(e.target.value)}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
       />
@@ -49,7 +52,7 @@ const CountriesSelect = (props: Props) => {
           <Suggestion
             key={index}
             onClick={() => {
-              onChange(suggestion.name);
+              pickLanguage(suggestion.name);
             }}
           >
             <Text fontSize={14} fontWeight={'bold'}>
@@ -62,4 +65,4 @@ const CountriesSelect = (props: Props) => {
   );
 };
 
-export default CountriesSelect;
+export default LanguagesSelect;

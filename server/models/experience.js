@@ -8,6 +8,7 @@ const mongoose = require('mongoose'),
         type: { type: Schema.Types.String, required: true },
         startDate: { type: Schema.Types.Date, required: true },
         endDate: { type: Schema.Types.Date },
+        company: { type: Schema.Types.ObjectId, ref: 'Company' },
 
     },
     {

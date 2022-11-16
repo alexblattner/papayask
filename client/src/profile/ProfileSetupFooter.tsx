@@ -47,7 +47,7 @@ const ProfileSetupFooter = ({
   };
 
   return (
-    <Container flex align="center" gap={16} width="75%">
+    <Container flex align="center" gap={16} width="75%" mt={'auto'}>
       <Button variant="secondary" onClick={skip}>
         {type === 'initial' ? 'Skip' : 'Cancel'}
       </Button>

@@ -39,8 +39,8 @@ const StepThree = (props: Props) => {
             setSkills([...skills, inputSkill]);
             setInputSkill({
               name: '',
-              relatedEducation: [],
-              relatedExperience: [],
+              education: [],
+              experiences: [],
             });
           }
         }}
@@ -81,6 +81,8 @@ const StepThree = (props: Props) => {
           key={i}
           education={education}
           experience={experience}
+          skills={skills}
+          setSkills={setSkills}
         />
       ))}
     </Container>

@@ -1,32 +1,30 @@
 import React, { useEffect } from 'react';
 
+import { University } from '../models/User';
 import { Container } from '../profile/components/Container';
 import { Input } from '../profile/components/Input';
 import { Text } from '../profile/components/Text';
-import countries, { Country } from '../data/countries';
+import api from '../utils/api';
 import { Suggestions, Suggestion } from './Suggestions';
 
 interface Props {
   value: string;
-  onChange: (country: string) => void;
-  inputName: string;
-  size?: 'small' | 'large';
+  onChange: (name: string, value: string | University) => void;
 }
 
-const CountriesSelect = (props: Props) => {
+const UniversitiesSelect = (props: Props) => {
   const [focused, setFocused] = React.useState<boolean>(false);
-  const [suggestions, setSuggestions] = React.useState<Country[]>([]);
-  const { value, onChange, inputName } = props;
+  const [universities, setUniversities] = React.useState<University[]>([]);
+  const { value, onChange } = props;
 
   useEffect(() => {
-    if (value.length > 0 && focused) {
-      const filteredCountries = countries.filter((country) =>
-        country.name.toLowerCase().includes(value.toLowerCase())
-      );
-      setSuggestions(filteredCountries);
+    if (value !== '' && focused) {
+      api.get(`/university/${value}`).then((res) => {
+        setUniversities(res.data);
+      });
     } else {
       setTimeout(() => {
-        setSuggestions([]);
+        setUniversities([]);
       }, 200);
     }
   }, [value, focused]);
@@ -36,25 +34,26 @@ const CountriesSelect = (props: Props) => {
       <Input
         type="text"
         value={value}
-        placeholder="Country"
-        name={inputName}
-        width={props.size === 'small' ? '188px' : ''}
-        onChange={(e) => onChange(e.target.value)}
+        placeholder="University"
+        name="university-name"
+        onChange={(e) => onChange('university-name', e.target.value)}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
       />
 
-      <Suggestions show={suggestions.length > 0}>
-        {suggestions.map((suggestion, index) => (
+      <Suggestions show={universities.length > 0}>
+        {universities.map((university, index) => (
           <Suggestion
             key={index}
             onClick={() => {
-              onChange(suggestion.name);
+              onChange('university-name', university);
+              setUniversities([]);
             }}
           >
             <Text fontSize={14} fontWeight={'bold'}>
-              {suggestion.name}
+              {university.name}
             </Text>
+            <Text fontSize={13}>{university.country}</Text>
           </Suggestion>
         ))}
       </Suggestions>
@@ -62,4 +61,4 @@ const CountriesSelect = (props: Props) => {
   );
 };
 
-export default CountriesSelect;
+export default UniversitiesSelect;

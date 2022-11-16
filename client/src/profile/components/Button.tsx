@@ -5,7 +5,7 @@ interface ButtonProps {
   variant: 'primary' | 'secondary';
   disabled?: boolean;
   children: React.ReactNode;
-  width?: number;
+  width?: string;
 }
 
 const StyledButton = styled('button')<ButtonProps>`
@@ -20,7 +20,7 @@ const StyledButton = styled('button')<ButtonProps>`
   border: none;
   border-radius: 8px;
   padding: 8px 16px;
-  width: ${(props) => (props.width ? `${props.width}px` : 'auto')};
+  width: ${(props) => (props.width || 'auto')};
   transition: all 0.2s ease-in-out;
   cursor: pointer;
 

@@ -53,6 +53,8 @@ const Profile = () => {
     React.useState<boolean>(false);
   const { user } = React.useContext(AuthContext);
 
+  console.log('user', user);
+
   const openProfileSetup = () => {
     setEditType('edit-all');
     setShowProfileSetup(true);
@@ -66,7 +68,7 @@ const Profile = () => {
 
   if (!user) return null;
   return (
-    <Container width='65%' mx={'auto'}>
+    <Container width="65%" mx={'auto'}>
       {showProfileSetup && (
         <ProfileSetup
           setShowProfileSetup={setShowProfileSetup}
@@ -125,9 +127,9 @@ const Profile = () => {
         <Text fontSize={32} fontWeight={600}>
           {user.title}
         </Text>
-        <Container flex flexWrap justify="space-between" mt={24}>
+        {/* <Container flex flexWrap justify="space-between" mt={24}>
           <Container flex dir="column" gap={24} width="50%">
-            {user.experience.length > 0 && (
+            {user.experience?.length > 0 && (
               <div>
                 <Container
                   flex
@@ -146,7 +148,7 @@ const Profile = () => {
                     <Text fontSize={18} fontWeight="bold">
                       {exp.name}
                     </Text>
-                    {/* <Text fontSize={18}>{exp.company.name}</Text> */}
+                    <Text fontSize={18}>{exp.company}</Text>
                     <Text>{exp.startDate.toString()} - {exp.endDate?.toString() ?? 'Present'}</Text>
                   </Container>
                 ))}
@@ -217,7 +219,7 @@ const Profile = () => {
               <Text fontSize={18}>{user.bio}</Text>
             </div>
           </Container>
-        </Container>
+        </Container> */}
       </Container>
     </Container>
   );

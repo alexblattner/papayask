@@ -2,18 +2,26 @@ const Education = require('../models/education');
 const universityController = require('../controllers/universityController');
 
 exports.create = async (education, userId) => {
-  const { school, fieldOfStudy } = education;
-  if (!school.id) {
-    const university = await universityController.create(school);
-    school = university._id;
+  const { university } = education;
+
+  let uniId;
+
+  if (university._id) {
+    uniId = university._id;
   } else {
-    school = school.id;
+    const newUniversity = await universityController.create(university);
+    uniId = newUniversity._id;
   }
-  const newEducation = await Education.create({
-    university: school,
-    name: fieldOfStudy,
+  const body = {
+    university: uniId,
     user: userId,
     ...education,
-  });
-  return newEducation;
+    endDate: education.endDate,
+  };
+  try {
+    const newEducation = await Education.create(body);
+    return newEducation;
+  } catch (e) {
+    console.log(e);
+  }
 };

@@ -1,77 +1,79 @@
-import { UniversityProps } from "./University";
-export interface School {
-    id?: string;
-    name: string;
-    country: string;
-    rank?: number;
+export type EducationLevel = 'Bachelor' | 'Master' | 'Doctorate' | '';
+
+export interface University {
+  _id?: string;
+  name: string;
+  country: string;
+  rank?: number;
 }
 
 export interface Company {
-    name: string;
-    description?: string;
-    logo?: string;
-    website?: string;
-    email?: string;
-    country?: string;
-    members?: UserProps[];
-    foundingDate?: Date;
-    closedDate?: Date;
+  name: string;
+  description?: string;
+  logo?: string;
+  website?: string;
+  email?: string;
+  country?: string;
+  members?: UserProps[];
+  foundingDate?: Date;
+  closedDate?: Date;
 }
 
 export interface UserExperience {
-    name: string;
-    company: Company;
-    startDate: Date;
-    endDate?: Date| string;
-    type: string;
+  name: string;
+  company: Company;
+  startDate: Date;
+  endDate?: Date | string;
+  type: string;
+  geographic_specialization: string;
 }
 
 export interface UserEducation {
-    university: UniversityProps;
-    name: string;
-    level: string;
-    startDate: Date;
-    endDate?: Date | string;
+  university: University;
+  name: string;
+  level: EducationLevel;
+  startDate: Date;
+  endDate?: Date | string;
 }
 
 export interface RelatedExperience {
-    experience: UserExperience;
-    years: number
+  experience: UserExperience;
+  years: number;
 }
 
 export interface RelatedEducation {
-    education: UserEducation;
-    years: number
+  education: UserEducation;
+  years: number;
 }
 
 export interface UserSkill {
-    name: string;
-    relatedEducation:  RelatedEducation[];
-    relatedExperience: RelatedExperience[];
-    totalEducationYears?: number;
-    totalExperienceYears?: number;
+  name: string;
+  education: RelatedEducation[];
+  experiences: RelatedExperience[];
+  totalEducationYears?: number;
+  totalExperienceYears?: number;
 }
 
 export interface UserProps {
-    id: string;
-    confirmed: boolean;
-    createdAt: Date;
-    updatedAt: Date;
-    title: string;
-    uid: string;
-    name: string;
-    reputation: number;
-    requestCount: number;
-    isSetUp: boolean;
-    bio : string;
-    email: string;
-    picture: string;
-    coverPicture: string;
-    social: string[];
-    skills: UserSkill[];
-    experience: UserExperience[];
-    education: UserEducation[];
-    country: string;
-    connections: UserProps[];
-    lastLogIn: Date;
+  id: string;
+  confirmed: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  title: string;
+  uid: string;
+  name: string;
+  reputation: number;
+  requestCount: number;
+  isSetUp: boolean;
+  bio: string;
+  email: string;
+  picture: string;
+  coverPicture: string;
+  social: string[];
+  skills: UserSkill[];
+  experience: UserExperience[];
+  education: UserEducation[];
+  lastLogIn: Date;
+  languages: string[];
+  country: string;
 }
