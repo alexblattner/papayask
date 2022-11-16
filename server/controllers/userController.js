@@ -132,22 +132,45 @@ exports.registerToken = async (req, res) => {
   }
 };
 
+
 //update user
 exports.update = async (req, res) => {
+  console.log(req.body);
   try {
-    const user = await User.findById(req.params.userId).exec();
+    let user = await User.findById(req.params.userId).exec();
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: 'User not found' });
     }
 
-    const { bio, experience, education, skills, title, isSetUp } = req.body;
+    const {
+      bio,
+      experience,
+      education,
+      skills,
+      title,
+      isSetUp,
+      languages,
+      country,
+    } = req.body;
 
     //create experiences and store their ids in an array
     let experienceIds = [];
     if (experience) {
       for (let i = 0; i < experience.length; i++) {
-        const newExperience = await experienceController.create(experience[i], user._id);
-        experienceIds.push(newExperience._id);
+        if (experience[i]._id) {
+          experienceIds.push(experience[i]._id);
+        } else {
+          try {
+            console.log(user._id);
+            const newExperience = await experienceController.create(
+              experience[i],
+              user._id
+            );
+            experienceIds.push(newExperience._id);
+          } catch (e) {
+            console.log(e);
+          }
+        }
       }
     }
 
@@ -155,8 +178,19 @@ exports.update = async (req, res) => {
     const educationIds = [];
     if (education) {
       for (let i = 0; i < education.length; i++) {
-        const newEducation = await educationController.create(education[i],user._id);
-        educationIds.push(newEducation._id);
+        if (education[i]._id) {
+          educationIds.push(education[i]._id);
+        } else {
+          try {
+            const newEducation = await educationController.create(
+              education[i],
+              user._id
+            );
+            educationIds.push(newEducation._id);
+          } catch (e) {
+            console.log(e);
+          }
+        }
       }
     }
 
@@ -164,24 +198,51 @@ exports.update = async (req, res) => {
     const skillIds = [];
     if (skills) {
       for (let i = 0; i < skills.length; i++) {
-        const newSkill = await skillController.create(skills[i], user._id);
-        skillIds.push(newSkill._id);
+        try {
+          const newSkill = await skillController.create(skills[i], user._id);
+          skillIds.push(newSkill._id);
+        } catch (e) {
+          console.log(e);
+        }
       }
     }
 
-    await user.findByIdAndUpdate(req.params.userId, {
+    const body = {
       bio,
-      experience: [... user.experience, ...experienceIds],
-      education: [... user.education, ...educationIds],
-      skills: [... user.skills, ...skillIds],
+      experience: experienceIds,
+      education: educationIds,
+      skills: skillIds,
       title,
       isSetUp,
-    }, { new: true }).exec();
-    return res.status(200).json({ message: "User updated successfully" , user});
+      languages,
+      country,
+    };
+
+    try {
+      user = await User.findByIdAndUpdate(req.params.userId, body, {
+        new: true,
+      })
+        .populate({
+          path: 'experience',
+          populate: { path: 'company', model: 'Company' },
+        })
+        .populate({
+          path: 'education',
+          populate: { path: 'university', model: 'University' },
+        })
+        .populate('skills skills.education skills.experience');
+
+      return res
+        .status(200)
+        .json({ message: 'User updated successfully', user });
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({ error: e });
+    }
   } catch (e) {
     return res.status(500).json({ error: e });
   }
-}
+};
 
 
 exports.search = async (req, res, next) => {
