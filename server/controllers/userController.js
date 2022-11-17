@@ -85,7 +85,28 @@ exports.login = async (req, res, next) => {
         path: 'education',
         populate: { path: 'university', model: 'University' },
       })
-      .populate('skills skills.education skills.experience');
+      .populate({
+        path: 'skills',
+        model: 'Skill',
+        populate: [
+          {
+            path: 'experiences.experience',
+            model: 'Experience',
+            populate: {
+              path: 'company',
+              model: 'Company',
+            },
+          },
+          {
+            path: 'educations.education',
+            model: 'Education',
+            populate: {
+              path: 'university',
+              model: 'University',
+            },
+          },
+        ],
+      });
 
     return res.status(200).send(data);
   } catch (err) {
@@ -105,7 +126,28 @@ exports.createOrLogin = async (req, res, next) => {
         path: 'education',
         populate: { path: 'university', model: 'University' },
       })
-      .populate('skills skills.education skills.experience');
+      .populate({
+        path: 'skills',
+        model: 'Skill',
+        populate: [
+          {
+            path: 'experiences.experience',
+            model: 'Experience',
+            populate: {
+              path: 'company',
+              model: 'Company',
+            },
+          },
+          {
+            path: 'educations.education',
+            model: 'Education',
+            populate: {
+              path: 'university',
+              model: 'University',
+            },
+          },
+        ],
+      });
 
     if (!doesUserExist) {
       const newUserOb = {
@@ -129,7 +171,28 @@ exports.createOrLogin = async (req, res, next) => {
           path: 'education',
           populate: { path: 'university', model: 'University' },
         })
-        .populate('skills skills.education skills.experience');
+        .populate({
+          path: 'skills',
+          model: 'Skill',
+          populate: [
+            {
+              path: 'experiences.experience',
+              model: 'Experience',
+              populate: {
+                path: 'company',
+                model: 'Company',
+              },
+            },
+            {
+              path: 'educations.education',
+              model: 'Education',
+              populate: {
+                path: 'university',
+                model: 'University',
+              },
+            },
+          ],
+        });
 
       return res.send(createdUser);
     } else {
@@ -166,7 +229,6 @@ exports.registerToken = async (req, res) => {
 
 //update user
 exports.update = async (req, res) => {
-  console.log(req.body);
   try {
     let user = await User.findById(req.params.userId).exec();
     if (!user) {
@@ -261,7 +323,28 @@ exports.update = async (req, res) => {
           path: 'education',
           populate: { path: 'university', model: 'University' },
         })
-        .populate('skills skills.education skills.experience');
+        .populate({
+          path: 'skills',
+          model: 'Skill',
+          populate: [
+            {
+              path: 'experiences.experience',
+              model: 'Experience',
+              populate: {
+                path: 'company',
+                model: 'Company',
+              },
+            },
+            {
+              path: 'educations.education',
+              model: 'Education',
+              populate: {
+                path: 'university',
+                model: 'University',
+              },
+            },
+          ],
+        });
 
       return res
         .status(200)

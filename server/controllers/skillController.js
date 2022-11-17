@@ -12,7 +12,7 @@ exports.create = async (skill, userId) => {
       endDate: experiences[i].experience.endDate,
     }).exec();
     experienceList.push({
-      time: experiences[i].years,
+      years: experiences[i].years,
       experience: exp._id,
     });
   }
@@ -24,15 +24,18 @@ exports.create = async (skill, userId) => {
       endDate: education[i].education.endDate,
     }).exec();
     educationList.push({
-      time: education[i].years,
+      years: education[i].years,
       education: edu._id,
     });
   }
 
+  console.log('experienceList', experienceList);
+  console.log('educationList', educationList);
+
   const newSkill = await Skill.create({
     user: userId,
     experiences: experienceList,
-    education: educationList,
+    educations: educationList,
     ...skill,
   });
   return newSkill;
