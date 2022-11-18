@@ -45,7 +45,7 @@ interface Props {
 const StepOne = (props: Props) => {
   const [image, setImage] = React.useState<string>('');
   const [progress, setProgress] = React.useState<number>(0);
-  const [imageObg, setImageObg] = React.useState<{ id: string; name: string }>({
+  const [imageObj, setImageObj] = React.useState<{ id: string; name: string }>({
     id: '',
     name: '',
   });
@@ -85,9 +85,10 @@ const StepOne = (props: Props) => {
       }
       readFile(file);
     }
-
+    console.log('file', file);
     const { signature, timestamp } = await getCloudinarySignature();
-
+    console.log('signature', signature);
+    console.log('timestamp', timestamp);
     const config = {
       onUploadProgress: (progressEvent: any) => {
         let presentComleted = sizeCheck
@@ -96,22 +97,26 @@ const StepOne = (props: Props) => {
         setProgress(presentComleted);
       },
     };
+    console.log('config', config);
     const preset =
       process.env.REACT_APP_ENV === 'production' ? 'production' : 'development';
 
-    const formData = new FormData();
-    formData.append('file', file!);
-    formData.append('upload_preset', preset);
-
+    const form = new FormData();
+    form.append('file', file);
+    form.append('upload_preset', preset);
+  //   POST
+  //   https://api.cloudinary.com/v1_1/snipcritics/image/upload?api_key=236486413524643&timestamp=1668695813701&signature=52b8f19c1cce2919d0a20ed74133080073056521
+  //   POST
+	// https://api.cloudinary.com/v1_1/snipcritics/image/upload?api_key=236486413524643&timestamp=1668695813701&signature=52b8f19c1cce2919d0a20ed74133080073056521
     axios
       .post(
         `https://api.cloudinary.com/v1_1/snipcritics/image/upload?api_key=${process.env.REACT_APP_CLOUDINARY_KEY}&timestamp=${timestamp}&signature=${signature}`,
-        formData,
+        form,
         config
       )
       .then((res) => {
         const imgId = res.data.public_id.replace(`${preset}/`, '');
-        setImageObg({ id: imgId, name: res.data.original_filename });
+        setImageObj({ id: imgId, name: res.data.original_filename });
       })
       .catch((err) => {
         console.log(err);
