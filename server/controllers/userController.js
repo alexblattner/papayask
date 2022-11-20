@@ -72,10 +72,45 @@ exports.getByEmail = async (req, res, next) => {
 };
 exports.login = async (req, res, next) => {
   try {
-    const data = await User.findOneAndUpdate({ uid: req.body.uid },{authTime:req.body.authTime},{
-      upsert: true,
-      new: true,
-    }).exec();
+    const data = await User.findOneAndUpdate(
+      { uid: req.body.uid },
+      { authTime: req.body.authTime },
+      {
+        upsert: true,
+        new: true,
+      }
+    )
+      .populate({
+        path: 'experience',
+        populate: { path: 'company', model: 'Company' },
+      })
+      .populate({
+        path: 'education',
+        populate: { path: 'university', model: 'University' },
+      })
+      .populate({
+        path: 'skills',
+        model: 'Skill',
+        populate: [
+          {
+            path: 'experiences.experience',
+            model: 'Experience',
+            populate: {
+              path: 'company',
+              model: 'Company',
+            },
+          },
+          {
+            path: 'educations.education',
+            model: 'Education',
+            populate: {
+              path: 'university',
+              model: 'University',
+            },
+          },
+        ],
+      });
+
     return res.status(200).send(data);
   } catch (err) {
     return new Error(err);
@@ -83,11 +118,43 @@ exports.login = async (req, res, next) => {
 };
 exports.createOrLogin = async (req, res, next) => {
   try {
-    const doesUserExist = await User.findOne({$or:[{uid:req.body.uid},{email:req.body.email}]}).exec();
-    if (
-      !doesUserExist
-    ) { 
-      const newUserOb={
+
+    const doesUserExist = await User.findOne({
+      $or: [{ uid: req.body.uid }, { email: req.body.email }],
+    })
+      .populate({
+        path: 'experience',
+        populate: { path: 'company', model: 'Company' },
+      })
+      .populate({
+        path: 'education',
+        populate: { path: 'university', model: 'University' },
+      })
+      .populate({
+        path: 'skills',
+        model: 'Skill',
+        populate: [
+          {
+            path: 'experiences.experience',
+            model: 'Experience',
+            populate: {
+              path: 'company',
+              model: 'Company',
+            },
+          },
+          {
+            path: 'educations.education',
+            model: 'Education',
+            populate: {
+              path: 'university',
+              model: 'University',
+            },
+          },
+        ],
+      });
+
+    if (!doesUserExist) {
+      const newUserOb = {
         uid: req.body.uid,
         name: req.body.displayName,
         email: req.body.email.toLowerCase(),
@@ -98,7 +165,40 @@ exports.createOrLogin = async (req, res, next) => {
         newUserOb.picture=req.body.photoURL;
       }
       const user = new User(newUserOb);
-      const createdUser = await user.save();
+
+      const createdUser = await user
+        .save()
+        .populate({
+          path: 'experience',
+          populate: { path: 'company', model: 'Company' },
+        })
+        .populate({
+          path: 'education',
+          populate: { path: 'university', model: 'University' },
+        })
+        .populate({
+          path: 'skills',
+          model: 'Skill',
+          populate: [
+            {
+              path: 'experiences.experience',
+              model: 'Experience',
+              populate: {
+                path: 'company',
+                model: 'Company',
+              },
+            },
+            {
+              path: 'educations.education',
+              model: 'Education',
+              populate: {
+                path: 'university',
+                model: 'University',
+              },
+            },
+          ],
+        });
+
       return res.send(createdUser);
     } else {
       doesUserExist.authTime=req.body.auth_time;
@@ -135,7 +235,6 @@ exports.registerToken = async (req, res) => {
 
 //update user
 exports.update = async (req, res) => {
-  console.log(req.body);
   try {
     let user = await User.findById(req.params.userId).exec();
     if (!user) {
@@ -230,7 +329,28 @@ exports.update = async (req, res) => {
           path: 'education',
           populate: { path: 'university', model: 'University' },
         })
-        .populate('skills skills.education skills.experience');
+        .populate({
+          path: 'skills',
+          model: 'Skill',
+          populate: [
+            {
+              path: 'experiences.experience',
+              model: 'Experience',
+              populate: {
+                path: 'company',
+                model: 'Company',
+              },
+            },
+            {
+              path: 'educations.education',
+              model: 'Education',
+              populate: {
+                path: 'university',
+                model: 'University',
+              },
+            },
+          ],
+        });
 
       return res
         .status(200)

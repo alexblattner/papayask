@@ -53,8 +53,6 @@ const Profile = () => {
     React.useState<boolean>(false);
   const { user } = React.useContext(AuthContext);
 
-  console.log('user', user);
-
   const openProfileSetup = () => {
     setEditType('edit-all');
     setShowProfileSetup(true);

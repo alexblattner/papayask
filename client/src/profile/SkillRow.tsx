@@ -52,7 +52,7 @@ const SkillRow = ({
 }: Props) => {
   const [relatedEducation, setRelatedEducation] = React.useState<
     RelatedEducation[]
-  >(skill.education);
+  >(skill.educations);
   const [relatedExperience, setRelatedExperience] = React.useState<
     RelatedExperience[]
   >(skill.experiences);
@@ -193,8 +193,26 @@ const SkillRow = ({
   }, [experience]);
 
   useEffect(() => {
-    setRelatedEducation(skill.education);
+    setRelatedEducation(skill.educations);
     setRelatedExperience(skill.experiences);
+    const educationIndexes: number[] = [];
+    education.forEach((e) => {
+      skill.educations.forEach((s) => {
+        if (e.name === s.education.name) {
+          educationIndexes.push(education.indexOf(e));
+        }
+      });
+    });
+    setEducationIndexSelected(educationIndexes);
+    const experienceIndexes: number[] = [];
+    experience.forEach((e) => {
+      skill.experiences.forEach((s) => {
+        if (e.name === s.experience.name) {
+          experienceIndexes.push(experience.indexOf(e));
+        }
+      });
+    });
+    setexperienceIndexSelected(experienceIndexes);
   }, [skill]);
 
   return (

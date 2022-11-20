@@ -1,9 +1,6 @@
-import React, { useContext, useState, useEffect } from 'react';
-import logo from './logo.svg';
+import React, { useContext } from 'react';
+
 import './App.css';
-import Question from './Question';
-import firebase from 'firebase/compat/app';
-import { auth } from './firebase-auth';
 import { AuthContext } from './Auth/ContextProvider';
 import Header from './Header';
 import Search from './Search';

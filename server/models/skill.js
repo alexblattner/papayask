@@ -5,11 +5,11 @@ const mongoose = require('mongoose'),
         user: { type: Schema.Types.ObjectId, ref: 'User' },
         name: { type: Schema.Types.String, required: true },
         experiences: [{
-          time:{ type: Schema.Types.Number },
+          years:{ type: Schema.Types.Number },
           experience:{ type: Schema.Types.ObjectId, ref: 'Experience', required: true }
         }],
-        education: [{
-          time:{ type: Schema.Types.Number },
+        educations: [{
+          years:{ type: Schema.Types.Number },
           education:{ type: Schema.Types.ObjectId, ref: 'Education', required: true }
         }],
     },

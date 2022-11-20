@@ -39,7 +39,7 @@ const StepThree = (props: Props) => {
             setSkills([...skills, inputSkill]);
             setInputSkill({
               name: '',
-              education: [],
+              educations: [],
               experiences: [],
             });
           }

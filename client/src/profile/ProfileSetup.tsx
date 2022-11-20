@@ -75,7 +75,7 @@ const ProfileSetup = ({
 
   const [inputSkill, setInputSkill] = useState<UserSkill>({
     name: '',
-    education: [],
+    educations: [],
     experiences: [],
   });
   const [education, setEducation] = useState<UserEducation[]>([]);

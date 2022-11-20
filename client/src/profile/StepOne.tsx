@@ -1,8 +1,39 @@
-import React from 'react';
+import React, { useRef } from 'react';
+import styled from 'styled-components';
+import axios from 'axios';
 
+import api from '../utils/api';
+import compressImage from '../utils/compressImage';
+import { Button } from './components/Button';
+import { Container } from './components/Container';
 import { Input } from './components/Input';
 import { Text } from './components/Text';
 import { TextArea } from './components/TextArea';
+
+const HiddenInput = styled.input`
+  display: none;
+`;
+
+const ImageContainer = styled('div')<{ image: string; progress: number }>`
+  width: 300px;
+  height: 300px;
+  background-color: ${(props) =>
+    props.image ? `` : props.theme.colors.secondary};
+  border-radius: 30px;
+  overflow: hidden;
+  img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    opacity: ${(props) => (props.progress >= 100 ? 1 : 0.5)};
+  }
+`;
+
+const Uploader = styled('div')<{ progress: number }>`
+  display: ${(props) => (props.progress >= 100 ? 'none' : 'block')};
+  width: 90%;
+  height: 10px;
+`;
 
 interface Props {
   title: string;
@@ -12,7 +43,86 @@ interface Props {
 }
 
 const StepOne = (props: Props) => {
+  const [image, setImage] = React.useState<string>('');
+  const [progress, setProgress] = React.useState<number>(0);
+  const [imageObj, setImageObj] = React.useState<{ id: string; name: string }>({
+    id: '',
+    name: '',
+  });
   const { title, bio, setTitle, setBio } = props;
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
+  const uploadRef = useRef<HTMLDivElement>(null);
+
+  const getCloudinarySignature = async () => {
+    const res = await api.post('cloudinary-signature');
+    const { signature, timestamp } = res.data;
+    return { signature, timestamp };
+  };
+
+  const readFile = async (file: File) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = async () => {
+      const image = reader.result as string;
+      setImage(image);
+    };
+  };
+
+  const onFileChosen = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    let file = event.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+    const sizeCheck = file.size < 17825792;
+
+    if (sizeCheck && imageRef) {
+      file = await compressImage(file, 17, imageRef);
+
+      if (!file) {
+        return;
+      }
+      readFile(file);
+    }
+    console.log('file', file);
+    const { signature, timestamp } = await getCloudinarySignature();
+    console.log('signature', signature);
+    console.log('timestamp', timestamp);
+    const config = {
+      onUploadProgress: (progressEvent: any) => {
+        let presentComleted = sizeCheck
+          ? Math.round((progressEvent.loaded * 50) / progressEvent.total) + 50
+          : Math.round((progressEvent.loaded * 100) / progressEvent.total);
+        setProgress(presentComleted);
+      },
+    };
+    console.log('config', config);
+    const preset =
+      process.env.REACT_APP_ENV === 'production' ? 'production' : 'development';
+
+    const form = new FormData();
+    form.append('file', file);
+    form.append('upload_preset', preset);
+  //   POST
+  //   https://api.cloudinary.com/v1_1/snipcritics/image/upload?api_key=236486413524643&timestamp=1668695813701&signature=52b8f19c1cce2919d0a20ed74133080073056521
+  //   POST
+	// https://api.cloudinary.com/v1_1/snipcritics/image/upload?api_key=236486413524643&timestamp=1668695813701&signature=52b8f19c1cce2919d0a20ed74133080073056521
+    axios
+      .post(
+        `https://api.cloudinary.com/v1_1/snipcritics/image/upload?api_key=${process.env.REACT_APP_CLOUDINARY_KEY}&timestamp=${timestamp}&signature=${signature}`,
+        form,
+        config
+      )
+      .then((res) => {
+        const imgId = res.data.public_id.replace(`${preset}/`, '');
+        setImageObj({ id: imgId, name: res.data.original_filename });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <>
       <Text fontSize={32} fontWeight={600} mb={16}>
@@ -29,6 +139,24 @@ const StepOne = (props: Props) => {
         Tell your clients about yourself
       </Text>
       <TextArea value={bio} onChange={(e) => setBio(e.target.value)} />
+      <HiddenInput
+        type="file"
+        ref={fileInputRef}
+        onChange={(e) => onFileChosen(e)}
+      />
+      <Container flex align="flex-start" gap={48}>
+        <Button variant="primary" onClick={() => fileInputRef.current?.click()}>
+          Upload profile picture
+        </Button>
+        <ImageContainer ref={imageRef} image={image} progress={progress}>
+          {image && <img src={image} alt="profile" />}
+          <Uploader ref={uploadRef} progress={progress}>
+            {progress > 0 && progress < 100 && (
+              <Text>{progress}% completed</Text>
+            )}
+          </Uploader>
+        </ImageContainer>
+      </Container>
     </>
   );
 };
