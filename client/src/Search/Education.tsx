@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import axios from "axios";
 import Max from "./Max";
 import api from "../utils/api";
-import { UniversityProps } from "../models/University";
+import { University } from "../models/User";
 import arrow from "./arrow.svg";
 import { OptionsInput } from "../shared/OptionsInput";
 import { setConstantValue } from "typescript";
@@ -11,15 +11,16 @@ interface Props {
   values: any;
   setValues: Function;
   degrees: string[];
-  universities: UniversityProps[];
+  universities: University[];
 }
 const Education = (props:Props) => {
     const [menu,setMenu]=useState<boolean>(false);
-    const [rank,setRank]=useState<number>(1);
+    const [rank,setRank]=useState<number>(0);
     const [rankRange,setRankRange]=useState<[number,number]>([1,100]);//[min,max]
-    const [schools,setSchools]=useState<UniversityProps[]>([]);//available schools
-    const [school,setSchool]=useState<UniversityProps|null>(null);//selected school
+    const [schools,setSchools]=useState<University[]>([]);//available schools
+    const [school,setSchool]=useState<University|null>(null);//selected school
     const [degrees,setDegrees]=useState<string[]>(props.degrees);//available degrees
+    const [degree,setDegree]=useState<string|null>(null);//selected degree
     function escapeRegex(text:string) {
       return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
     }
@@ -37,7 +38,7 @@ const Education = (props:Props) => {
         setRank(max)
         setRankRange([min,max])
     }
-    const addUniversity = (school:UniversityProps) => {
+    const addUniversity = (school:University) => {
       const ob=props.values
       ob["university"]=school
       props.setValues(ob)
@@ -48,7 +49,7 @@ const Education = (props:Props) => {
         setSchools([]);
       }else{
         const regex = new RegExp(escapeRegex(value), "gi");
-        let displaySchools:UniversityProps[]=[];
+        let displaySchools:University[]=[];
         for(let i=0;i<props.universities.length;i++){
           if(props.universities[i].name.match(regex)){
             displaySchools.push(props.universities[i]);
@@ -60,6 +61,20 @@ const Education = (props:Props) => {
     useEffect(()=>{
         rankSetter();
     },[])
+    useEffect(()=>{
+      const ob=props.values?props.values:{}
+      if(school!==null){
+        ob["univesity"]=school
+      }
+      if(degree!==null){
+        ob["degree"]=degree
+      }
+      if(rank!==0){
+
+        ob["rank"]=rank==rankRange[1]?null:rank//if max rank, set to null
+      }
+      props.setValues({...ob})
+    },[school,rank,degree])
     return (
       <div  className="filter-popup">
         <button onClick={()=>setMenu(!menu)}>Education<img className={menu?"upside-down":""} src={arrow} /></button>
@@ -77,7 +92,7 @@ const Education = (props:Props) => {
         </div>
         <div>
           <span>University Rank</span>
-          <Max value={rank} setValue={setRank} min={rankRange[0]} step={1} max={rankRange[1]}/>
+          {rankRange[0]<=rankRange[1]&&<Max value={rank} setValue={setRank} min={rankRange[0]} step={1} max={rankRange[1]}/>}
         </div></>}
       </div>
     );
