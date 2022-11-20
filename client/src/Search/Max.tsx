@@ -26,7 +26,6 @@ const Max: React.FC<{value:number,setValue:Function,step:number,min:number, max:
             onTouchStart={props.onTouchStart}
             style={{
               ...props.style,
-              height: '36px',
               display: 'flex',
               width: '100%',
 
@@ -35,17 +34,14 @@ const Max: React.FC<{value:number,setValue:Function,step:number,min:number, max:
             <div
               ref={props.ref}
               style={{
-                height: '5px',
-                width: '100%',
-                borderRadius: '4px',
                 background: getTrackBackground({
                   values: [value],
-                  colors: ['#548BF4', '#ccc'],
+                  colors: ['var(--primary-l2)', '#ccc'],
                   min: min,
                   max: max,
                 }),
-                alignSelf: 'center'
               }}
+              className="range"
             >
               {children}
             </div>
@@ -55,22 +51,30 @@ const Max: React.FC<{value:number,setValue:Function,step:number,min:number, max:
           <div
             {...props}
             style={{
-              ...props.style,
-              height: '20px',
-              width: '10px',
-              borderRadius: '4px',
-              backgroundColor: '#FFF',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              boxShadow: '0px 2px 6px #AAA'
+              ...props.style
             }}
+            className="range-thumb"
           >
           </div>
         )}
       />
       <output className="output">
-        {value.toFixed(1)+(value==max?"+":"")}
+      <input value={value} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          const newval = e.target.value;
+          if (newval === '') {
+            setValue(min);
+          } else {
+
+            const val = Number(newval);
+            if (val >=min && val <= max) {
+              setValue(val);
+            }else if(max<=val){
+              setValue(max);
+            }else if(min>=val){
+              setValue(min);
+            }
+          }
+        }} type="number" />
       </output>
     </div>
   );

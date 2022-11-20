@@ -172,7 +172,7 @@ const Profile = () => {
                 {user.experience.map((exp, i) => (
                   <Container mb={12} key={i}>
                     <Text fontSize={18} fontWeight="bold">
-                      {exp.position}
+                      {exp.name}
                     </Text>
                     <Text fontSize={18}>{exp.company}</Text>
                     <Text>{exp.startDate.toString()} - {exp.endDate?.toString() ?? 'Present'}</Text>

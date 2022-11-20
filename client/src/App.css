@@ -71,10 +71,26 @@ h2 {
   font-weight: 600;
 }
 :root {
+  --primary-l2: rgba(248, 203, 201, 1);
+  --primary-l1: rgba(240, 151, 147, 1);
   --primary: rgba(194, 42, 35, 1);
+  --primary-d1: rgba(155, 66, 62, 1);
+  --primary-d2: rgba(78, 33, 31, 1);
+  --primary-numbers-l2: 248, 203, 201;
+  --primary-numbers-l1: 240, 151, 147;
   --primary-numbers: 194, 42, 35;
-  --secondary: #898989;
-  --secondary-numbers: 137, 137, 137;
+  --primary-numbers-d1: 155, 66, 62;
+  --primary-numbers-d2: 78, 33, 31;
+  --secondary-l2: rgba(238, 238, 238, 1);
+  --secondary-l1: rgba(222, 222, 222, 1);
+  --secondary: rgba(205, 205, 205, 1);
+  --secondary-d1: rgba(137, 137, 137, 1);
+  --secondary-d2: rgba(68, 68, 68, 1);
+  --secondary-numbers-l2: 238, 238, 238;
+  --secondary-numbers-l1: 222, 222, 222;
+  --secondary-numbers: 205, 205, 205;
+  --secondary-numbers-d1: 137, 137, 137;
+  --secondary-numbers-d2: 68, 68, 68;
   --tertiary: #dedede;
   --background: #fff;
 }

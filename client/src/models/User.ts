@@ -4,7 +4,7 @@ export interface University {
   _id?: string;
   name: string;
   country: string;
-  rank?: number;
+  rank: number;
 }
 
 export interface Company {
