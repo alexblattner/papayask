@@ -98,7 +98,8 @@ const StepOne = (props: Props) => {
     setProgress(0);
 
     const { signature, timestamp } = await getCloudinarySignature();
-
+    console.log('signature', signature);
+    console.log('timestamp', timestamp);
     const config = {
       onUploadProgress: (progressEvent: AxiosProgressEvent) => {
         let percentCompleted = sizeCheck
@@ -112,6 +113,7 @@ const StepOne = (props: Props) => {
         setProgress(percentCompleted);
       },
     };
+    console.log('config', config);
     const preset =
       process.env.REACT_APP_ENV === 'production' ? 'production' : 'development';
 
