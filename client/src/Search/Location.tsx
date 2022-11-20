@@ -5,6 +5,7 @@ import arrow from "./arrow.svg";
 
 interface Props {
     setValues: Function;
+    countries: string[];
 }
 
 const Location = (props:Props) => {
@@ -14,6 +15,14 @@ const Location = (props:Props) => {
     const [location,setLocation] = useState<string>("");
     const [language,setLanguage] = useState<string>("");
     const [connections,setConnections] = useState<[number,number]>([0,100]);
+    const countrySelected=(value:string)=>{
+        props.setValues(value);
+    }
+    useEffect(()=>{
+        if(location===""){
+            props.setValues("");
+        }
+    },[location])
     return (
         <div className="filter-popup">
             <button onClick={()=>setMenu(!menu)}>Location<img className={menu?"upside-down":""} src={arrow} /></button>
@@ -25,7 +34,7 @@ const Location = (props:Props) => {
                 <span>Yearly Revenue($)</span>
             </div></>}
             {/*all */}
-            <CountriesSelect value={location} onChange={setLocation} inputName=""/>
+            <CountriesSelect adder={countrySelected} value={location} options={props.countries} onChange={setLocation} inputName=""/>
             {/*all */}
             <input type="text" placeholder="Search for language"/>
             {false&&<><div>{/*all */}
