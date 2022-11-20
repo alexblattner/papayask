@@ -26,7 +26,8 @@ const Search = () => {
     const [education,setEducation] = useState<EduProps>({name:"",rank:null,degrees:"",university:""});
     const [allDegrees,setAllDegrees] = useState<string[]>([]);
     const [allUniversities,setAllUniversities] = useState<University[]>([]);
-    const [location,setLocation] = useState<{}>({});
+    const [allLocations,setAllLocations] = useState<string[]>([]);
+    const [location,setLocation] = useState<string>("");
     function escapeRegex(text:string) {
         return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
     }
@@ -110,6 +111,12 @@ const Search = () => {
             }else if(!eduUnset()){//if the user does not have education and the education is not set to all
                 push=false;//we will not push the user
             }
+            if(location!=""){//if the location is set
+                if(result.country!=location)//if the location does not match the filter
+                    push=false;//we will not push the user
+            }else{
+                locations.push(result.country);//add the location to the set of locations
+            }
             if(push)
             farr.push(result);
         }
@@ -123,6 +130,8 @@ const Search = () => {
         setYearsOfExperienceRange([expmin,expmax]);
         if(yearsOfExperience[0]==0&&yearsOfExperience[1]==0)//if the years of experience range is not set
         setYearsOfExperience([expmin,expmax]);
+        if(allLocations.length==0)//if the locations are not set
+        setAllLocations(locations);
         setResults(farr);
     }
     const expRange = ()=>{
@@ -147,7 +156,7 @@ const Search = () => {
         <div id="top">
             {results.length>0&&<><YearsOfExperience values={yearsOfExperience} setValues={setYearsOfExperience} range={yearsOfExperienceRange}/>
             <Education values={education} universities={allUniversities} degrees={allDegrees} setValues={setEducation}/>
-            <Location setValues={setLocation}/>
+            <Location countries={allLocations} setValues={setLocation}/>
             <Budget setValues={setBudget} range={budget}/></>}
         </div>
         <div id="results">

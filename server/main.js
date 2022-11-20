@@ -207,7 +207,7 @@ app.post('/cloudinary-signature', (req, res, next) => {
     process.env.NODE_ENV == 'production' ? 'production' : 'development';
   const signature = cloudinary.utils.api_sign_request(
     { timestamp, upload_preset },
-    process.env.CLOUDINARY_SECRET
+    process.env.CLOUDINARY_API_SECRET
   );
   return res.send({
     timestamp,

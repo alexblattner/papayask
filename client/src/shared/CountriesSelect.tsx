@@ -11,19 +11,29 @@ interface Props {
   onChange: (country: string) => void;
   inputName: string;
   size?: 'small' | 'large';
+  options?: string[];
+  adder?: (value:string) => void;
 }
 
 const CountriesSelect = (props: Props) => {
   const [focused, setFocused] = React.useState<boolean>(false);
-  const [suggestions, setSuggestions] = React.useState<Country[]>([]);
+  const [suggestions, setSuggestions] = React.useState<string[]>([]);
   const { value, onChange, inputName } = props;
 
   useEffect(() => {
     if (value.length > 0 && focused) {
-      const filteredCountries = countries.filter((country) =>
-        country.name.toLowerCase().includes(value.toLowerCase())
-      );
-      setSuggestions(filteredCountries);
+      if (props.options) {
+        setSuggestions(props.options);
+      } else {
+        const filteredCountries = countries.filter((country) =>
+          country.name.toLowerCase().includes(value.toLowerCase())
+        );
+        let finalSuggestions: string[] = [];
+        filteredCountries.forEach((country) => {
+          finalSuggestions.push(country.name);
+        });
+        setSuggestions(finalSuggestions);
+      }
     } else {
       setTimeout(() => {
         setSuggestions([]);
@@ -49,11 +59,13 @@ const CountriesSelect = (props: Props) => {
           <Suggestion
             key={index}
             onClick={() => {
-              onChange(suggestion.name);
+              onChange(suggestion);
+              if(props.adder)
+                props.adder(suggestion);
             }}
           >
             <Text fontSize={14} fontWeight={'bold'}>
-              {suggestion.name}
+              {suggestion}
             </Text>
           </Suggestion>
         ))}
