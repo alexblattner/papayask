@@ -8,6 +8,7 @@ const User = require('../models/user');
 const experienceController = require('./experienceController');
 const educationController = require('./educationController');
 const skillController = require('./skillController');
+const fileController = require('./fileController');
 
 function escapeRegex(text) {
   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
@@ -86,6 +87,10 @@ exports.login = async (req, res, next) => {
         populate: { path: 'university', model: 'University' },
       })
       .populate({
+        path: 'picture',
+        model: 'File',
+      })
+      .populate({
         path: 'skills',
         model: 'Skill',
         populate: [
@@ -125,6 +130,10 @@ exports.createOrLogin = async (req, res, next) => {
       .populate({
         path: 'education',
         populate: { path: 'university', model: 'University' },
+      })
+      .populate({
+        path: 'picture',
+        model: 'File',
       })
       .populate({
         path: 'skills',
@@ -170,6 +179,10 @@ exports.createOrLogin = async (req, res, next) => {
         .populate({
           path: 'education',
           populate: { path: 'university', model: 'University' },
+        })
+        .populate({
+          path: 'picture',
+          model: 'File',
         })
         .populate({
           path: 'skills',
@@ -244,6 +257,7 @@ exports.update = async (req, res) => {
       isSetUp,
       languages,
       country,
+      picture,
     } = req.body;
 
     //create experiences and store their ids in an array
@@ -291,14 +305,21 @@ exports.update = async (req, res) => {
     const skillIds = [];
     if (skills) {
       for (let i = 0; i < skills.length; i++) {
-        try {
-          const newSkill = await skillController.create(skills[i], user._id);
-          skillIds.push(newSkill._id);
-        } catch (e) {
-          console.log(e);
+        if (skills[i]._id) {
+          const updatedSkill = await skillController.update(skills[i]);
+          skillIds.push(updatedSkill._id);
+        } else {
+          try {
+            const newSkill = await skillController.create(skills[i], user._id);
+            skillIds.push(newSkill._id);
+          } catch (e) {
+            console.log(e);
+          }
         }
       }
     }
+
+    const image = await fileController.create(picture, 'imnage', user._id);
 
     const body = {
       bio,
@@ -309,6 +330,7 @@ exports.update = async (req, res) => {
       isSetUp,
       languages,
       country,
+      picture: image,
     };
 
     try {
@@ -322,6 +344,10 @@ exports.update = async (req, res) => {
         .populate({
           path: 'education',
           populate: { path: 'university', model: 'University' },
+        })
+        .populate({
+          path: 'picture',
+          model: 'File',
         })
         .populate({
           path: 'skills',

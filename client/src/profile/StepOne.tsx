@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
+import axios, { AxiosProgressEvent } from 'axios';
 
 import api from '../utils/api';
 import compressImage from '../utils/compressImage';
@@ -15,6 +15,7 @@ const HiddenInput = styled.input`
 `;
 
 const ImageContainer = styled('div')<{ image: string; progress: number }>`
+  position: relative;
   width: 300px;
   height: 300px;
   background-color: ${(props) =>
@@ -25,30 +26,38 @@ const ImageContainer = styled('div')<{ image: string; progress: number }>`
     object-fit: cover;
     width: 100%;
     height: 100%;
-    opacity: ${(props) => (props.progress >= 100 ? 1 : 0.5)};
+    opacity: ${(props) =>
+      props.progress >= 100 || props.progress === 0 ? 1 : 0.5};
   }
 `;
 
 const Uploader = styled('div')<{ progress: number }>`
   display: ${(props) => (props.progress >= 100 ? 'none' : 'block')};
+  position: absolute;
+  top: 50%;
+  left: 5%;
   width: 90%;
-  height: 10px;
+  border-radius: 20px;
+  transform: translateY(-50%);
+  text-align: center;
+  background-color: green;
+  color: white;
+  font-weight: bold;
+  z-index: 99;
 `;
 
 interface Props {
   title: string;
   bio: string;
+  image: string;
+  setImage: React.Dispatch<React.SetStateAction<string>>;
   setTitle: React.Dispatch<React.SetStateAction<string>>;
   setBio: React.Dispatch<React.SetStateAction<string>>;
+  setCloudinaryImageId: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const StepOne = (props: Props) => {
-  const [image, setImage] = React.useState<string>('');
   const [progress, setProgress] = React.useState<number>(0);
-  const [imageObg, setImageObg] = React.useState<{ id: string; name: string }>({
-    id: '',
-    name: '',
-  });
   const { title, bio, setTitle, setBio } = props;
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
@@ -65,7 +74,7 @@ const StepOne = (props: Props) => {
     reader.readAsDataURL(file);
     reader.onload = async () => {
       const image = reader.result as string;
-      setImage(image);
+      props.setImage(image);
     };
   };
 
@@ -86,35 +95,42 @@ const StepOne = (props: Props) => {
       readFile(file);
     }
 
+    setProgress(0);
+
     const { signature, timestamp } = await getCloudinarySignature();
 
     const config = {
-      onUploadProgress: (progressEvent: any) => {
-        let presentComleted = sizeCheck
-          ? Math.round((progressEvent.loaded * 50) / progressEvent.total) + 50
-          : Math.round((progressEvent.loaded * 100) / progressEvent.total);
-        setProgress(presentComleted);
+      onUploadProgress: (progressEvent: AxiosProgressEvent) => {
+        let percentCompleted = sizeCheck
+          ? Math.round((progressEvent.loaded * 50) / progressEvent.total!) + 50
+          : Math.round((progressEvent.loaded * 100) / progressEvent.total!);
+
+        if (uploadRef.current) {
+          uploadRef.current.textContent = `${percentCompleted}% completed`;
+          uploadRef.current.style.background = `linear-gradient(to right, var(--primary) ${percentCompleted}% , #aaa ${percentCompleted}%)`;
+        }
+        setProgress(percentCompleted);
       },
     };
     const preset =
       process.env.REACT_APP_ENV === 'production' ? 'production' : 'development';
 
     const formData = new FormData();
-    formData.append('file', file!);
+    formData.append('file', file);
     formData.append('upload_preset', preset);
 
     axios
       .post(
-        `https://api.cloudinary.com/v1_1/snipcritics/image/upload?api_key=${process.env.REACT_APP_CLOUDINARY_KEY}&timestamp=${timestamp}&signature=${signature}`,
+        `https://api.cloudinary.com/v1_1/snipcritics/image/upload?api_key=${process.env.REACT_APP_CLOUDINARY_KEY}&signature=${signature}&timestamp=${timestamp}`,
         formData,
         config
       )
       .then((res) => {
         const imgId = res.data.public_id.replace(`${preset}/`, '');
-        setImageObg({ id: imgId, name: res.data.original_filename });
+        props.setCloudinaryImageId(imgId);
       })
       .catch((err) => {
-        console.log(err);
+        console.log(err.response.data.error);
       });
   };
 
@@ -143,13 +159,9 @@ const StepOne = (props: Props) => {
         <Button variant="primary" onClick={() => fileInputRef.current?.click()}>
           Upload profile picture
         </Button>
-        <ImageContainer ref={imageRef} image={image} progress={progress}>
-          {image && <img src={image} alt="profile" />}
-          <Uploader ref={uploadRef} progress={progress}>
-            {progress > 0 && progress < 100 && (
-              <Text>{progress}% completed</Text>
-            )}
-          </Uploader>
+        <ImageContainer ref={imageRef} image={props.image} progress={progress}>
+          {props.image && <img src={props.image} alt="profile" />}
+          <Uploader ref={uploadRef} progress={progress}></Uploader>
         </ImageContainer>
       </Container>
     </>

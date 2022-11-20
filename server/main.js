@@ -201,13 +201,14 @@ app.get('/logout', (req, res, next) => {
 // app.get('/post/:id/:tag/:order', postController.getById, (req, res, next) => {
 //   return res.send(req.data);
 // });
-app.post('/cloudinary-signature', (req, res, next) => {
-  const timestamp = new Date().getTime();
+app.post('/cloudinary-signature', async (req, res, next) => {
+  const timestamp = Math.round(new Date().getTime() / 1000);
   const upload_preset =
     process.env.NODE_ENV == 'production' ? 'production' : 'development';
-  const signature = cloudinary.utils.api_sign_request(
-    { timestamp, upload_preset },
-    process.env.CLOUDINARY_SECRET
+  const params = { timestamp: timestamp, upload_preset: upload_preset };
+  const signature = await cloudinary.utils.api_sign_request(
+    params,
+    process.env.CLOUDINARY_API_SECRET
   );
   return res.send({
     timestamp,

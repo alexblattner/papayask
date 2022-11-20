@@ -1,5 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import { thumbnail, crop, scale } from '@cloudinary/url-gen/actions/resize';
+import { AdvancedImage } from '@cloudinary/react';
+import { CloudinaryImage } from '@cloudinary/url-gen';
+
 import { AuthContext } from '../Auth/ContextProvider';
 import Icon from '../shared/Icon';
 import { Button } from './components/Button';
@@ -7,6 +11,8 @@ import { Container } from './components/Container';
 import { Text } from './components/Text';
 
 import ProfileSetup from './ProfileSetup';
+import { cld } from '../utils/CloudinaryConfig';
+import { byRadius } from '@cloudinary/url-gen/actions/roundCorners';
 
 const SkillBadge = styled.div`
   background-color: ${(props) => props.theme.colors.primary_L2};
@@ -26,7 +32,7 @@ const CoverImage = styled.img`
   height: 100%;
 `;
 
-const ProfileImage = styled.img`
+const ProfileImage = styled.div`
   position: absolute;
   top: 150px;
   left: 64px;
@@ -37,12 +43,18 @@ const ProfileImage = styled.img`
   border: 1px solid #fff;
   border-radius: 8px;
   overflow: hidden;
-  object-fit: cover;
   z-index: 99;
+
+  img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 const Profile = () => {
   const [isOwner, setIsOwner] = React.useState<boolean>(true);
+  const [image, setImage] = React.useState<CloudinaryImage | null>(null);
   const [editType, setEditType] = React.useState<
     'initial' | 'edit-all' | 'edit-one'
   >('edit-all');
@@ -51,6 +63,7 @@ const Profile = () => {
   );
   const [showProfileSetup, setShowProfileSetup] =
     React.useState<boolean>(false);
+
   const { user } = React.useContext(AuthContext);
 
   const openProfileSetup = () => {
@@ -64,6 +77,16 @@ const Profile = () => {
     setShowProfileSetup(true);
   };
 
+  useEffect(() => {
+    if (user) {
+      const img = cld.image(
+        `${process.env.REACT_APP_ENV!}/${user.picture.name}`
+      );
+      img.resize(scale(250, 250)).roundCorners(byRadius(8));
+      setImage(img);
+    }
+  }, [user]);
+
   if (!user) return null;
   return (
     <Container width="65%" mx={'auto'}>
@@ -76,15 +99,20 @@ const Profile = () => {
       )}
       <Container width="100%" height="300px" position="relative" maxH="300px">
         <CoverImage
-          src={user.picture ?? 'https://source.unsplash.com/random'}
+          src={user.coverPicture ?? 'https://source.unsplash.com/random'}
           alt="cover-img"
         />
-        <ProfileImage
-          src={
-            user.coverPicture ?? 'https://source.unsplash.com/random/2000x500'
-          }
-          alt="profile-img"
-        />
+
+        <ProfileImage>
+          {!image ? (
+            <img
+              src={'https://source.unsplash.com/random/2000x500'}
+              alt="profile-img"
+            />
+          ) : (
+            <AdvancedImage cldImg={image} />
+          )}
+        </ProfileImage>
       </Container>
 
       <Container mt={135} pl={64}>

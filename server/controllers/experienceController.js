@@ -4,8 +4,6 @@ const companyContriller = require('./companyController');
 exports.create = async (experience, userId) => {
   const { company } = experience;
   let companyId;
-  console.log(experience);
-  console.log('company', company);
 
   const existedCompany = await companyContriller.getByName(company.name);
 

@@ -11,8 +11,6 @@ import {
   UserSkill,
   EducationLevel,
   Company,
-  RelatedEducation,
-  RelatedExperience,
 } from '../models/User';
 import ProfileSetupFooter from './ProfileSetupFooter';
 import ProfileSetupPagination from './ProfileSetupPagination';
@@ -63,6 +61,7 @@ const ProfileSetup = ({
   initialStep,
 }: ProfileSetupProps) => {
   const [title, setTitle] = useState<string>('');
+  const [image, setImage] = React.useState<string>('');
   const [token, setToken] = useState<string>('');
   const [pageLoaded, setPageLoaded] = useState<boolean>(false);
   const { user, updateUser } = React.useContext(AuthContext);
@@ -72,6 +71,7 @@ const ProfileSetup = ({
   const [skills, setSkills] = useState<UserSkill[]>([]);
   const [languages, setLanguages] = useState<string[]>([]);
   const [country, setCountry] = useState<string>('');
+  const [cloudinaryImageId, setCloudinaryImageId] = React.useState<string>('');
 
   const [inputSkill, setInputSkill] = useState<UserSkill>({
     name: '',
@@ -100,7 +100,6 @@ const ProfileSetup = ({
     type: '',
     geographic_specialization: '',
   });
-  
 
   const removeSkill = (index: number) => {
     const newSkills = [...skills];
@@ -245,17 +244,22 @@ const ProfileSetup = ({
   };
 
   const submit = () => {
-    updateUser(token, {
-      isSetUp: true,
-      title: title,
-      bio: bio,
-      skills: skills,
-      education: education,
-      experience: experience,
-      languages: languages,
-      country: country,
-    });
-    setShowProfileSetup(false);
+    try {
+      updateUser(token, {
+        isSetUp: true,
+        title: title,
+        bio: bio,
+        skills: skills,
+        education: education,
+        experience: experience,
+        languages: languages,
+        country: country,
+        picture: cloudinaryImageId,
+      });
+      setShowProfileSetup(false);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -273,9 +277,15 @@ const ProfileSetup = ({
       setTitle(user.title ?? '');
       setLanguages(user.languages);
       setCountry(user.country);
+      if (user.picture?.name) {
+        setImage(
+          `https://res.cloudinary.com/snipcritics/image/upload/v1668941778/${process.env.REACT_APP_ENV}/${user.picture.name}.jpg`
+        );
+        setCloudinaryImageId(user.picture.name);
+      }
     }
   }, [user]);
-
+  
   useEffect(() => {
     if (initialStep) {
       setStep(initialStep);
@@ -315,6 +325,9 @@ const ProfileSetup = ({
               setBio={setBio}
               setTitle={setTitle}
               title={title}
+              setCloudinaryImageId={setCloudinaryImageId}
+              image={image}
+              setImage={setImage}
             />
           )}
           {step === 1 && (
@@ -341,6 +354,7 @@ const ProfileSetup = ({
               setSkills={setSkills}
               education={education}
               experience={experience}
+              removeSkill={removeSkill}
             />
           )}
 

@@ -67,7 +67,12 @@ export interface UserProps {
   isSetUp: boolean;
   bio: string;
   email: string;
-  picture: string;
+  picture: {
+    originalName?: string;
+    name: string;
+    owner: string;
+    type: string;
+  };
   coverPicture: string;
   social: string[];
   skills: UserSkill[];

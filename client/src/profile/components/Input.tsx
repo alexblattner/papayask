@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-const StyledInput = styled.input`
+const StyledInput = styled.input<InputProps>`
   width: ${(props) => props.width || '400px'};
   height: 15px;
   border: 1px solid ${(props) => props.theme.colors.primary_L2};
@@ -8,7 +8,7 @@ const StyledInput = styled.input`
   padding: 16px;
   font-size: 16px;
   font-weight: 500;
-  margin-bottom: 30px;
+  margin-bottom: ${(props) => props.mb || '30px'};
   background-color: transparent;
 
   &:focus {
@@ -35,6 +35,7 @@ interface InputProps {
   type: string;
   placeholder: string;
   width?: string;
+  mb?: string;
 }
 
 export const Input = (props: InputProps) => {

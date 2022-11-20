@@ -46,6 +46,26 @@ const StepTwo = (props: Props) => {
     onChangeExperienceCountry,
   } = props;
 
+  const addEducationDisabled = () => {
+    return (
+      !inputEducation.startDate ||
+      !inputEducation.name ||
+      !inputEducation.level ||
+      !inputEducation.university.name ||
+      !inputEducation.university.country
+    );
+  };
+
+  const addExperienceDisabled = () => {
+    return (
+      !inputExperience.startDate ||
+      !inputExperience.company.name ||
+      !inputExperience.name ||
+      !inputExperience.type ||
+      !inputExperience.geographic_specialization
+    );
+  };
+
   return (
     <Container flex justify="space-between" height="100%">
       <Container width="50%">
@@ -89,15 +109,22 @@ const StepTwo = (props: Props) => {
               onChange={(e) => onChangeEducation('startDate', e.target.value)}
               name="startDate"
               placeholder="Start Date"
+              inputEducation={inputEducation}
             />
             <DateInput
               value={inputEducation.endDate}
               onChange={(e) => onChangeEducation('endDate', e.target.value)}
               name="endDate"
               placeholder="End Date"
+              inputEducation={inputEducation}
             />
           </Container>
-          <Button width={'400px'} variant="primary" onClick={addEducation}>
+          <Button
+            width={'400px'}
+            variant="primary"
+            onClick={addEducation}
+            disabled={addEducationDisabled()}
+          >
             Add
           </Button>
         </Container>
@@ -172,15 +199,22 @@ const StepTwo = (props: Props) => {
               onChange={(e) => onChangeExperience('startDate', e)}
               name="startDate"
               placeholder="Start Date"
+              inputExperience={inputExperience}
             />
             <DateInput
               value={inputExperience.endDate}
               onChange={(e) => onChangeExperience('endDate', e)}
               name="endDate"
               placeholder="End Date"
+              inputExperience={inputExperience}
             />
           </Container>
-          <Button variant="primary" width="400px" onClick={addExperience}>
+          <Button
+            variant="primary"
+            width="400px"
+            onClick={addExperience}
+            disabled={addExperienceDisabled()}
+          >
             Add
           </Button>
           <Container flex flexWrap gap={20} my={20}>
