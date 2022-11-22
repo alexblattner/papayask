@@ -1,14 +1,14 @@
 import styled from 'styled-components';
 
-const StyledInput = styled.input`
-  width: ${(props) => (props.type === 'text' ? '300px' : '143px')};
+const StyledInput = styled.input<InputProps>`
+  width: ${(props) => props.width || '400px'};
   height: 15px;
   border: 1px solid ${(props) => props.theme.colors.primary_L2};
   border-radius: 8px;
   padding: 16px;
   font-size: 16px;
   font-weight: 500;
-  margin-bottom: 30px;
+  margin-bottom: ${(props) => props.mb || '30px'};
 
   &:focus {
     outline: none;
@@ -32,6 +32,8 @@ interface InputProps {
   onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
   error?: string;
   type: string;
+  width?: string;
+  mb?: string;
   placeholder: string;
 }
 

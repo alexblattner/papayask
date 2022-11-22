@@ -31,7 +31,7 @@ const Result = (props:Props) => {
     return (
         <div className="result">
             <div className="result-img">
-                <img src={data.picture.name} />
+                <img src={data.picture} />
             </div>
             <div className="result-info">
                 <div className="result-name">

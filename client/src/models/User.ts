@@ -1,3 +1,5 @@
+import { QuestionProps } from "./Question";
+
 export type EducationLevel = 'Bachelor' | 'Master' | 'Doctorate' | '';
 
 export interface University {
@@ -67,12 +69,7 @@ export interface UserProps {
   isSetUp: boolean;
   bio: string;
   email: string;
-  picture: {
-    originalName?: string;
-    name: string;
-    owner: string;
-    type: string;
-  };
+  picture?: string;
   coverPicture: string;
   social: string[];
   skills: UserSkill[];
@@ -81,4 +78,8 @@ export interface UserProps {
   lastLogIn: Date;
   languages: string[];
   country: string;
+  questions?: {
+    received: QuestionProps[];
+    sent: QuestionProps[];
+  };
 }

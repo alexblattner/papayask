@@ -38,7 +38,7 @@ exports.create = async (skill, userId) => {
   return newSkill;
 };
 
-exports.update = async (skill, userId) => {
+exports.update = async (skill) => {
   const { educations, experiences } = skill;
   let experienceList = [];
   for (let i = 0; i < experiences.length; i++) {

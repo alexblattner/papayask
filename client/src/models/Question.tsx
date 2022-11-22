@@ -6,12 +6,14 @@ export type FileProps = {
     type: string
 }
 export type QuestionProps = {
-    files: FileProps[],
+    _id: string,
+    files?: FileProps[],
     sender: UserProps,
     receiver: UserProps,
     description: string,
     createdAt: string,
     uptedAt: string,
+    done: boolean
 }
 type TextCoordinates = {
     left: number,

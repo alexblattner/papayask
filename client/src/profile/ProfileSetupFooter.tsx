@@ -1,8 +1,8 @@
 import React from 'react';
 
 import { AuthContext } from '../Auth/ContextProvider';
-import { Button } from './components/Button';
-import { Container } from './components/Container';
+import { Button } from '../shared/Button';
+import { Container } from '../shared/Container';
 
 interface Props {
   step: number;

@@ -4,11 +4,11 @@ import axios, { AxiosProgressEvent } from 'axios';
 
 import api from '../utils/api';
 import compressImage from '../utils/compressImage';
-import { Button } from './components/Button';
-import { Container } from './components/Container';
-import { Input } from './components/Input';
-import { Text } from './components/Text';
-import { TextArea } from './components/TextArea';
+import { Button } from '../shared/Button';
+import { Container } from '../shared/Container';
+import { Input } from '../shared/Input';
+import { Text } from '../shared/Text';
+import { TextArea } from '../shared/TextArea';
 
 const HiddenInput = styled.input`
   display: none;
@@ -98,8 +98,7 @@ const StepOne = (props: Props) => {
     setProgress(0);
 
     const { signature, timestamp } = await getCloudinarySignature();
-    console.log('signature', signature);
-    console.log('timestamp', timestamp);
+
     const config = {
       onUploadProgress: (progressEvent: AxiosProgressEvent) => {
         let percentCompleted = sizeCheck
@@ -113,7 +112,6 @@ const StepOne = (props: Props) => {
         setProgress(percentCompleted);
       },
     };
-    console.log('config', config);
     const preset =
       process.env.REACT_APP_ENV === 'production' ? 'production' : 'development';
 

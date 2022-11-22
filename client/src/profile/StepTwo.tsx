@@ -6,10 +6,10 @@ import { DateInput } from '../shared/DateInput';
 import Icon from '../shared/Icon';
 import UniversitiesSelect from '../shared/UniversitiesSelect';
 import formatDate from '../utils/formatDate';
-import { Button } from './components/Button';
-import { Container } from './components/Container';
-import { Input } from './components/Input';
-import { Text } from './components/Text';
+import { Button } from '../shared/Button';
+import { Container } from '../shared/Container';
+import { Input } from '../shared/Input';
+import { Text } from '../shared/Text';
 import { Education, Experience } from './ProfileSetup';
 
 interface Props {
@@ -120,7 +120,7 @@ const StepTwo = (props: Props) => {
             />
           </Container>
           <Button
-            width={'400px'}
+            width={400}
             variant="primary"
             onClick={addEducation}
             disabled={addEducationDisabled()}
@@ -211,7 +211,7 @@ const StepTwo = (props: Props) => {
           </Container>
           <Button
             variant="primary"
-            width="400px"
+            width={400}
             onClick={addExperience}
             disabled={addExperienceDisabled()}
           >

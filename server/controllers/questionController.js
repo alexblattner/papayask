@@ -1,12 +1,12 @@
-const Question = require("../models/question");
-const { uploadFile, deleteFile, getFileStream } = require("../wasabi");
-const mongoose = require("mongoose");
-const User = require("../models/user");
-const Note = require("../models/note");
-const { login } = require("./userController");
+const { uploadFile, deleteFile, getFileStream } = require('../wasabi');
+const mongoose = require('mongoose');
+const User = require('../models/user');
+const Note = require('../models/note');
+const { login } = require('./userController');
+const Question = require('../models/question');
 
 function escapeRegex(text) {
-  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 }
 
 exports.deleteOldPost = async (req, res, next) => {
@@ -15,7 +15,7 @@ exports.deleteOldPost = async (req, res, next) => {
       createdAt: { $lt: new Date(Date.now() - 24 * 60 * 60 * 1000) },
     }).exec((error, posts) => {
       posts.map((post) => {
-        if (post.type == "image") deleteFile(post.content);
+        if (post.type == 'image') deleteFile(post.content);
       });
       posts.remove();
     });
@@ -23,17 +23,63 @@ exports.deleteOldPost = async (req, res, next) => {
 };
 
 exports.getById = async (req, res, next) => {
-  if(req.params.pid!="pdf.worker.js"){
+ 
+  const id = req.params.id;
+  try {
+    const question = await Question.findById(id).populate({
+      path: 'sender',
+      model: 'User',
+    });
 
-    let question = await Question.findById(req.params.pid)
+    res.send(question);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+exports.create = async (req, res, next) => {
+  try {
+    const { description, receiver } = req.body;
+    const question = new Question({
+      description,
+      receiver,
+      sender: req.user._id,
+    });
+    await question.save();
+    res.send(question);
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+};
+
+exports.getAll = async (req, res, next) => {
+  try {
+    //find all questions where the user is the sender or receiver and populate the sender and receiver fields and return object with sent and received questions
+    const questions = await Question.find({
+      $or: [{ sender: req.user._id }, { receiver: req.user._id }],
+    })
       .populate({
-        path: "sender",
-        model: "User",
+        path: 'sender',
+        model: 'User',
+      })
+      .populate({
+        path: 'receiver',
+        model: 'User',
       })
       .exec();
-    return res.send(question);
-  }else{
-    return res.send([]);
+
+    const sent = questions.filter(
+      (q) => q.sender._id.toString() === req.user._id.toString()
+    );
+    const received = questions.filter(
+      (q) => q.receiver._id.toString() === req.user._id.toString()
+    );
+
+    res.send({ sent, received });
+  } catch (err) {
+    next(err);
+    return [];
   }
 };
 
@@ -41,35 +87,49 @@ exports.getBySearch = async (req, res, next) => {
   let ob = { hidden: { $ne: true }, user: { $exists: true } };
   let skip = 0;
   const { fuzzy } = req.body;
-  let prevent=req.body.ids||[];
-  prevent=prevent.map((id)=>mongoose.Types.ObjectId(id))
+  let prevent = req.body.ids || [];
+  prevent = prevent.map((id) => mongoose.Types.ObjectId(id));
   req.session.feedTime = new Date();
   const regex = fuzzy
-    ? new RegExp(escapeRegex(req.params.search), "gi")
+    ? new RegExp(escapeRegex(req.params.search), 'gi')
     : req.params.search;
   if (!!req.params.tag) {
-    if (req.params.tag !== "all") {
+    if (req.params.tag !== 'all') {
       const tag = await Tag.findOne({ name: req.params.tag }).exec();
       if (tag) {
-        ob["tags"] = { $elemMatch: { $eq: mongoose.Types.ObjectId(tag._id) } };
+        ob['tags'] = { $elemMatch: { $eq: mongoose.Types.ObjectId(tag._id) } };
       }
     }
   }
   let SearchByTag = [];
-  const tagSearch = await Tag.aggregate([{$match:{
-    name: fuzzy ? regex : { $regex: req.params.search, $options: "i,m" },
-  }},{$lookup:{from: "posts",
-  let: { tagId: "$_id" },
-  pipeline: [
+  const tagSearch = await Tag.aggregate([
     {
-      $match: {$and:[
-        {$expr: {
-          $in: ["$$tagId", "$tags"],
-        }},
-        {_id:{$nin:prevent}}]
+      $match: {
+        name: fuzzy ? regex : { $regex: req.params.search, $options: 'i,m' },
       },
-    }],
-  as:"posts"}}]);
+    },
+    {
+      $lookup: {
+        from: 'posts',
+        let: { tagId: '$_id' },
+        pipeline: [
+          {
+            $match: {
+              $and: [
+                {
+                  $expr: {
+                    $in: ['$$tagId', '$tags'],
+                  },
+                },
+                { _id: { $nin: prevent } },
+              ],
+            },
+          },
+        ],
+        as: 'posts',
+      },
+    },
+  ]);
   const tagsS = [];
   if (tagSearch) {
     let mySum = 0;
@@ -84,9 +144,16 @@ exports.getBySearch = async (req, res, next) => {
   }
   let SearchByUser = [];
   const userS = [];
-  const userSearch = await User.find({$or:[{
-    username: fuzzy ? regex : { $regex: req.params.search, $options: "i,m" },
-  },{expertise:{$in:SearchByTag}}]});
+  const userSearch = await User.find({
+    $or: [
+      {
+        username: fuzzy
+          ? regex
+          : { $regex: req.params.search, $options: 'i,m' },
+      },
+      { expertise: { $in: SearchByTag } },
+    ],
+  });
   if (userSearch) {
     // ob["tags"] = { $elemMatch: { $eq: mongoose.Types.ObjectId(tag._id) } };
     // console.log(userSearch);
@@ -181,70 +248,70 @@ exports.getBySearch = async (req, res, next) => {
     },
     {
       $lookup: {
-        from: "reviews",
-        let: { reviewIds: "$reviews" },
+        from: 'reviews',
+        let: { reviewIds: '$reviews' },
         pipeline: [
           {
             $match: {
               $expr: {
-                $in: ["$_id", "$$reviewIds"],
+                $in: ['$_id', '$$reviewIds'],
               },
             },
           },
           {
             $lookup: {
-              from: "users",
-              localField: "user",
-              foreignField: "_id",
-              as: "user",
+              from: 'users',
+              localField: 'user',
+              foreignField: '_id',
+              as: 'user',
             },
           },
           {
-            $unwind: "$user",
+            $unwind: '$user',
           },
           {
             $project: {
-              "user.password": 0,
-              "user.updatedAt": 0,
-              "user.email": 0,
-              "user.createddAt": 0,
-              "user.confirmed": 0,
-              "user.postsAllowed": 0,
-              "user.reviewsToPost": 0,
+              'user.password': 0,
+              'user.updatedAt': 0,
+              'user.email': 0,
+              'user.createddAt': 0,
+              'user.confirmed': 0,
+              'user.postsAllowed': 0,
+              'user.reviewsToPost': 0,
             },
           },
         ],
-        as: "reviews",
+        as: 'reviews',
       },
     },
     {
       $lookup: {
-        from: "users",
-        localField: "user",
-        foreignField: "_id",
-        as: "user",
+        from: 'users',
+        localField: 'user',
+        foreignField: '_id',
+        as: 'user',
       },
     },
     {
-      $unwind: "$user",
+      $unwind: '$user',
     },
     {
       $project: {
-        "user.password": 0,
-        "user.updatedAt": 0,
-        "user.email": 0,
-        "user.createdAt": 0,
-        "user.confirmed": 0,
-        "user.postsAllowed": 0,
-        "user.reviewsToPost": 0,
+        'user.password': 0,
+        'user.updatedAt': 0,
+        'user.email': 0,
+        'user.createdAt': 0,
+        'user.confirmed': 0,
+        'user.postsAllowed': 0,
+        'user.reviewsToPost': 0,
       },
     },
     {
       $lookup: {
-        from: "tags",
-        localField: "tags",
-        foreignField: "_id",
-        as: "tags",
+        from: 'tags',
+        localField: 'tags',
+        foreignField: '_id',
+        as: 'tags',
       },
     },
     ...s, //Destructuring sort object to aggregate function
@@ -266,15 +333,15 @@ exports.getPosts = async (req, res, next) => {
           $expr: {
             $and: [
               {
-                $eq: [{ $toObjectId: req.session.uid.toString() }, "$user"],
+                $eq: [{ $toObjectId: req.session.uid.toString() }, '$user'],
               },
               {
                 $or: [
                   {
-                    $eq: ["$interest", "$$user"],
+                    $eq: ['$interest', '$$user'],
                   },
-                  { $in: ["$interest", "$$tags"] },
-                  { $eq: ["$interest", "$$post"] },
+                  { $in: ['$interest', '$$tags'] },
+                  { $eq: ['$interest', '$$post'] },
                 ],
               },
             ],
@@ -284,9 +351,9 @@ exports.getPosts = async (req, res, next) => {
           $expr: {
             $or: [
               {
-                $eq: ["$interest", "$$user"],
+                $eq: ['$interest', '$$user'],
               },
-              { $in: ["$interest", "$$tags"] },
+              { $in: ['$interest', '$$tags'] },
             ],
           },
         };
@@ -307,20 +374,24 @@ exports.getPosts = async (req, res, next) => {
   };
   if (req.params.tag) {
     var catname = req.params.tag
-      .replace("_", " ")
-      .replace("_", " ")
-      .replace("_", " ");
+      .replace('_', ' ')
+      .replace('_', ' ')
+      .replace('_', ' ');
     const tag = await Tag.findOne({ name: catname }).exec();
     if (tag) {
-      const children=await Tag.find({parent:{ $elemMatch: { $eq: mongoose.Types.ObjectId(tag._id) } }}).exec()
-      if(children.length>0){
-        let finaltags=[tag._id]
-        for(let i=0;i<children.length;i++){
-          finaltags.push(children[i]._id)
+      const children = await Tag.find({
+        parent: { $elemMatch: { $eq: mongoose.Types.ObjectId(tag._id) } },
+      }).exec();
+      if (children.length > 0) {
+        let finaltags = [tag._id];
+        for (let i = 0; i < children.length; i++) {
+          finaltags.push(children[i]._id);
         }
-        match['$and'].push({"tags":{ $in: finaltags }});
-      }else{
-        match['$and'].push({"tags":{ $elemMatch: { $eq: mongoose.Types.ObjectId(tag._id) } }});
+        match['$and'].push({ tags: { $in: finaltags } });
+      } else {
+        match['$and'].push({
+          tags: { $elemMatch: { $eq: mongoose.Types.ObjectId(tag._id) } },
+        });
       }
     }
   }
@@ -537,13 +608,21 @@ exports.getPosts = async (req, res, next) => {
       createdAt:-1
     }}
   ]).limit(12);*/
-  let start=new Date(2021, 11, 1); 
-  let s={$cond:[{$gt:[{$size:"$interests"},0]},{$divide:[{ $sum: "$interests.score" }, {$size:"$interests"}]},0]};
-  let seconds={$sum:[{$toLong:"$updatedAt"},start.getTime()]};
-  let order={$log10:{$max:[seconds,1]}};
-  let sign={$cond:[{$gt:[s,0]},1,{$cond:[{$lt:[s,0]},-1,0]}]};
-  let signedOrder={$multiply:[sign,order]}
-  let score={$sum:[signedOrder,{$divide:[seconds,10000000]}]};
+  let start = new Date(2021, 11, 1);
+  let s = {
+    $cond: [
+      { $gt: [{ $size: '$interests' }, 0] },
+      { $divide: [{ $sum: '$interests.score' }, { $size: '$interests' }] },
+      0,
+    ],
+  };
+  let seconds = { $sum: [{ $toLong: '$updatedAt' }, start.getTime()] };
+  let order = { $log10: { $max: [seconds, 1] } };
+  let sign = {
+    $cond: [{ $gt: [s, 0] }, 1, { $cond: [{ $lt: [s, 0] }, -1, 0] }],
+  };
+  let signedOrder = { $multiply: [sign, order] };
+  let score = { $sum: [signedOrder, { $divide: [seconds, 10000000] }] };
   let posts = await Post.aggregate([
     {
       $match: match,
@@ -551,148 +630,150 @@ exports.getPosts = async (req, res, next) => {
     {
       //join interestScore collection with post
       $lookup: {
-        from: "interestscores",
-        let: { tags: "$tags", user: "$user", post: "$_id" },
+        from: 'interestscores',
+        let: { tags: '$tags', user: '$user', post: '$_id' },
         pipeline: [
           {
             $match: expr,
           },
         ],
-        as: "interests",
+        as: 'interests',
       },
     },
     //{$match:{$expr:{$gt:[{$size:"$interests"},0]}}},
     {
       $addFields: {
-        score: score
-        },
+        score: score,
+      },
     },
     {
       $sort: {
         score: -1,
       },
     },
-    {$limit:12},
+    { $limit: 12 },
     {
       $lookup: {
-        from: "users",
-        localField: "user",
-        foreignField: "_id",
-        as: "user",
+        from: 'users',
+        localField: 'user',
+        foreignField: '_id',
+        as: 'user',
       },
     },
     {
-      $unwind: "$user",
+      $unwind: '$user',
     },
     {
       $addFields: {
         tags: {
           $map: {
-            input: "$tags",
-            in: { $toObjectId: "$$this" },
+            input: '$tags',
+            in: { $toObjectId: '$$this' },
           },
         },
       },
     },
     {
       $lookup: {
-        from: "tags",
-        localField: "tags",
-        foreignField: "_id",
-        as: "tags",
+        from: 'tags',
+        localField: 'tags',
+        foreignField: '_id',
+        as: 'tags',
       },
     },
     {
       $lookup: {
-        from: "reviews",
-        let: { reviewIds: "$reviews" },
+        from: 'reviews',
+        let: { reviewIds: '$reviews' },
         pipeline: [
           {
             $match: {
               $expr: {
-                $in: ["$_id", "$$reviewIds"],
+                $in: ['$_id', '$$reviewIds'],
               },
             },
           },
           {
             $lookup: {
-              from: "users",
-              localField: "user",
-              foreignField: "_id",
-              as: "user",
+              from: 'users',
+              localField: 'user',
+              foreignField: '_id',
+              as: 'user',
             },
           },
           {
-            $unwind: "$user",
+            $unwind: '$user',
           },
           {
             $project: {
-              "user.password": 0,
-              "user.updatedAt": 0,
-              "user.email": 0,
-              "user.createddAt": 0,
-              "user.confirmed": 0,
-              "user.postsAllowed": 0,
-              "user.reviewsToPost": 0,
-              "user.reviews": 0,
-              "user.comments": 0,
-              "user.posts": 0,
-              "user.links": 0,
-              "user.tokens": 0,
-              "user.request_settings": 0,
-              "user.description": 0,
-              "user.balance": 0,
-              "user.lastLogIn": 0,
-              "user.createdAt": 0,
-              "user.requestCount": 0,
-              "user.isSetUp": 0,
-              "user.comments": 0,
-              "user.reviews": 0,
-              "user.votes": 0,
+              'user.password': 0,
+              'user.updatedAt': 0,
+              'user.email': 0,
+              'user.createddAt': 0,
+              'user.confirmed': 0,
+              'user.postsAllowed': 0,
+              'user.reviewsToPost': 0,
+              'user.reviews': 0,
+              'user.comments': 0,
+              'user.posts': 0,
+              'user.links': 0,
+              'user.tokens': 0,
+              'user.request_settings': 0,
+              'user.description': 0,
+              'user.balance': 0,
+              'user.lastLogIn': 0,
+              'user.createdAt': 0,
+              'user.requestCount': 0,
+              'user.isSetUp': 0,
+              'user.comments': 0,
+              'user.reviews': 0,
+              'user.votes': 0,
             },
           },
           {
             //join interestScore collection with post
             $lookup: {
-              from: "votes",
-              let: { revId: "$_id" },
+              from: 'votes',
+              let: { revId: '$_id' },
               pipeline: [
                 {
-                  $match: { $expr: { $eq: ["$review", "$$revId"] } },
+                  $match: { $expr: { $eq: ['$review', '$$revId'] } },
                 },
               ],
-              as: "votes",
+              as: 'votes',
             },
           },
-          { $project: { "votes.post": 0, "votes.tags": 0, "votes.receiver": 0 } }
+          {
+            $project: { 'votes.post': 0, 'votes.tags': 0, 'votes.receiver': 0 },
+          },
         ],
-        as: "reviews",
+        as: 'reviews',
       },
     },
     {
       $project: {
-        "user.password": 0,
-        "user.updatedAt": 0,
-        "user.email": 0,
-        "user.createddAt": 0,
-        "user.confirmed": 0,
-        "user.postsAllowed": 0,
-        "user.reviewsToPost": 0,
-        "user.reviews": 0,
-        "user.comments": 0,
-        "user.posts": 0,
-        "user.links": 0,
-        "user.tokens": 0,
-        "user.request_settings": 0,
-        "user.description": 0,
-        "user.balance": 0,
-        "user.lastLogIn": 0,
-        "user.createdAt": 0,
-        "user.requestCount": 0,
-        "user.isSetUp": 0,
-        "user.comments": 0,
-        "user.reviews": 0,
-        "user.votes": 0,
+        'user.password': 0,
+        'user.updatedAt': 0,
+        'user.email': 0,
+        'user.createddAt': 0,
+        'user.confirmed': 0,
+        'user.postsAllowed': 0,
+        'user.reviewsToPost': 0,
+        'user.reviews': 0,
+        'user.comments': 0,
+        'user.posts': 0,
+        'user.links': 0,
+        'user.tokens': 0,
+        'user.request_settings': 0,
+        'user.description': 0,
+        'user.balance': 0,
+        'user.lastLogIn': 0,
+        'user.createdAt': 0,
+        'user.requestCount': 0,
+        'user.isSetUp': 0,
+        'user.comments': 0,
+        'user.reviews': 0,
+        'user.votes': 0,
       },
     },
   ]).limit(12);
@@ -706,8 +787,8 @@ exports.getPosts = async (req, res, next) => {
     // let votes = await Vote.find({ post: postList[postIndex]._id }).exec();
     postList[postIndex].uservotes = {
       5: [],
-      "-2": [],
-      "-1": [],
+      '-2': [],
+      '-1': [],
       0: [],
       1: [],
       2: [],
@@ -715,16 +796,17 @@ exports.getPosts = async (req, res, next) => {
     for (let i = 0; i < postList[postIndex].reviews.length; i++) {
       let finalvotes = {
         5: 0,
-        "-2": 0,
-        "-1": 0,
+        '-2': 0,
+        '-1': 0,
         0: 0,
         1: 0,
         2: 0,
       };
-      const currentvotes = postList[postIndex].reviews[i].votes
+      const currentvotes = postList[postIndex].reviews[i].votes;
       for (var j = 0; j < currentvotes.length; j++) {
         if (
-          currentvotes[j].review.toString() == postList[postIndex].reviews[i]._id.toString()
+          currentvotes[j].review.toString() ==
+          postList[postIndex].reviews[i]._id.toString()
         ) {
           finalvotes[currentvotes[j].points]++;
           if (
@@ -737,7 +819,7 @@ exports.getPosts = async (req, res, next) => {
           }
         }
       }
-      postList[postIndex].reviews[i].votes=finalvotes
+      postList[postIndex].reviews[i].votes = finalvotes;
     }
   }
   /*for (let revIndex = 0; revIndex < revList.length; revIndex++) {
@@ -789,43 +871,56 @@ exports.getPosts = async (req, res, next) => {
   console.log("f",farr.length);*/
   // console.log("orginazedData", orginazedData[0]);
   // console.log("postData", postList[1]);
-  if(req.session&&req.session.uid&&postList.length>0){
+  if (req.session && req.session.uid && postList.length > 0) {
     let postIds = postList.map((post) => post._id.toString());
-    let w=-2000;
+    let w = -2000;
     let time = new Date();
     time = time.getTime() * 1000;
     let startDate = new Date(2021, 11, 1);
-    startDate=startDate.getTime()
-    await Interest.create({topics:postIds,user:req.session.uid,weight:w});
-    let existing_interestScores = await InterestScore.find({user:req.session.uid,interest: {$in:postIds}}).exec()
-    let interestScoreIds = existing_interestScores.map((interest) => interest._id.toString());
-    let interestIds = existing_interestScores.map((interest) => interest.interest.toString());
-    let outersection=new Set(postIds);
+    startDate = startDate.getTime();
+    await Interest.create({
+      topics: postIds,
+      user: req.session.uid,
+      weight: w,
+    });
+    let existing_interestScores = await InterestScore.find({
+      user: req.session.uid,
+      interest: { $in: postIds },
+    }).exec();
+    let interestScoreIds = existing_interestScores.map((interest) =>
+      interest._id.toString()
+    );
+    let interestIds = existing_interestScores.map((interest) =>
+      interest.interest.toString()
+    );
+    let outersection = new Set(postIds);
 
-    for(let i=0;i<interestIds.length;i++){
+    for (let i = 0; i < interestIds.length; i++) {
       outersection.delete(interestIds[i]);
     }
-    outersection=Array.from(outersection);
-    let toinsert=[];
-    for(var i=0; i<outersection.length; i++){
-        toinsert.push({interest:outersection[i],score:parseFloat(
-          (parseInt(time / startDate) / 1000)*w
-        ),user:req.session.uid})
+    outersection = Array.from(outersection);
+    let toinsert = [];
+    for (var i = 0; i < outersection.length; i++) {
+      toinsert.push({
+        interest: outersection[i],
+        score: parseFloat((parseInt(time / startDate) / 1000) * w),
+        user: req.session.uid,
+      });
     }
-    if(toinsert.length>0)
-    await InterestScore.insertMany(toinsert);
-    await InterestScore.updateMany({
-      _id: {$in:interestScoreIds},
-    },{$inc:{score:parseFloat(
-      (parseInt(time / startDate) / 1000)*w
-    )}}).exec();
+    if (toinsert.length > 0) await InterestScore.insertMany(toinsert);
+    await InterestScore.updateMany(
+      {
+        _id: { $in: interestScoreIds },
+      },
+      { $inc: { score: parseFloat((parseInt(time / startDate) / 1000) * w) } }
+    ).exec();
   }
   return res.send(postList);
 };
 exports.deleteAll = (req, res, next) => {
   Post.deleteMany()
     .then(() => {
-      req.data = "gone";
+      req.data = 'gone';
       next();
     })
     .catch((e) => {

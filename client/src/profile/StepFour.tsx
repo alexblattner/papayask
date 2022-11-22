@@ -1,8 +1,8 @@
 import CountriesSelect from '../shared/CountriesSelect';
 import LanguagesSelect from '../shared/LanguagesSelect';
 import Badge from './components/Badge';
-import { Container } from './components/Container';
-import { Text } from './components/Text';
+import { Container } from '../shared/Container';
+import { Text } from '../shared/Text';
 
 interface Props {
   addLanguage: (language: string) => void;

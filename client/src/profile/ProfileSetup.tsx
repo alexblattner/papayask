@@ -14,7 +14,7 @@ import {
 } from '../models/User';
 import ProfileSetupFooter from './ProfileSetupFooter';
 import ProfileSetupPagination from './ProfileSetupPagination';
-import { Container } from './components/Container';
+import { Container } from '../shared/Container';
 import StepOne from './StepOne';
 import StepTwo from './StepTwo';
 import StepThree from './StepThree';
@@ -277,11 +277,11 @@ const ProfileSetup = ({
       setTitle(user.title ?? '');
       setLanguages(user.languages);
       setCountry(user.country);
-      if (user.picture?.name) {
+      if (user.picture) {
         setImage(
-          `https://res.cloudinary.com/snipcritics/image/upload/v1668941778/${process.env.REACT_APP_ENV}/${user.picture.name}.jpg`
+          `https://res.cloudinary.com/snipcritics/image/upload/v1668941778/${process.env.REACT_APP_ENV}/${user.picture}.jpg`
         );
-        setCloudinaryImageId(user.picture.name);
+        setCloudinaryImageId(user.picture);
       }
     }
   }, [user]);

@@ -189,7 +189,10 @@ app.get('/university/:search', async (req, res, next) => {
 // })
 app.post('/user', middleware.decodeToken, userController.createOrLogin);
 app.patch('/user/:userId', middleware.decodeToken, userController.update);
-app.get('/question/:pid', questionController.getById);
+app.get('/user/:id', userController.getById);
+app.get('/questions', middleware.decodeToken, questionController.getAll);
+app.get('/questions/:id', middleware.decodeToken, questionController.getById);
+app.post('/question', middleware.decodeToken, questionController.create);
 // app.get('/post/:id/:tag', postController.getById, (req, res, next) => {
 //   return res.send(req.data);
 // });

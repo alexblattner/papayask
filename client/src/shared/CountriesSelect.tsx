@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 
-import { Container } from '../profile/components/Container';
-import { Input } from '../profile/components/Input';
-import { Text } from '../profile/components/Text';
-import countries, { Country } from '../data/countries';
+import { Container } from './Container';
+import { Input } from './Input';
+import { Text } from './Text';
+import countries from '../data/countries';
 import { Suggestions, Suggestion } from './Suggestions';
 
 interface Props {
@@ -59,7 +59,7 @@ const CountriesSelect = (props: Props) => {
         value={value}
         placeholder="Country"
         name={inputName}
-        width={props.size === 'small' ? '188px' : ''}
+        width={props.size === 'small' ? '188px' : undefined}
         onChange={(e) => onChange(e.target.value)}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}

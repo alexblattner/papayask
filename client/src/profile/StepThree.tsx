@@ -1,8 +1,8 @@
 import React from 'react';
 import { UserEducation, UserExperience, UserSkill } from '../models/User';
-import { Container } from './components/Container';
-import { Input } from './components/Input';
-import { Text } from './components/Text';
+import { Container } from '../shared/Container';
+import { Input } from '../shared/Input';
+import { Text } from '../shared/Text';
 import SkillRow from './SkillRow';
 
 interface Props {
