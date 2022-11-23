@@ -16,6 +16,7 @@ import Creator from '../Question/Createor';
 import { UserProps } from '../models/User';
 import api from '../utils/api';
 import Image from '../shared/Image';
+import RequestSettingsModal from './RequestSettingsModal';
 
 const SkillBadge = styled.div`
   background-color: ${(props) => props.theme.colors.primary_L2};
@@ -62,6 +63,7 @@ const Profile = () => {
   );
   const [showProfileSetup, setShowProfileSetup] =
     React.useState<boolean>(false);
+  const [showSettings, setShowSettings] = React.useState<boolean>(false);
 
   const { user } = React.useContext(AuthContext);
 
@@ -105,6 +107,9 @@ const Profile = () => {
   if (!profileUser) return null;
   return (
     <Container width="65%" mx={'auto'} position="relative">
+      {showSettings && (
+        <RequestSettingsModal setShowRequestSettingsModal={setShowSettings} />
+      )}
       {showQuestionModal && (
         <Creator
           setShowQuestionModal={setShowQuestionModal}
@@ -141,21 +146,41 @@ const Profile = () => {
           </Container>
           <Container>
             {isOwner ? (
-              <Button variant="primary" onClick={openProfileSetup}>
-                <Container flex align="center" gap={8}>
-                  <Icon src="Edit_White" width={20} height={20} /> EDIT
-                </Container>
-              </Button>
+              <Container flex gap={12}>
+                {profileUser.verified ? (
+                  <Button
+                    variant="primary"
+                    onClick={() => setShowSettings(true)}
+                  >
+                    <Container flex align="center" gap={8}>
+                      <Icon src="Edit_White" width={20} height={20} /> Settings
+                    </Container>
+                  </Button>
+                ) : (
+                  <Button variant="primary" onClick={() => {}}>
+                    <Container flex align="center" gap={8}>
+                      Verify my account
+                    </Container>
+                  </Button>
+                )}
+                <Button variant="primary" onClick={openProfileSetup}>
+                  <Container flex align="center" gap={8}>
+                    <Icon src="Edit_White" width={20} height={20} /> EDIT
+                  </Container>
+                </Button>
+              </Container>
             ) : (
               <Container flex align="center" gap={12}>
-                <Button
-                  variant="secondary"
-                  onClick={() => {
-                    setShowQuestionModal(true);
-                  }}
-                >
-                  <Icon src="Send" width={25} height={25} />
-                </Button>
+                {profileUser.verified && (
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      setShowQuestionModal(true);
+                    }}
+                  >
+                    <Icon src="Send" width={25} height={25} />
+                  </Button>
+                )}
                 <Button variant="secondary" onClick={() => {}}>
                   <Icon src="Share" width={25} height={25} />
                 </Button>

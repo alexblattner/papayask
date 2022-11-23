@@ -149,7 +149,10 @@ const StepOne = (props: Props) => {
       <Text fontSize={32} fontWeight={600} mb={16}>
         Tell your clients about yourself
       </Text>
-      <TextArea value={bio} onChange={(e) => setBio(e.target.value)} />
+      <TextArea
+        value={bio}
+        onChange={(e) => setBio(e.target.value)}
+      />
       <HiddenInput
         type="file"
         ref={fileInputRef}

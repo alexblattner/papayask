@@ -9,7 +9,6 @@ import {
   UserEducation,
   UserExperience,
   UserSkill,
-  EducationLevel,
   Company,
 } from '../models/User';
 import ProfileSetupFooter from './ProfileSetupFooter';
@@ -41,7 +40,7 @@ interface ProfileSetupProps {
 export interface Education {
   university: University;
   name: string;
-  level: EducationLevel;
+  level: string;
   startDate: Date | null;
   endDate: Date | string | null;
 }
@@ -72,6 +71,7 @@ const ProfileSetup = ({
   const [languages, setLanguages] = useState<string[]>([]);
   const [country, setCountry] = useState<string>('');
   const [cloudinaryImageId, setCloudinaryImageId] = React.useState<string>('');
+  
 
   const [inputSkill, setInputSkill] = useState<UserSkill>({
     name: '',
@@ -107,6 +107,7 @@ const ProfileSetup = ({
     setSkills(newSkills);
   };
 
+  
   const onChangeEducation = (
     name: string,
     value: string | University | Date
@@ -285,7 +286,7 @@ const ProfileSetup = ({
       }
     }
   }, [user]);
-  
+
   useEffect(() => {
     if (initialStep) {
       setStep(initialStep);
@@ -306,7 +307,7 @@ const ProfileSetup = ({
     <SetupModal pageLoaded={pageLoaded}>
       <Container
         width="100%"
-        minH="100vh"
+        minH="90vh"
         flex
         dir="column"
         align="center"

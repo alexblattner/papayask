@@ -67,16 +67,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const updateUser = async (token: string, body: any) => {
-    const res = await api({
-      method: 'patch',
-      url: `/user/${user?.id}`,
-      headers: {
-        Authorization: 'Bearer ' + token,
-      },
-      data: body,
-    });
+    try {
+      const res = await api({
+        method: 'patch',
+        url: `/user/${user?.id}`,
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+        data: body,
+      });
 
-    setUser({ id: res.data.user._id, ...res.data.user });
+      setUser({ id: res.data.user._id, ...res.data.user });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const value: AuthContextReturn = {

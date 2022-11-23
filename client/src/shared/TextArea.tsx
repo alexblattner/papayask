@@ -1,3 +1,4 @@
+import { forwardRef } from 'react';
 import styled from 'styled-components';
 
 interface TextAreaProps {
@@ -15,12 +16,14 @@ const StyledTextArea = styled.textarea`
   font-weight: 500;
   margin-bottom: 30px;
 
-    &:focus {
-        outline: none;
-        border: 2px solid ${(props) => props.theme.colors.primary};
-    }
+  &:focus {
+    outline: none;
+    border: 2px solid ${(props) => props.theme.colors.primary};
+  }
 `;
 
-export const TextArea = (props: TextAreaProps) => {
-  return <StyledTextArea {...props} />;
-};
+export const TextArea = forwardRef(
+  (props: TextAreaProps, ref: React.Ref<HTMLTextAreaElement>) => {
+    return <StyledTextArea ref={ref} {...props} />;
+  }
+);

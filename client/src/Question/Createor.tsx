@@ -1,15 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
+import { PayPalButtons } from '@paypal/react-paypal-js';
 
-import { auth } from '../firebase-auth';
 import { UserProps } from '../models/User';
-import { Button } from '../shared/Button';
-import { Container } from '../shared/Container';
 import { Text } from '../shared/Text';
 import { TextArea } from '../shared/TextArea';
 import api from '../utils/api';
-import { AuthContext } from '../Auth/ContextProvider';
 import Alert from '../shared/Alert';
+import formatCurrency from '../utils/formatCurrency';
+import { AuthContext } from '../Auth/ContextProvider';
 
 const BackDrop = styled.div`
   position: fixed;
@@ -22,6 +21,7 @@ const BackDrop = styled.div`
   z-index: 999;
   display: grid;
   place-items: center;
+  padding-top: 50px;
 `;
 
 const Modal = styled.div<{ modalLoaded: boolean }>`
@@ -32,10 +32,28 @@ const Modal = styled.div<{ modalLoaded: boolean }>`
   transition: transform 0.3s ease-in-out;
   text-align: center;
   padding: 32px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
   @media (max-width: 768px) {
     width: 90%;
   }
+`;
+const CloseButton = styled.div`
+  position: absolute;
+  top: 16px;
+  right: 32px;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+  color: ${(props) => props.theme.colors.primary};
+`;
+
+const BoldSpan = styled.span`
+  font-weight: bold;
+  font-size: 18px;
 `;
 
 interface Props {
@@ -56,18 +74,34 @@ const Creator = (props: Props) => {
     setModalLoaded(true);
   }, []);
 
+  const { token } = React.useContext(AuthContext);
+  const messageRef = useRef<HTMLTextAreaElement>(null);
+
   const closeModal = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (e.target === e.currentTarget) {
       props.setShowQuestionModal(false);
     }
   };
 
+  const responseTime = (days: number, hours: number) => {
+    let responseTime = '';
+    if (days > 0) {
+      responseTime = `${days} day${days > 1 ? 's' : ''}`;
+    }
+    if (hours > 0) {
+      if (days > 0) {
+        responseTime += ' and ';
+      }
+      responseTime = `${responseTime} ${hours} hour${hours > 1 ? 's' : ''}`;
+    }
+    return responseTime;
+  };
+
   const sendRequest = async () => {
-    setLoading(true);
-    const token = await auth.currentUser?.getIdToken();
     if (!token) {
       return;
     }
+
     try {
       setAlertType('info');
       setAlertMessage('Sending Your Question...');
@@ -76,7 +110,7 @@ const Creator = (props: Props) => {
         '/question',
         {
           receiver: props.user.id,
-          description: message,
+          description: messageRef.current?.value,
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -97,11 +131,64 @@ const Creator = (props: Props) => {
       console.log(error);
     }
   };
+
+  const createOrder = async () => {
+    setLoading(true);
+    if (!token) {
+      return;
+    }
+    let finalInfo = { cost: props.user.request_settings.cost };
+    try {
+      const res = await api.post('/pay', finalInfo, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      return res.data.result.id;
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+    }
+  };
+
+  const onApprove = async (data: any, actions: any) => {
+    let info = {
+      cost: props.user.request_settings.cost,
+      capture: data.orderID,
+    };
+    try {
+      const res = await api.post('/pay', info, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.status === 200) {
+        sendRequest();
+      }
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+    }
+  };
+
   return (
     <BackDrop onClick={(e) => closeModal(e)}>
       <Modal modalLoaded={modalLoaded}>
-        <Text fontSize={32} fontWeight="bold" mb={32}>
+        <CloseButton onClick={() => props.setShowQuestionModal(false)}>
+          X
+        </CloseButton>
+        <Text fontSize={32} fontWeight="bold" align="center">
           Ask {props.user.name.split(' ')[0]} a Question
+        </Text>
+        <Text fontSize={18} align="center">
+          This will cost you{' '}
+          <BoldSpan>
+            {formatCurrency(props.user.request_settings.cost)}
+          </BoldSpan>
+        </Text>
+        <Text fontSize={18} mb={32} align="center">
+          {props.user.name.split(' ')[0]} will respond within{' '}
+          {responseTime(
+            props.user.request_settings.time_limit.days,
+            props.user.request_settings.time_limit.hours
+          )}
         </Text>
         <Alert
           show={showAlert}
@@ -112,22 +199,15 @@ const Creator = (props: Props) => {
         <TextArea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          ref = {messageRef}
         ></TextArea>
-        <Container flex align="center" justify="flex-end" gap={16}>
-          <Button
-            variant="secondary"
-            onClick={() => props.setShowQuestionModal(false)}
-          >
-            Cancel
-          </Button>
-          <Button
-            variant="primary"
-            onClick={sendRequest}
-            disabled={loading || message === ''}
-          >
-            Send
-          </Button>
-        </Container>
+
+        <PayPalButtons
+          disabled={loading || message === ''}
+          fundingSource={undefined}
+          createOrder={createOrder}
+          onApprove={onApprove}
+        />
       </Modal>
     </BackDrop>
   );

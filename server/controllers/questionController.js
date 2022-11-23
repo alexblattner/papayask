@@ -4,6 +4,8 @@ const User = require('../models/user');
 const Note = require('../models/note');
 const { login } = require('./userController');
 const Question = require('../models/question');
+const { createOrder, captureOrder } = require('../utils/paypal');
+const Purchase = require('../models/purchase');
 
 function escapeRegex(text) {
   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
@@ -23,7 +25,6 @@ exports.deleteOldPost = async (req, res, next) => {
 };
 
 exports.getById = async (req, res, next) => {
- 
   const id = req.params.id;
   try {
     const question = await Question.findById(id).populate({
@@ -38,6 +39,7 @@ exports.getById = async (req, res, next) => {
 };
 
 exports.create = async (req, res, next) => {
+  console.log(req.body);
   try {
     const { description, receiver } = req.body;
     const question = new Question({
@@ -80,6 +82,26 @@ exports.getAll = async (req, res, next) => {
   } catch (err) {
     next(err);
     return [];
+  }
+};
+
+exports.pay = async (req, res, next) => {
+  const { cost, capture } = req.body;
+
+  if (!capture) {
+    const order = await createOrder(cost, 'Papayask');
+    await Purchase.create({
+      user: req.user._id,
+      cost,
+      transactionId: order.result.id,
+      purchased: 'question',
+    });
+    return res.send(order);
+  }
+
+  const order = await captureOrder(capture);
+  if (order.result.id) {
+    return res.send(order);
   }
 };
 

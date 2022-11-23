@@ -249,6 +249,7 @@ exports.update = async (req, res) => {
       languages,
       country,
       picture,
+      request_settings,
     } = req.body;
 
     //create experiences and store their ids in an array
@@ -259,7 +260,6 @@ exports.update = async (req, res) => {
           experienceIds.push(experience[i]._id);
         } else {
           try {
-            console.log(user._id);
             const newExperience = await experienceController.create(
               experience[i],
               user._id
@@ -320,6 +320,7 @@ exports.update = async (req, res) => {
       languages,
       country,
       picture,
+      request_settings,
     };
 
     try {
