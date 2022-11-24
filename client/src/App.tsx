@@ -35,7 +35,7 @@ function App() {
                 <Route path="/search" element={<Search />}></Route>
                 <Route path="/search/:query" element={<Search />}></Route>
                 <Route path="/questions" element={<QuestionsList />}></Route>
-                <Route path="/questions/:id" element={<Question />}></Route>
+                <Route path="/question/:id" element={<Question />}></Route>
                 <Route path="/" element={<Main />}></Route>
               </Routes>
             </div>

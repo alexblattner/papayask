@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 
-import { Container } from '../profile/components/Container';
-import { Input } from '../profile/components/Input';
-import { Text } from '../profile/components/Text';
+import { Container } from './Container';
+import { Input } from './Input';
+import { Text } from './Text';
 import countries, { Country } from '../data/countries';
 import { Suggestions, Suggestion } from './Suggestions';
 

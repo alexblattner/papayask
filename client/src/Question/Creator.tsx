@@ -5,7 +5,7 @@ import { PayPalButtons } from '@paypal/react-paypal-js';
 import { UserProps } from '../models/User';
 import { Text } from '../shared/Text';
 import { TextArea } from '../shared/TextArea';
-import api from '../utils/api';
+import Api from '../utils/api';
 import Alert from '../shared/Alert';
 import formatCurrency from '../utils/formatCurrency';
 import { AuthContext } from '../Auth/ContextProvider';
@@ -70,6 +70,7 @@ const Creator = (props: Props) => {
   >('info');
   const [alertMessage, setAlertMessage] = React.useState<string>('');
   const [showAlert, setShowAlert] = React.useState<boolean>(false);
+  const api=Api();
   useEffect(() => {
     setModalLoaded(true);
   }, []);

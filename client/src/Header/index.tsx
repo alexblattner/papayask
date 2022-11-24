@@ -21,6 +21,7 @@ import SignUp from '../Auth/SignUp';
 import LogIn from '../Auth/LogIn';
 function Header() {
   const { user } = useContext(AuthContext);
+  console.log(22222, user);
   const [showSignUp, setShowSignUp] = useState(false);
   const [showLogIn, setShowLogIn] = useState(false);
   const [searchInput, setSearchInput] = useState('');
