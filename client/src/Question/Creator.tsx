@@ -11,6 +11,7 @@ import { AuthContext } from '../Auth/ContextProvider';
 import useQuestionsService from './questionsService';
 
 import api from '../utils/api';
+import { Container } from '../shared/Container';
 const BackDrop = styled.div`
   position: fixed;
   top: 0;
@@ -55,6 +56,10 @@ const CloseButton = styled.div`
 const BoldSpan = styled.span`
   font-weight: bold;
   font-size: 18px;
+`;
+
+const ItalicText = styled(Text)`
+  font-style: italic;
 `;
 
 interface Props {
@@ -179,13 +184,29 @@ const Creator = (props: Props) => {
             {formatCurrency(props.user.request_settings.cost)}
           </BoldSpan>
         </Text>
-        <Text fontSize={18} mb={32} align="center">
+        <Text
+          fontSize={18}
+          mb={props.user.questionsInstructions ? 0 : 32}
+          align="center"
+        >
           {props.user.name.split(' ')[0]} will respond within{' '}
           {responseTime(
             props.user.request_settings.time_limit.days,
             props.user.request_settings.time_limit.hours
           )}
         </Text>
+        {props.user.questionsInstructions && (
+          <Container width="100%">
+            <Text fontSize={18} fontWeight={700}>
+              {props.user.name.split(' ')[0]}'s instruction for questions:
+            </Text>
+          </Container>
+        )}
+        {props.user.questionsInstructions && (
+          <ItalicText fontSize={18} mb={32} align="center">
+            "{props.user.questionsInstructions}"
+          </ItalicText>
+        )}
         <Alert
           show={showAlert}
           message={alertMessage}
@@ -196,7 +217,7 @@ const Creator = (props: Props) => {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           ref={messageRef}
-        ></TextArea>
+        />
 
         <PayPalButtons
           disabled={loading || message === ''}

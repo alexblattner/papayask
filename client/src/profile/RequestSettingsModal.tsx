@@ -6,6 +6,7 @@ import { Button } from '../shared/Button';
 import { Container } from '../shared/Container';
 import { Input } from '../shared/Input';
 import { Text } from '../shared/Text';
+import { TextArea } from '../shared/TextArea';
 
 const BackDrop = styled.div`
   position: fixed;
@@ -41,6 +42,8 @@ interface Props {
 const RequestSettingsModal = (props: Props) => {
   const [modalLoaded, setModalLoaded] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [questionsInstructions, setQuestionsInstructions] =
+    useState<string>('');
   const [requestSettings, setRequestSettings] = useState<RequestSettings>({
     concurrent: 0,
     time_limit: {
@@ -75,6 +78,7 @@ const RequestSettingsModal = (props: Props) => {
     try {
       updateUser(token, {
         request_settings: requestSettings,
+        questionsInstructions,
       });
     } catch (error) {
       console.log(error);
@@ -96,6 +100,7 @@ const RequestSettingsModal = (props: Props) => {
   useEffect(() => {
     if (user) {
       setRequestSettings(user.request_settings);
+      setQuestionsInstructions(user.questionsInstructions || '');
     }
   }, [user]);
   return (
@@ -154,6 +159,13 @@ const RequestSettingsModal = (props: Props) => {
             mb="0px"
           />
         </Container>
+        <Text fontSize={32} fontWeight="bold" mb={16}>
+          Questions Instructions
+        </Text>
+        <TextArea
+          value={questionsInstructions}
+          onChange={(e) => setQuestionsInstructions(e.target.value)}
+        />
         <Container flex align="center" justify="flex-end" gap={16}>
           <Button
             variant="secondary"
