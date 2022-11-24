@@ -7,12 +7,14 @@ interface AuthContextReturn {
   user: UserProps | null;
   updateUser: (utoken: any, body: any) => void;
   token: string | null;
+  setUser: React.Dispatch<React.SetStateAction<UserProps | null>>;
 }
 
 export const AuthContext = createContext<AuthContextReturn>({
   user: null,
   updateUser: () => {},
   token: null,
+  setUser: () => {},
 });
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<UserProps | null>(null);
@@ -87,6 +89,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     user,
     updateUser,
     token,
+    setUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

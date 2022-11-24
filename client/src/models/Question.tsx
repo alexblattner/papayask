@@ -13,7 +13,11 @@ export type QuestionProps = {
     description: string,
     createdAt: string,
     uptedAt: string,
-    done: boolean
+    status: {
+        action: 'pending' | 'accepted' | 'rejected',
+        reason?: string,
+        done: boolean,
+    }
 }
 type TextCoordinates = {
     left: number,

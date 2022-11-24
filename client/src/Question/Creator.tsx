@@ -9,6 +9,7 @@ import api from '../utils/api';
 import Alert from '../shared/Alert';
 import formatCurrency from '../utils/formatCurrency';
 import { AuthContext } from '../Auth/ContextProvider';
+import useQuestionsService from './questionsService';
 
 const BackDrop = styled.div`
   position: fixed;
@@ -76,6 +77,7 @@ const Creator = (props: Props) => {
 
   const { token } = React.useContext(AuthContext);
   const messageRef = useRef<HTMLTextAreaElement>(null);
+  const { sendQuestion } = useQuestionsService();
 
   const closeModal = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (e.target === e.currentTarget) {
@@ -106,13 +108,9 @@ const Creator = (props: Props) => {
       setAlertType('info');
       setAlertMessage('Sending Your Question...');
       setShowAlert(true);
-      const res = await api.post(
-        '/question',
-        {
-          receiver: props.user.id,
-          description: messageRef.current?.value,
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
+      const res = await sendQuestion(
+        props.user.id,
+        messageRef.current?.value as string
       );
       if (res.status === 200) {
         setTimeout(() => {
@@ -199,7 +197,7 @@ const Creator = (props: Props) => {
         <TextArea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          ref = {messageRef}
+          ref={messageRef}
         ></TextArea>
 
         <PayPalButtons

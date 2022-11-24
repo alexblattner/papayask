@@ -1,12 +1,15 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 import { Container } from '../shared/Container';
 import { AuthContext } from '../Auth/ContextProvider';
 import { Text } from '../shared/Text';
 import { QuestionProps } from '../models/Question';
 import Image from '../shared/Image';
-import { Link } from 'react-router-dom';
+import { Button } from '../shared/Button';
+import Icon from '../shared/Icon';
+import RejectModal from './RejectModal';
 
 type TabType = 'sent' | 'recieved';
 
@@ -48,7 +51,7 @@ const AnimatedContainer = styled('div')<{ currentTab: TabType }>`
   width: 50%;
 `;
 
-const QuestionItem = styled(Link)`
+const QuestionItem = styled('div')`
   width: 100%;
   max-height: 80px;
   display: flex;
@@ -59,6 +62,7 @@ const QuestionItem = styled(Link)`
   cursor: pointer;
   color: #000;
   text-decoration: none;
+  padding-right: 10px;
 
   &:hover {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
@@ -76,10 +80,28 @@ const TruncatedText = styled('p')`
   margin: 0;
 `;
 
+const Actions = styled.div`
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  gap: 12px;
+`;
+
 const QuestionsList = () => {
   const [currentTab, setCurrentTab] = React.useState<TabType>('recieved');
   const [questions, setQuestions] = React.useState<QuestionProps[]>([]);
+  const [selectedQuestionId, setSelectedQuestionId] =
+    React.useState<string>('');
+  const [showRejectionModal, setShowRejectionModal] =
+    React.useState<boolean>(false);
   const { user } = React.useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const onClick = (question: QuestionProps) => {
+    if (currentTab === 'sent' || question.status.action !== 'pending') {
+      navigate(`/questions/${question._id}`);
+    }
+  };
 
   useEffect(() => {
     if (user) {
@@ -93,6 +115,12 @@ const QuestionsList = () => {
 
   return (
     <Container width="60%" mx={'auto'} flex dir="column" align="center">
+      {showRejectionModal && (
+        <RejectModal
+          setShowRejectModal={setShowRejectionModal}
+          questionId={selectedQuestionId}
+        />
+      )}
       <TabSwithcer>
         <Tab onClick={() => setCurrentTab('recieved')}>
           <Text
@@ -114,7 +142,7 @@ const QuestionsList = () => {
       </TabSwithcer>
       <AnimatedContainer currentTab={currentTab}>
         {questions.map((question, i) => (
-          <QuestionItem key={question._id} to={question._id}>
+          <QuestionItem key={question._id} onClick={() => onClick(question)}>
             <Image
               src={
                 currentTab === 'recieved'
@@ -131,6 +159,44 @@ const QuestionsList = () => {
               </Text>
               <TruncatedText>{question.description}</TruncatedText>
             </Container>
+            {currentTab === 'recieved' && question.status.action === 'pending' && (
+              <Actions>
+                <Button
+                  variant="secondary"
+                  onClick={() => {
+                    navigate(`/questions/${question._id}`);
+                  }}
+                >
+                  <Icon src="check" width={15} height={15} />
+                </Button>
+                <Button
+                  variant="secondary"
+                  onClick={() => {
+                    setSelectedQuestionId(question._id);
+                    setShowRejectionModal(true);
+                  }}
+                >
+                  <Icon src="close" width={15} height={15} />
+                </Button>
+              </Actions>
+            )}
+            {currentTab === 'recieved' &&
+              question.status.action === 'rejected' && (
+                <Actions>
+                  <Container flex gap={12}>
+                    <Text color="red">Declined</Text>
+                  </Container>
+                </Actions>
+              )}
+            {currentTab === 'recieved' &&
+              question.status.action === 'accepted' &&
+              question.status.done && (
+                <Actions>
+                  <Container flex gap={12}>
+                    <Text color="green">Done</Text>
+                  </Container>
+                </Actions>
+              )}
           </QuestionItem>
         ))}
       </AnimatedContainer>

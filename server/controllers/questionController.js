@@ -105,6 +105,27 @@ exports.pay = async (req, res, next) => {
   }
 };
 
+exports.updateStatus = async (req, res, next) => {
+  const { id } = req.params;
+  const { action, reason } = req.body;
+  try {
+    const question = await Question.findById(id).populate({
+      path: 'sender',
+      model: 'User',
+    });
+
+    question.status.action = action;
+    question.status.reason = reason;
+    if (action === 'rejected') {
+      question.status.done = true;
+    }
+    await question.save();
+    res.send(question);
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.getBySearch = async (req, res, next) => {
   let ob = { hidden: { $ne: true }, user: { $exists: true } };
   let skip = 0;

@@ -27,7 +27,6 @@ function Question() {
         Authorization: `Bearer ${token}`,
       },
     });
-    console.log(292929, res.data);
     setData(res.data);
     setNotes(res.data.notes);
   };
