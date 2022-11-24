@@ -4,9 +4,9 @@ import Max from "./Max";
 import api from "../utils/api";
 import { University } from "../models/User";
 import arrow from "./arrow.svg";
-import { OptionsInput } from "../shared/OptionsInput";
 import { setConstantValue } from "typescript";
-
+import OptionsInput from "../shared/OptionsInput";
+import UniversitiesSelect from "../shared/UniversitiesSelect";
 interface Props {
   values: any;
   setValues: Function;
@@ -20,7 +20,7 @@ const Education = (props:Props) => {
     const [schools,setSchools]=useState<University[]>([]);//available schools
     const [school,setSchool]=useState<University|null>(null);//selected school
     const [degrees,setDegrees]=useState<string[]>(props.degrees);//available degrees
-    const [degree,setDegree]=useState<string|null>(null);//selected degree
+    const [degree,setDegree]=useState<string>('');//selected degree
     function escapeRegex(text:string) {
       return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
     }
@@ -63,11 +63,9 @@ const Education = (props:Props) => {
     },[])
     useEffect(()=>{
       const ob=props.values?props.values:{}
+      ob["degree"]=degree
       if(school!==null){
         ob["univesity"]=school
-      }
-      if(degree!==null){
-        ob["degree"]=degree
       }
       if(rank!==0){
 
@@ -75,16 +73,23 @@ const Education = (props:Props) => {
       }
       props.setValues({...ob})
     },[school,rank,degree])
+    const uniSearchHandler=(name:string, value:string | University)=>{
+
+      if(name==="university"){
+        setSchool(value as University)
+      }else if(name==="degree"){
+        setDegree(value as string)
+      }
+    }
     return (
       <div  className="filter-popup">
         <button onClick={()=>setMenu(!menu)}>Education<img className={menu?"upside-down":""} src={arrow} /></button>
         {menu&&<>      
         <div>
-          <span>Degree</span><br/>
-          <input type="text" placeholder="Search for subject expert studied"/>
+          <OptionsInput inputName="Degree" options={degrees} adder={setDegree} placeholder="Degree"/>
         </div>
         <div>
-          <span>University</span>
+          {/*<UniversitiesSelect value={school} adder={setSchool} universities={schools} onChange={} />*/}
           <div>
             <input type="text" onChange={universitySearch} placeholder="Search for university expert studied at"/>
             {schools.map((school:any)=><div onClick={()=>addUniversity(school)}>{school.name}</div>)}

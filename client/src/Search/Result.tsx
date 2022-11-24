@@ -18,15 +18,19 @@ const Result = (props:Props) => {
         const urlParams = new URLSearchParams(search);
         const searchParams = urlParams.get("search");
         const regex = new RegExp(escapeRegex(searchParams?searchParams:""), "gi");
+        let max=0;
         for(const experience of data.experience){//loop through all experiences
             if(regex.test(experience.name)){
                 let startDate = new Date(experience.startDate);
                 let endDate = new Date(experience.endDate?experience.endDate:Date.now());
                 let diff = endDate.getTime() - startDate.getTime();
                 let years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365));
-                return years;
+                if(years>max){
+                    max=years;
+                }
             }
         }
+        return max;
     }
     return (
         <div className="result">

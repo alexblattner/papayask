@@ -1,0 +1,27 @@
+#question {
+	width: 45%;
+	/* align-content: ; */
+	display: inline-block;
+	vertical-align: top;
+	margin-left: 2.5%;
+	position: relative;
+}
+#answer {
+	width: 45%;
+	background: black;
+	height: 100px;
+	display: inline-block;
+	position: sticky;
+	/* vertical-align: top; */
+	margin-left: 5%;
+	/* horizontal-align: right; */
+}
+#description .selectedNode{
+    background: yellow;position: relative;
+}
+#description .removeNoteButton{
+    position: absolute;left: 50%;transform: translateX(-50%);top: -30px;
+}
+#note-writer{
+    position: fixed;bottom:0
+}

@@ -1,24 +1,30 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Container, Row, Button, Spinner } from "react-bootstrap";
 import moment from "moment";
-import Writing from "./Writing";
+import PDF from "./PDF";
+import SideBar from "./Answer/SideBar";
 import Image from "./Image";
 import useDevice from "../Hooks/useDevice";
 import {NoteProps,QuestionProps} from '../models/Question';
 import api from '../utils/api';
+import './question.css';
+import Description from "./Description";
+import Input from "./Input";
 function Question() {
   const [data, setData] = useState<QuestionProps | null>(null); //question data
   const [notes, setNotes] = useState<NoteProps[]>([]); //answer data
+  const [currentNote, setCurrentNote] = useState<NoteProps | null>(null); //current note
   const [cutting, setCutting] = useState(false);
   const { device } = useDevice();
   useEffect(() => {
-    loadData();
+    if (data===null) {
+      loadData();
+    }
   }, []);
   const loadData=async()=>{
     const urlSplit = window.location.pathname.split("/question/");
     const questionId = urlSplit[1];
-    const res = await api.get(`/post/`+questionId);
-    console.log(292929,res.data)
+    const res = await api.get(`/question/`+questionId);
     setData(res.data);
     setNotes(res.data.notes);
   }
@@ -31,7 +37,7 @@ function Question() {
         setNotes={setNotes}
       />)
       }else{
-        return (<Writing
+        return (<PDF
           file={data?.files[0]}
           notes={notes}
           setNotes={setNotes}
@@ -39,41 +45,31 @@ function Question() {
       }
     }
   };
+  const removeCurrentNote = () => {
+    setCurrentNote(null);
+  }
+  const addNote = (note:NoteProps) => {
+    setNotes([...notes,note]);
+  }
   if (device == "mobile") {
     return (
         <div></div>
     );
   } else {
     return (
-      <div>
           <>
-            <Container
-              className={
-                `post-border-1 post` +
-                (!navigator.userAgent.toLowerCase().match(/mobile/i) 
-                  ? " unique"
-                  : "")
-              }
+            <div
+              id="question"
             >
               <Row>
                 {" "}
-                <div
-                  className={
-                    "description" 
-                  }
-                >
-                    {data?.description}
-                </div>
+                {data?.description!=undefined&&<Description description={data?.description} notes={notes} setCurrentNote={setCurrentNote}/>}
               </Row>
-                {Array.isArray(data?.files)
-                ? postContent()
-                : postContent()}
-            </Container>
+                {postContent()}
+            </div>
+            {notes&&<SideBar notes={notes}/>}
+            <Input currentNote={currentNote} addNote={addNote} removeCurrentNote={removeCurrentNote}/>
           </>
-          <div id="answer">
-            {notes.map((c, i) => (<></>))}
-          </div>
-      </div>
     );
   }
 }

@@ -5,7 +5,8 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const session = require('cookie-session');
 const questionController = require('./controllers/questionController');
-const reviewController = require('./controllers/noteController');
+const skillController = require('./controllers/skillController');
+const noteController = require('./controllers/noteController');
 const userController = require('./controllers/userController');
 const schedule = require('node-schedule');
 const middleware = require('./firebase/Middleware');
@@ -188,6 +189,7 @@ app.get('/university/:search', async (req, res, next) => {
 //   });
 // })
 app.post('/user', middleware.decodeToken, userController.createOrLogin);
+app.post('/note', middleware.decodeToken, noteController.create);
 app.patch('/user/:userId', middleware.decodeToken, userController.update);
 app.get('/question/:pid', questionController.getById);
 // app.get('/post/:id/:tag', postController.getById, (req, res, next) => {

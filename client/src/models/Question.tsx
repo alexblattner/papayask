@@ -13,6 +13,10 @@ export type QuestionProps = {
     createdAt: string,
     uptedAt: string,
 }
+type DescriptionCoordinates = {
+    start: number,
+    end: number,
+}
 type TextCoordinates = {
     left: number,
     top: number,
@@ -27,11 +31,11 @@ type ImageCoordinates = {
     height: number
 }
 export type NoteProps = {
-    user: UserProps,
+    user?: UserProps,
     description: string,
-    coordinates: TextCoordinates[] | ImageCoordinates[] | null,
-    order: number|undefined,
-    question: string | QuestionProps,
-    createdAt: string | undefined,
-    uptedAt: string | undefined,
+    coordinates: TextCoordinates[] | ImageCoordinates[] | DescriptionCoordinates | null,
+    order?: number,
+    question?: string | QuestionProps,
+    createdAt?: string,
+    updatedAt?: string,
 }

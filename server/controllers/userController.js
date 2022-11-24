@@ -6,6 +6,7 @@ const client = new OAuth2Client(process.env.GOOGLE_APP_ID);
 
 
 const User = require("../models/user");
+const Skill = require("../models/skill");
 const experienceController = require("./experienceController");
 const educationController = require("./educationController");
 
