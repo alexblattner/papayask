@@ -5,7 +5,7 @@ const mongoose = require('mongoose'),
       sender: { type: Schema.Types.ObjectId, ref: 'User' },
       receiver: { type: Schema.Types.ObjectId, ref: 'User' },
       description: { type: Schema.Types.Mixed, required: true },
-      files: { type: Schema.Types.ObjectId, ref: 'File' },
+      files: [{ type: Schema.Types.ObjectId, ref: "File" }],
       status: {
         action: {
           type: String,

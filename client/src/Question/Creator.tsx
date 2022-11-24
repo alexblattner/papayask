@@ -5,12 +5,12 @@ import { PayPalButtons } from '@paypal/react-paypal-js';
 import { UserProps } from '../models/User';
 import { Text } from '../shared/Text';
 import { TextArea } from '../shared/TextArea';
-import api from '../utils/api';
 import Alert from '../shared/Alert';
 import formatCurrency from '../utils/formatCurrency';
 import { AuthContext } from '../Auth/ContextProvider';
 import useQuestionsService from './questionsService';
 
+import api from '../utils/api';
 const BackDrop = styled.div`
   position: fixed;
   top: 0;
@@ -154,9 +154,7 @@ const Creator = (props: Props) => {
       capture: data.orderID,
     };
     try {
-      const res = await api.post('/pay', info, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await api.post('/pay', info);
       if (res.status === 200) {
         sendRequest();
       }

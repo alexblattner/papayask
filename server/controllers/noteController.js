@@ -158,206 +158,23 @@ exports.getById = async (req, res, next) => {
     return new Error(err);
   }
 };
-exports.create = async (req, res, next) => {
-  try {
-    const post = await Post.findById(req.body.key);
-    if (req.session.uid){
-      //send push notification
-      const user = await User.findById(req.session.uid).select("+balance");
-      const receiver = await User.findById(post.user).select("+tokens");
-      const senderName = user.username;
-      const receiverDevices = receiver.tokens;
-      const title = "SnipCritics";
-      const body = `${senderName} Gave you feedback`;
-      notificationsController.sendPushNotification(
-        title,
-        body,
-        receiverDevices
-      );
-      console.log(222,req.body.content)
-      let content = Array.isArray(req.body.content[0])
-        ? req.body.content
-        : [req.body.content];
-      let t=[]
-      for(var i = 0; i < content.length; i++){
-        if(content[i].length > 0){
-          t.push(content[i])
-        }
-      }
-      content = t
-      const revob = {
-        content: content,
-        coordinates: req.body.coordinates,
-        post: req.body.key,
-        user:req.session.uid
-      };
-      const rev = new Review(revob);
-      const createdRev = await rev.save();
-      let interests = [...post.tags];
-      interests.push(post.user._id);
-      await Interest.create({
-        weight: 1,
-        user: req.session.uid,
-        topics: interests,
-      });
-      let w=1
-      let time = new Date();
-      time = time.getTime() * 1000;
-      let startDate = new Date(2021, 11, 1);
-      startDate=startDate.getTime()
-      let existing_interestScores = await InterestScore.find({user:req.session.uid,interest: {$in:interests}}).exec()
-      let interestScoreIds = existing_interestScores.map((interest) => interest._id.toString());
-      let interestIds = existing_interestScores.map((interest) => interest.interest.toString());
-      for(var i=0;i<interests.length;i++){
-        interests[i]=interests[i].toString()
-      }
-      let outersection=new Set(interests);
-
-      for(let i=0;i<interestIds.length;i++){
-        outersection.delete(interestIds[i]);
-      }
-      outersection=Array.from(outersection);
-      let toinsert=[];
-      for(var i=0; i<outersection.length; i++){
-          toinsert.push({interest:outersection[i],score:parseFloat(
-            (parseInt(time / startDate) / 1000)*w
-          ),user:req.session.uid})
-      }
-      if(toinsert.length>0)
-      await InterestScore.insertMany(toinsert);
-      await InterestScore.updateMany({
-        _id: {$in:interestScoreIds},
-      },{$inc:{score:parseFloat(
-        (parseInt(time / startDate) / 1000)*w
-      )}}).exec();
-      if (!post) {
-        throw new Error("Post Key Is Invalid");
-      }
-      if (!post.reviews) {
-        post.reviews = [createdRev._id];
-      } else {
-        post.reviews.push(createdRev._id);
-      }
-      await post.save();
-      let rewards=await Reward.findOne({user:user._id,type:"review",progress:{$nin:post._id}}).exec()
-      if(rewards){
-        req.rewards=await progress(user,rewards,post._id)
-      }
-      let dr = null;
-      if (!user.reviews) {
-        user.reviews = [createdRev._id];
-      } else {
-        user.reviews.push(createdRev._id);
-      }
-      const additional = {
-        content: post.content,
-        coordinates: req.body.coordinates,
-        type: post.type,
-        post_id: post._id,
-      };
-      if (req.body.dr) {
-        dr = await Direct_request.findOne({
-          to: req.session.uid,
-          from: post.user._id,
-          post: req.body.key,
-          done: false,
-        }).exec();
-        if (dr) {
-          await Direct_request.updateOne(
-            {
-              to: req.session.uid,
-              from: post.user._id,
-              post: req.body.key,
-              done: false,
-            },
-            { done: true }
-          ).exec();
-          const ids = [];
-          let count = parseFloat(dr.cost);
-          await Notification.create({
-            receiver: post.user._id,
-            action: "request",
-            target_type: "review",
-            target: createdRev._id,
-            sender: req.session.uid,
-            additional: additional,
-          });
-          user.balance += parseFloat(count);
-          user.requestCount--;
-        }
-      }
-      await user.save();
-      let tob={
-        tracked: post._id,tracker:{$ne:req.session.uid}
-      }
-      const trackers = await Tracker.find(tob).exec();
-      let tarr=[]
-      for (var i = 0; i < trackers.length; i++) {
-        let tt =
-          "review" +
-          (trackers[i].tracker.toString() != post.user.toString()
-            ? "_other"
-            : "");
-        tarr.push({
-          receiver: trackers[i].tracker,
-          action: "review",
-          target_type: tt,
-          target: createdRev._id,
-          sender: req.session.uid,
-          additional: additional,
-        })
-        if (post.user.toString() == trackers[i].tracker.toString()) {
-          let date = new Date();
-          date = new Date(date.getTime() + 10 * 60 * 1000);
-          let mtracker = trackers[i].tracker;
-          const job = schedule.scheduleJob(date, async () => {
-            const n = await Notification.find({
-              receiver: mtracker,
-              action: "review",
-              target_type: tt,
-              target: createdRev._id,
-              sender: req.session.uid,
-            }).exec();
-            if (n && !n.viewed) {
-              const muser = await User.findById(mtracker)
-              .select("+email")
-              .exec();
-              const fr = await Review.findById(createdRev._id)
-              .populate("post")
-              .exec();
-              sendinblue(
-                muser.email,
-                muser.username,
-                6,
-                createdRev._id.toString(),
-                fr.post.description
-              );
-            }
-          });
-        }
-      }
-      await Notification.insertMany(tarr);
-      await Tracker.create({
-        tracked: createdRev._id,
-        tracked_type: "review",
-        tracker: user,
-      });
-      const newestRev = JSON.parse(JSON.stringify(createdRev));
-      newestRev.votes = { 5: 0, 2: 0, 1: 0, 0: 0, "-1": 0, "-2": 0 };
-      if (req.body.dr && dr != undefined && dr) newestRev.dr = true;
-      newestRev.user=user
-      req.data = newestRev;
-      req.postByUser = post.user ? post.user : null;
-      next();
-      return;
-      // return res.json(createdRev);
-    } else {
-      return res.json({ error: 407 });
-    }
-  } catch (e) {
-    next(e);
+exports.create= async (req, res, next) => {
+  const question = await Question.findById(req.body.questionId).exec();
+  if (question && question.receiver.toString() == req.user._id.toString()) {
+    let content= Array.isArray(req.body.content) ? req.body.content[0] : req.body.content;
+    await Note.create({
+      user: req.user._id,
+      question: req.body.questionId,
+      content: content,
+    })
+      .then(async(data) => {
+        
+        return res.send(data);
+      })
+  } else {
+    return res.sendStatus(403);
   }
-};
+}
 
 exports.getAll = (req, res, next) => {
   Review.find({}, (error, subscribers) => {

@@ -1,6 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
 import MinMax from "./MinMax";
-import { OptionsInput } from "../shared/OptionsInput";
 interface Props {
     setValues: Function;
     countries: string[] | Promise<string[]>;
@@ -50,7 +49,6 @@ const Experience = (props:Props) => {
         </select>
         <div>{/*all */}
             <span>Geographic Specialization</span>
-            <OptionsInput options={props.countries} value={geoExpertise} onChange={setGeoExpertise}/>
         </div>
         {false&&(type==1||type==3)&&
         <div>{/*owner/employee */}

@@ -1,13 +1,13 @@
 import { useEffect, useState, createContext } from 'react';
 import { auth } from '../firebase-auth';
-import api from '../utils/api';
+import api, { setTokenForAPI } from '../utils/api';
 import { UserProps } from '../models/User';
 
 interface AuthContextReturn {
-  user: UserProps | null;
+  user: UserProps | null | undefined;
   updateUser: (utoken: any, body: any) => void;
-  token: string | null;
-  setUser: React.Dispatch<React.SetStateAction<UserProps | null>>;
+  token: string | null | undefined;
+  setUser: React.Dispatch<React.SetStateAction<UserProps | null | undefined>>;
 }
 
 export const AuthContext = createContext<AuthContextReturn>({
@@ -17,14 +17,15 @@ export const AuthContext = createContext<AuthContextReturn>({
   setUser: () => {},
 });
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<UserProps | null>(null);
-  const [token, setToken] = useState<string | null>(null);
-
+  const [user, setUser] = useState<UserProps | null | undefined>(undefined);
+  const [token, setToken] = useState<string | null | undefined>(undefined);
   useEffect(() => {
     if (user) {
       auth.currentUser?.getIdToken().then((token) => {
         setToken(token);
       });
+    } else if (user === null) {
+      setToken(null);
     }
   }, [user]);
 
@@ -84,7 +85,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       console.log(error);
     }
   };
-
+  useEffect(() => {
+    if (token !== undefined) {
+      setTokenForAPI(token);
+    }
+  }, [token]);
   const value: AuthContextReturn = {
     user,
     updateUser,

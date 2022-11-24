@@ -1,4 +1,3 @@
-import { type } from '@testing-library/user-event/dist/type';
 import {UserProps} from './User';
 export type FileProps = {
     id: string,
@@ -19,6 +18,10 @@ export type QuestionProps = {
         done: boolean,
     }
 }
+type DescriptionCoordinates = {
+    start: number,
+    end: number,
+}
 type TextCoordinates = {
     left: number,
     top: number,
@@ -33,11 +36,11 @@ type ImageCoordinates = {
     height: number
 }
 export type NoteProps = {
-    user: UserProps,
+    user?: UserProps,
     description: string,
-    coordinates: TextCoordinates[] | ImageCoordinates[] | null,
-    order: number|undefined,
-    question: string | QuestionProps,
-    createdAt: string | undefined,
-    uptedAt: string | undefined,
+    coordinates: TextCoordinates[] | ImageCoordinates[] | DescriptionCoordinates | null,
+    order?: number,
+    question?: string | QuestionProps,
+    createdAt?: string,
+    updatedAt?: string,
 }

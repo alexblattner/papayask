@@ -22,6 +22,9 @@ const api = axios.create({
   res.status(404).json({ err: "You are not authorized to do that." })
 
 */
+export const setTokenForAPI = (token) => {
+  api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+};
 api.interceptors.response.use(
   (response) => response,
   (error) => Promise.reject(error)

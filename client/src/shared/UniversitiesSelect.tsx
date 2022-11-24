@@ -9,7 +9,9 @@ import { Suggestions, Suggestion } from './Suggestions';
 
 interface Props {
   value: string;
+  universities?: University[];
   onChange: (name: string, value: string | University) => void;
+  adder?: (value: University) => void;
 }
 
 const UniversitiesSelect = (props: Props) => {
@@ -19,9 +21,13 @@ const UniversitiesSelect = (props: Props) => {
 
   useEffect(() => {
     if (value !== '' && focused) {
-      api.get(`/university/${value}`).then((res) => {
-        setUniversities(res.data);
-      });
+      if(props.universities) {
+        setUniversities(props.universities);
+      } else {
+        api.get(`/university/${value}`).then((res) => {
+          setUniversities(res.data);
+        });
+      }
     } else {
       setTimeout(() => {
         setUniversities([]);
@@ -47,6 +53,9 @@ const UniversitiesSelect = (props: Props) => {
             key={index}
             onClick={() => {
               onChange('university-name', university);
+              if (props.adder) {
+                props.adder(university);
+              }
               setUniversities([]);
             }}
           >

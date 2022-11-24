@@ -17,7 +17,6 @@ const useQuestionsService = () => {
           receiver: recieverId,
           description,
         },
-        { headers: { Authorization: `Bearer ${token}` } }
       );
 
       return res;
@@ -31,7 +30,6 @@ const useQuestionsService = () => {
       const res = await api.post(
         `/question/update-status/${questionId}`,
         { reason, action: 'rejected' },
-        { headers: { Authorization: `Bearer ${token}` } }
       );
 
       const question = res.data;
