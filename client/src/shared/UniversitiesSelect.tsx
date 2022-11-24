@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 
 import { University } from '../models/User';
-import { Container } from '../profile/components/Container';
-import { Input } from '../profile/components/Input';
-import { Text } from '../profile/components/Text';
+import { Container } from './Container';
+import { Input } from './Input';
+import { Text } from './Text';
 import api from '../utils/api';
 import { Suggestions, Suggestion } from './Suggestions';
 

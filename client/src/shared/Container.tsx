@@ -39,6 +39,7 @@ interface ContainerProps {
   minH?: string;
   maxW?: string;
   minW?: string;
+  overflow?: 'hidden' | 'scroll' | 'auto';
 }
 
 const StyledContainer = styled('div')<ContainerProps>`
@@ -90,6 +91,7 @@ const StyledContainer = styled('div')<ContainerProps>`
   min-height: ${(props) => (props.minH ? props.minH : '')};
   max-width: ${(props) => (props.maxW ? props.maxW : '')};
   min-width: ${(props) => (props.minW ? props.minW : '')};
+  overflow: ${(props) => (props.overflow ? props.overflow : 'visible')};
 `;
 
 export const Container = (props: ContainerProps) => {

@@ -5,7 +5,7 @@ const mongoose = require('mongoose'),
       originalname: { type: Schema.Types.String},
       name: { type: Schema.Types.String },
       type: { type: Schema.Types.String },
-      owner: { type: Schema.Types.ObjectId},
+      owner: { type: Schema.Types.ObjectId, ref: 'User' },
     },
     {
       timestamps: true,

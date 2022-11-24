@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 
-import { Container } from '../profile/components/Container';
-import { Input } from '../profile/components/Input';
-import { Text } from '../profile/components/Text';
-import countries, { Country } from '../data/countries';
+import { Container } from './Container';
+import { Input } from './Input';
+import { Text } from './Text';
+import countries from '../data/countries';
 import { Suggestions, Suggestion } from './Suggestions';
 
 interface Props {
@@ -12,7 +12,7 @@ interface Props {
   inputName: string;
   size?: 'small' | 'large';
   options?: string[];
-  adder?: (value:string) => void;
+  adder?: (value: string) => void;
 }
 
 const CountriesSelect = (props: Props) => {
@@ -32,6 +32,17 @@ const CountriesSelect = (props: Props) => {
         filteredCountries.forEach((country) => {
           finalSuggestions.push(country.name);
         });
+      
+        const startsWithSuggestions = finalSuggestions.filter((suggestion) =>
+          suggestion.toLowerCase().startsWith(value.toLowerCase())
+        );
+        startsWithSuggestions.forEach((suggestion) => {
+          finalSuggestions = finalSuggestions.filter(
+            (suggestion2) => suggestion2 !== suggestion
+          );
+          finalSuggestions.unshift(suggestion);
+        });
+
         setSuggestions(finalSuggestions);
       }
     } else {
@@ -48,7 +59,7 @@ const CountriesSelect = (props: Props) => {
         value={value}
         placeholder="Country"
         name={inputName}
-        width={props.size === 'small' ? '188px' : ''}
+        width={props.size === 'small' ? '188px' : undefined}
         onChange={(e) => onChange(e.target.value)}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
@@ -60,8 +71,7 @@ const CountriesSelect = (props: Props) => {
             key={index}
             onClick={() => {
               onChange(suggestion);
-              if(props.adder)
-                props.adder(suggestion);
+              if (props.adder) props.adder(suggestion);
             }}
           >
             <Text fontSize={14} fontWeight={'bold'}>

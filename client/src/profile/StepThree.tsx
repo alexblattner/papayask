@@ -1,14 +1,15 @@
 import React from 'react';
 import { UserEducation, UserExperience, UserSkill } from '../models/User';
-import { Container } from './components/Container';
-import { Input } from './components/Input';
-import { Text } from './components/Text';
+import { Container } from '../shared/Container';
+import { Input } from '../shared/Input';
+import { Text } from '../shared/Text';
 import SkillRow from './SkillRow';
 
 interface Props {
   inputSkill: UserSkill;
   setInputSkill: React.Dispatch<React.SetStateAction<UserSkill>>;
   setSkills: React.Dispatch<React.SetStateAction<UserSkill[]>>;
+  removeSkill: (index: number) => void;
   skills: UserSkill[];
   education: UserEducation[];
   experience: UserExperience[];
@@ -79,10 +80,12 @@ const StepThree = (props: Props) => {
         <SkillRow
           skill={skill}
           key={i}
+          index={i}
           education={education}
           experience={experience}
           skills={skills}
           setSkills={setSkills}
+          removeSkill={props.removeSkill}
         />
       ))}
     </Container>

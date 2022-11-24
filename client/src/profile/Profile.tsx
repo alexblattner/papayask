@@ -1,12 +1,22 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import { scale } from '@cloudinary/url-gen/actions/resize';
+import { AdvancedImage } from '@cloudinary/react';
+import { CloudinaryImage } from '@cloudinary/url-gen';
+
 import { AuthContext } from '../Auth/ContextProvider';
 import Icon from '../shared/Icon';
-import { Button } from './components/Button';
-import { Container } from './components/Container';
-import { Text } from './components/Text';
-
+import { Button } from '../shared/Button';
+import { Container } from '../shared/Container';
+import { Text } from '../shared/Text';
 import ProfileSetup from './ProfileSetup';
+import { cld } from '../utils/CloudinaryConfig';
+import { byRadius } from '@cloudinary/url-gen/actions/roundCorners';
+import Creator from '../Question/Createor';
+import { UserProps } from '../models/User';
+import api from '../utils/api';
+import Image from '../shared/Image';
+import RequestSettingsModal from './RequestSettingsModal';
 
 const SkillBadge = styled.div`
   background-color: ${(props) => props.theme.colors.primary_L2};
@@ -26,23 +36,25 @@ const CoverImage = styled.img`
   height: 100%;
 `;
 
-const ProfileImage = styled.img`
+const ProfileImage = styled.div`
   position: absolute;
   top: 150px;
   left: 64px;
-  right: 0;
-  bottom: 0;
   width: 250px;
   height: 250px;
+  right: 0;
+  bottom: 0;
   border: 1px solid #fff;
   border-radius: 8px;
   overflow: hidden;
-  object-fit: cover;
   z-index: 99;
 `;
 
 const Profile = () => {
-  const [isOwner, setIsOwner] = React.useState<boolean>(true);
+  const [isOwner, setIsOwner] = React.useState<boolean>(false);
+  const [showQuestionModal, setShowQuestionModal] =
+    React.useState<boolean>(false);
+  const [profileUser, setProfileUser] = React.useState<UserProps | null>(null);
   const [editType, setEditType] = React.useState<
     'initial' | 'edit-all' | 'edit-one'
   >('edit-all');
@@ -51,6 +63,8 @@ const Profile = () => {
   );
   const [showProfileSetup, setShowProfileSetup] =
     React.useState<boolean>(false);
+  const [showSettings, setShowSettings] = React.useState<boolean>(false);
+
   const { user } = React.useContext(AuthContext);
 
   const openProfileSetup = () => {
@@ -64,9 +78,44 @@ const Profile = () => {
     setShowProfileSetup(true);
   };
 
-  if (!user) return null;
+  const getProfileUser = async (id: string) => {
+    const res = await api.get(`/user/${id}`);
+
+    setProfileUser({ id: res.data._id, ...res.data });
+  };
+
+  useEffect(() => {
+    const id = window.location.pathname.split('/')[2];
+
+    if (id) {
+      if (id === user?.id) {
+        setProfileUser(user);
+      } else {
+        getProfileUser(id);
+      }
+    }
+  }, [window.location.pathname, user]);
+
+  useEffect(() => {
+    if (profileUser) {
+      if (profileUser?.id === user?.id) {
+        setIsOwner(true);
+      }
+    }
+  }, [profileUser]);
+
+  if (!profileUser) return null;
   return (
-    <Container width="65%" mx={'auto'}>
+    <Container width="65%" mx={'auto'} position="relative">
+      {showSettings && (
+        <RequestSettingsModal setShowRequestSettingsModal={setShowSettings} />
+      )}
+      {showQuestionModal && (
+        <Creator
+          setShowQuestionModal={setShowQuestionModal}
+          user={profileUser}
+        />
+      )}
       {showProfileSetup && (
         <ProfileSetup
           setShowProfileSetup={setShowProfileSetup}
@@ -76,15 +125,13 @@ const Profile = () => {
       )}
       <Container width="100%" height="300px" position="relative" maxH="300px">
         <CoverImage
-          src={user.picture ?? 'https://source.unsplash.com/random'}
+          src={profileUser.coverPicture ?? 'https://source.unsplash.com/random'}
           alt="cover-img"
         />
-        <ProfileImage
-          src={
-            user.coverPicture ?? 'https://source.unsplash.com/random/2000x500'
-          }
-          alt="profile-img"
-        />
+
+        <ProfileImage>
+          <Image src={profileUser?.picture} size={250} />
+        </ProfileImage>
       </Container>
 
       <Container mt={135} pl={64}>
@@ -99,16 +146,41 @@ const Profile = () => {
           </Container>
           <Container>
             {isOwner ? (
-              <Button variant="primary" onClick={openProfileSetup}>
-                <Container flex align="center" gap={8}>
-                  <Icon src="Edit_White" width={20} height={20} /> EDIT
-                </Container>
-              </Button>
+              <Container flex gap={12}>
+                {profileUser.verified ? (
+                  <Button
+                    variant="primary"
+                    onClick={() => setShowSettings(true)}
+                  >
+                    <Container flex align="center" gap={8}>
+                      <Icon src="Edit_White" width={20} height={20} /> Settings
+                    </Container>
+                  </Button>
+                ) : (
+                  <Button variant="primary" onClick={() => {}}>
+                    <Container flex align="center" gap={8}>
+                      Verify my account
+                    </Container>
+                  </Button>
+                )}
+                <Button variant="primary" onClick={openProfileSetup}>
+                  <Container flex align="center" gap={8}>
+                    <Icon src="Edit_White" width={20} height={20} /> EDIT
+                  </Container>
+                </Button>
+              </Container>
             ) : (
               <Container flex align="center" gap={12}>
-                <Button variant="secondary" onClick={() => {}}>
-                  <Icon src="Send" width={25} height={25} />
-                </Button>
+                {profileUser.verified && (
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      setShowQuestionModal(true);
+                    }}
+                  >
+                    <Icon src="Send" width={25} height={25} />
+                  </Button>
+                )}
                 <Button variant="secondary" onClick={() => {}}>
                   <Icon src="Share" width={25} height={25} />
                 </Button>
@@ -120,10 +192,10 @@ const Profile = () => {
           </Container>
         </Container>
         <Text fontSize={46} fontWeight={600}>
-          {user.name}
+          {profileUser.name}
         </Text>
         <Text fontSize={32} fontWeight={600}>
-          {user.title}
+          {profileUser.title}
         </Text>
         {/* <Container flex flexWrap justify="space-between" mt={24}>
           <Container flex dir="column" gap={24} width="50%">

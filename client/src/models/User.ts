@@ -1,4 +1,13 @@
-export type EducationLevel = 'Bachelor' | 'Master' | 'Doctorate' | '';
+import { QuestionProps } from './Question';
+
+export interface RequestSettings {
+  concurrent: number;
+  cost: number;
+  time_limit: {
+    days: number;
+    hours: number;
+  };
+}
 
 export interface University {
   _id?: string;
@@ -31,7 +40,7 @@ export interface UserExperience {
 export interface UserEducation {
   university: University;
   name: string;
-  level: EducationLevel;
+  level: string;
   startDate: Date;
   endDate?: Date | string;
 }
@@ -67,7 +76,7 @@ export interface UserProps {
   isSetUp: boolean;
   bio: string;
   email: string;
-  picture: string;
+  picture?: string;
   coverPicture: string;
   social: string[];
   skills: UserSkill[];
@@ -76,4 +85,10 @@ export interface UserProps {
   lastLogIn: Date;
   languages: string[];
   country: string;
+  verified: boolean;
+  request_settings: RequestSettings;
+  questions?: {
+    received: QuestionProps[];
+    sent: QuestionProps[];
+  };
 }

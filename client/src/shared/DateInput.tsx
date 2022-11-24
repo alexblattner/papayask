@@ -1,5 +1,5 @@
-import { useState } from 'react';
 import styled from 'styled-components';
+import { Education, Experience } from '../profile/ProfileSetup';
 
 const StyledInput = styled('input')`
   width: 193px;
@@ -41,6 +41,8 @@ interface InputProps {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   error?: string;
   placeholder: string;
+  inputEducation?: Education;
+  inputExperience?: Experience;
 }
 
 const formatedDate = (date: Date | null | string): string => {
@@ -62,11 +64,47 @@ const formatedDate = (date: Date | null | string): string => {
 };
 
 export const DateInput = (props: InputProps) => {
+  const minDate = () => {
+    let date = '1977-01-01';
+    if (props.name.includes('end')) {
+      if (props.inputExperience) {
+        if (props.inputExperience.startDate) {
+          date = formatedDate(props.inputExperience.startDate);
+        }
+      }
+      if (props.inputEducation) {
+        if (props.inputEducation.startDate) {
+          date = formatedDate(props.inputEducation.startDate);
+        }
+      }
+    }
+    return date;
+  };
+
+  const maxDate = () => {
+    let date = formatedDate(new Date());
+    if (props.name.includes('start')) {
+      if (props.inputExperience) {
+        if (props.inputExperience.endDate) {
+          date = formatedDate(props.inputExperience.endDate);
+        }
+      }
+      if (props.inputEducation) {
+        if (props.inputEducation.endDate) {
+          date = formatedDate(props.inputEducation.endDate);
+        }
+      }
+    }
+
+    return date;
+  };
   return (
     <StyledInput
       {...props}
       value={formatedDate(props.value)}
       type="date"
+      max={maxDate()}
+      min={minDate()}
       onChange={(e) => {
         props.onChange(e);
       }}

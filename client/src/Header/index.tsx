@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useContext } from "react";
-import "./Header.css";
-import api, { baseURL } from "../utils/api"; //axios with necessary configurations
-import { auth } from "../firebase-auth";
+import React, { useState, useEffect, useContext } from 'react';
+import './Header.css';
+import api, { baseURL } from '../utils/api'; //axios with necessary configurations
+import { auth } from '../firebase-auth';
 import {
   Navbar,
   Form,
@@ -11,19 +11,19 @@ import {
   Nav,
   Container,
   Modal,
-} from "react-bootstrap";
+} from 'react-bootstrap';
 // import UsernamePopup from "./UsernamePopup";
 // import default_profile from "../default_profile.svg";
 // import useDevice from "../Hooks/useDevice";
-import { Link } from "react-router-dom";
-import { AuthContext } from "../Auth/ContextProvider";
-import SignUp from "../Auth/SignUp";
-import LogIn from "../Auth/LogIn";
+import { Link } from 'react-router-dom';
+import { AuthContext } from '../Auth/ContextProvider';
+import SignUp from '../Auth/SignUp';
+import LogIn from '../Auth/LogIn';
 function Header() {
   const { user } = useContext(AuthContext);
   const [showSignUp, setShowSignUp] = useState(false);
   const [showLogIn, setShowLogIn] = useState(false);
-  const [searchInput, setSearchInput] = useState("");
+  const [searchInput, setSearchInput] = useState('');
   const logout = () => {
     auth.signOut();
   };
@@ -55,72 +55,81 @@ function Header() {
   return (
     <>
       {!(
-        window.location.href.includes("/sign-up") ||
-        window.location.href.includes("/log-in")
+        window.location.href.includes('/sign-up') ||
+        window.location.href.includes('/log-in')
       ) && (
         <header className="header-container">
           <div className="inner">
-          <Link id="logo" to="/">
-            <img src="/assets/images/PapayaLogo.svg" />
-            Papayask
-          </Link>
-          <Form id="search-bar">
-            <Button
-              onClick={handleSearch}
-              variant="success"
-              id="search-button"
-            >
-              <img src={"/assets/images/search.svg"} />
-            </Button>
-            <FormControl
-              type="text"
-              placeholder="Search..."
-              className="mr-sm-2"
-              id="search-input"
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-            />
-          </Form>
-          {user ? (
-            <>
+            <Link id="logo" to="/">
+              <img src="/assets/images/PapayaLogo.svg" />
+              Papayask
+            </Link>
+            <Form id="search-bar">
+              <Button
+                onClick={handleSearch}
+                variant="success"
+                id="search-button"
+              >
+                <img src={'/assets/images/search.svg'} />
+              </Button>
+              <FormControl
+                type="text"
+                placeholder="Search..."
+                className="mr-sm-2"
+                id="search-input"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+              />
+            </Form>
+            {user ? (
+              <>
+                <div className="images-header-container">
+                  <img
+                    className="header-img"
+                    src={'/assets/images/directRequest.svg'}
+                  />
+                  <img className="header-img" src={'/assets/images/bell.svg'} />
+                  <img
+                    className="header-img"
+                    src={'/assets/images/message.svg'}
+                  />
+                  <img
+                    className="header-img"
+                    src={'/assets/images/heart.svg'}
+                  />
+                  <Link to={`/profile/${user.id}`}>
+                    {' '}
+                    <img
+                      className="header-img"
+                      src={'/assets/images/user.svg'}
+                    />{' '}
+                  </Link>
+                </div>
+              </>
+            ) : (
               <div className="images-header-container">
                 <img
                   className="header-img"
-                  src={"/assets/images/directRequest.svg"}
+                  src={'/assets/images/direction.svg'}
                 />
-                <img className="header-img" src={"/assets/images/bell.svg"} />
-                <img
-                  className="header-img"
-                  src={"/assets/images/message.svg"}
-                />
-                <img className="header-img" src={"/assets/images/heart.svg"} />
-                <img className="header-img" src={"/assets/images/user.svg"} />
+                <img className="header-img" src={'/assets/images/dollar.svg'} />
+                <div className="give">Become a giver</div>
+                <button
+                  className="auth-button"
+                  onClick={() => setShowLogIn(true)}
+                >
+                  Log In
+                </button>
+                <button
+                  className="auth-button sign-up"
+                  onClick={() => setShowSignUp(true)}
+                >
+                  Sign Up
+                </button>
               </div>
-            </>
-          ) : (
-            <div className="images-header-container">
-              <img
-                className="header-img"
-                src={"/assets/images/direction.svg"}
-              />
-              <img className="header-img" src={"/assets/images/dollar.svg"} />
-              <div className="give">Become a giver</div>
-              <button
-                className="auth-button"
-                onClick={() => setShowLogIn(true)}
-              >
-                Log In
-              </button>
-              <button
-                className="auth-button sign-up"
-                onClick={() => setShowSignUp(true)}
-              >
-                Sign Up
-              </button>
-            </div>
-          )}
+            )}
 
-          {/* {user ? (
+            {/* {user ? (
             <Button onClick={logout}>Log Out</Button>
           ) : (
             <>

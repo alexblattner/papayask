@@ -191,7 +191,11 @@ app.get('/university/:search', async (req, res, next) => {
 app.post('/user', middleware.decodeToken, userController.createOrLogin);
 app.post('/note', middleware.decodeToken, noteController.create);
 app.patch('/user/:userId', middleware.decodeToken, userController.update);
-app.get('/question/:pid', questionController.getById);
+app.get('/user/:id', userController.getById);
+app.get('/questions', middleware.decodeToken, questionController.getAll);
+app.get('/questions/:id', middleware.decodeToken, questionController.getById);
+app.post('/question', middleware.decodeToken, questionController.create);
+app.post('/pay', middleware.decodeToken, questionController.pay);
 // app.get('/post/:id/:tag', postController.getById, (req, res, next) => {
 //   return res.send(req.data);
 // });
@@ -203,12 +207,13 @@ app.get('/logout', (req, res, next) => {
 // app.get('/post/:id/:tag/:order', postController.getById, (req, res, next) => {
 //   return res.send(req.data);
 // });
-app.post('/cloudinary-signature', (req, res, next) => {
-  const timestamp = new Date().getTime();
+app.post('/cloudinary-signature', async (req, res, next) => {
+  const timestamp = Math.round(new Date().getTime() / 1000);
   const upload_preset =
     process.env.NODE_ENV == 'production' ? 'production' : 'development';
-  const signature = cloudinary.utils.api_sign_request(
-    { timestamp, upload_preset },
+  const params = { timestamp: timestamp, upload_preset: upload_preset };
+  const signature = await cloudinary.utils.api_sign_request(
+    params,
     process.env.CLOUDINARY_API_SECRET
   );
   return res.send({

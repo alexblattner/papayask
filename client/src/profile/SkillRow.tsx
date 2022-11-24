@@ -8,25 +8,25 @@ import {
   UserExperience,
   UserSkill,
 } from '../models/User';
-import { Container } from './components/Container';
+import { Container } from '../shared/Container';
 import Icon from '../shared/Icon';
-import { Text } from './components/Text';
+import { Text } from '../shared/Text';
 import styled from 'styled-components';
-import { Button } from './components/Button';
-import { Input } from './components/Input';
+import { Button } from '../shared/Button';
+import { Input } from '../shared/Input';
 import formatDate from '../utils/formatDate';
 
 const ListItem = styled('div')`
   cursor: pointer;
   padding: 5px;
   transition: all 0.3s ease-in-out;
-  border-bottom: 1px solid var(--primary);
+  border-bottom: 1px solid ${(props) => props.theme.colors.primary};
   display: flex;
   align-items: center;
   justify-content: space-between;
-
+  padding-bottom: 16px;
   &:hover {
-    background-color: ${(props) => props.theme.colors.primary_L2};
+    background-color: ${(props) => props.theme.colors.secondary_L2};
   }
 `;
 
@@ -41,6 +41,8 @@ interface Props {
   experience: UserExperience[];
   skills: UserSkill[];
   setSkills: React.Dispatch<React.SetStateAction<UserSkill[]>>;
+  removeSkill: (index: number) => void;
+  index: number;
 }
 
 const SkillRow = ({
@@ -49,6 +51,8 @@ const SkillRow = ({
   experience,
   skills,
   setSkills,
+  removeSkill,
+  index,
 }: Props) => {
   const [relatedEducation, setRelatedEducation] = React.useState<
     RelatedEducation[]
@@ -65,7 +69,9 @@ const SkillRow = ({
   const [experienceIndexSelected, setexperienceIndexSelected] = React.useState<
     number[]
   >([]);
-  const [yearsInputs, setYearsInput] = React.useState<number[]>([]);
+  const [yearsInputs, setYearsInput] = React.useState<
+    { index: number; years: number }[]
+  >([]);
 
   const selectEducation = (index: number) => {
     if (educationIndexSelected.includes(index)) {
@@ -89,7 +95,7 @@ const SkillRow = ({
         experienceIndexSelected.filter((i) => i !== index)
       );
       const newYears = [...yearsInputs];
-      newYears[index] = 0;
+      newYears.splice(index, 1);
       setYearsInput(newYears);
     } else {
       setexperienceIndexSelected([...experienceIndexSelected, index]);
@@ -108,9 +114,20 @@ const SkillRow = ({
   const closeModal = () => {
     setShowRelatedEducation(false);
     setShowRelatedExperience(false);
-    setYearsInput([]);
-    setEducationIndexSelected([]);
-    setexperienceIndexSelected([]);
+    getSelectedIndexes();
+  };
+
+  const getYearsNumber = (index: number, field: UserExperience): number => {
+    const years = yearsInputs.find((i) => i.index === index)?.years;
+    if (!years) {
+      return 0;
+    }
+    return years > numberOfYears(field) ? numberOfYears(field) : years;
+  };
+
+  const getInputYears = (index: number) => {
+    const years = yearsInputs.find((i) => i.index === index)?.years;
+    return years || 0;
   };
 
   const add = () => {
@@ -118,7 +135,6 @@ const SkillRow = ({
       let newRelatedEducation: RelatedEducation[] = [];
       educationIndexSelected.forEach((index) => {
         const years = numberOfYears(education[index]);
-
         const related = {
           education: education[index],
           years: years,
@@ -128,7 +144,7 @@ const SkillRow = ({
 
       const updatedSkill = {
         ...skill,
-        education: [...newRelatedEducation],
+        educations: [...newRelatedEducation],
       };
 
       const newSkills = skills.map((s) => {
@@ -143,11 +159,7 @@ const SkillRow = ({
     } else {
       let newRelatedExperience: RelatedExperience[] = [];
       experienceIndexSelected.forEach((index) => {
-        const years =
-          numberOfYears(experience[index]) < yearsInputs[index] ||
-          yearsInputs[index] === 0
-            ? numberOfYears(experience[index])
-            : yearsInputs[index];
+        const years = getYearsNumber(index, experience[index]);
         const related = {
           experience: experience[index],
           years: years,
@@ -172,33 +184,37 @@ const SkillRow = ({
   };
 
   const setYears = (index: number, value: string) => {
-    if (!experienceIndexSelected.includes(index)) {
-      return;
-    }
     const years = parseInt(value);
     if (years) {
       const newYears = [...yearsInputs];
-      newYears[index] = years;
+      const indexFound = newYears.findIndex((i) => i.index === index);
+      if (indexFound !== -1) {
+        newYears[indexFound].years = years;
+      } else {
+        newYears.push({ index: index, years: years });
+      }
       setYearsInput(newYears);
     } else {
       const newYears = [...yearsInputs];
-      newYears[index] = 0;
+      const indexFound = newYears.findIndex((i) => i.index === index);
+      if (indexFound !== -1) {
+        newYears[indexFound].years = 0;
+      } else {
+        newYears.push({ index: index, years: 0 });
+      }
+
       setYearsInput(newYears);
     }
   };
 
-  useEffect(() => {
-    const years = experience.map(() => 0);
-    setYearsInput(years);
-  }, [experience]);
-
-  useEffect(() => {
-    setRelatedEducation(skill.educations);
-    setRelatedExperience(skill.experiences);
+  const getSelectedIndexes = () => {
     const educationIndexes: number[] = [];
     education.forEach((e) => {
       skill.educations.forEach((s) => {
-        if (e.name === s.education.name) {
+        if (
+          e.name === s.education.name &&
+          e.university.name === s.education.university.name
+        ) {
           educationIndexes.push(education.indexOf(e));
         }
       });
@@ -207,12 +223,34 @@ const SkillRow = ({
     const experienceIndexes: number[] = [];
     experience.forEach((e) => {
       skill.experiences.forEach((s) => {
-        if (e.name === s.experience.name) {
+        if (
+          e.name === s.experience.name &&
+          e.company.name === s.experience.company.name
+        ) {
           experienceIndexes.push(experience.indexOf(e));
         }
       });
     });
     setexperienceIndexSelected(experienceIndexes);
+  };
+
+  useEffect(() => {
+    const years = experience.map((exp, i) => ({
+      index: i,
+      years:
+        skill.experiences.find(
+          (s) =>
+            s.experience.name === exp.name &&
+            s.experience.company.name === exp.company.name
+        )?.years || 0,
+    }));
+    setYearsInput(years);
+  }, [experience, skill]);
+
+  useEffect(() => {
+    setRelatedEducation(skill.educations);
+    setRelatedExperience(skill.experiences);
+    getSelectedIndexes();
   }, [skill]);
 
   return (
@@ -261,13 +299,22 @@ const SkillRow = ({
                         <Text>/</Text>
                         <Text fontSize={16}>{exp.company.name}</Text>
                       </Container>
-                      <Input
-                        name="years"
-                        value={yearsInputs[i] === 0 ? '' : yearsInputs[i]}
-                        onChange={(e) => setYears(i, e.target.value)}
-                        placeholder="Years"
-                        type="number"
-                      />
+                      {experienceIndexSelected.includes(i) && (
+                        <Container flex gap={32} align="center">
+                          <Text fontSize={16}> How many years?</Text>
+                          <Input
+                            name="years"
+                            value={
+                              getInputYears(i) || getYearsNumber(i, exp) || ''
+                            }
+                            onChange={(e) => setYears(i, e.target.value)}
+                            placeholder=""
+                            type="number"
+                            width="100px"
+                            mb="0px"
+                          />
+                        </Container>
+                      )}
                     </div>
                     <CheckIcon selected={experienceIndexSelected.includes(i)}>
                       <Icon src="check" width={30} height={30} />
@@ -294,8 +341,16 @@ const SkillRow = ({
         borderBottom="1px solid #f8cbc9"
         key={skill.name}
       >
-        <Container width="200px" borderRight="1px solid #f8cbc9">
-          {skill.name}
+        <Container
+          width="200px"
+          flex
+          align="center"
+          gap={16}
+          borderRight="1px solid #f8cbc9"
+        >
+          <Container onClick={() => removeSkill(index)}>
+            <Icon src="Delete" /> {skill.name}
+          </Container>
         </Container>
         <Container
           width="calc(50% - 112px)"
