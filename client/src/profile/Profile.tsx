@@ -12,7 +12,7 @@ import { Text } from '../shared/Text';
 import ProfileSetup from './ProfileSetup';
 import { cld } from '../utils/CloudinaryConfig';
 import { byRadius } from '@cloudinary/url-gen/actions/roundCorners';
-import Creator from '../Question/Createor';
+import Creator from '../Question/Creator';
 import { UserProps } from '../models/User';
 import api from '../utils/api';
 import Image from '../shared/Image';
