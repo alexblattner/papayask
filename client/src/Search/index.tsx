@@ -9,7 +9,7 @@ import MinMax from "./MinMax";
 import Location from "./Location";
 import Budget from "./Budget";
 import Result from "./Result";
-import Api from "../utils/api";
+import api from "../utils/api";
 interface EduProps {
     name:string;
     rank:number|null;
@@ -17,7 +17,6 @@ interface EduProps {
     university:string;
 }
 const Search = () => {
-    const api=Api();
     const {search}=useLocation();
     const [allResults, setAllResults] = useState<UserProps[]>([]);
     const [results, setResults] = useState<UserProps[]>([]);

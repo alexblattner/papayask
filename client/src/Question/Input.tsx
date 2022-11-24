@@ -9,6 +9,7 @@ interface Props {
 const Input = (props:Props) => {
     const [content, setContent] = useState("");
     const submitNote = () => {
+        alert(content)
         if(content.length>0){
             api.post("/note",{
                 content:content,

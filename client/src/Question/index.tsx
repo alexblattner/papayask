@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useContext } from "react";
 import { Container, Row, Button, Spinner } from "react-bootstrap";
 import moment from "moment";
 import PDF from "./PDF";
@@ -10,17 +10,24 @@ import api from '../utils/api';
 import './question.css';
 import Description from "./Description";
 import Input from "./Input";
+import { AuthContext } from "../Auth/ContextProvider";
 function Question() {
+  const {token,user} = useContext(AuthContext);
   const [data, setData] = useState<QuestionProps | null>(null); //question data
   const [notes, setNotes] = useState<NoteProps[]>([]); //answer data
   const [currentNote, setCurrentNote] = useState<NoteProps | null>(null); //current note
   const [cutting, setCutting] = useState(false);
   const { device } = useDevice();
   useEffect(() => {
-    if (data===null) {
+    if (data===null&&user!=undefined) {
       loadData();
     }
   }, []);
+  useEffect(() => {
+    if (data===null&&user!=undefined) {
+      loadData();
+    }
+  }, [user]);
   const loadData=async()=>{
     const urlSplit = window.location.pathname.split("/question/");
     const questionId = urlSplit[1];

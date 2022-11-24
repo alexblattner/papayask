@@ -161,12 +161,14 @@ exports.getById = async (req, res, next) => {
 exports.create= async (req, res, next) => {
   const question = await Question.findById(req.body.questionId).exec();
   if (question && question.receiver.toString() == req.user._id.toString()) {
+    let content= Array.isArray(req.body.content) ? req.body.content[0] : req.body.content;
     await Note.create({
       user: req.user._id,
       question: req.body.questionId,
-      content: req.body.content,
+      content: content,
     })
-      .then((data) => {
+      .then(async(data) => {
+        
         return res.send(data);
       })
   } else {
