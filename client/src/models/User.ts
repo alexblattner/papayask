@@ -92,4 +92,5 @@ export interface UserProps {
     received: QuestionProps[];
     sent: QuestionProps[];
   };
+  newQuestionsCount: number;
 }

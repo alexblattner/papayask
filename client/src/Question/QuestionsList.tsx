@@ -109,7 +109,7 @@ const QuestionsList = () => {
         currentTab === 'recieved'
           ? user.questions?.received
           : user.questions?.sent;
-      setQuestions(questions || []);
+      setQuestions(questions?.reverse() || []);
     }
   }, [user, currentTab]);
 

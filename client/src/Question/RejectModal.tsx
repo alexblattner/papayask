@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { Button } from '../shared/Button';
@@ -61,6 +61,7 @@ const RejectModal = (props: Props) => {
   ];
 
   const { rejectQuestion } = useQuestionsService();
+  
 
   const closeModal = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (e.target === e.currentTarget) {
@@ -92,6 +93,7 @@ const RejectModal = (props: Props) => {
     const finalReason = reason === 'Other' ? customReason : reason;
     await rejectQuestion(props.questionId, finalReason);
     setLoading(false);
+
     props.setShowRejectModal(false);
   };
 

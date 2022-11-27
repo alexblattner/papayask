@@ -224,6 +224,7 @@ const Creator = (props: Props) => {
           fundingSource={undefined}
           createOrder={createOrder}
           onApprove={onApprove}
+          
         />
       </Modal>
     </BackDrop>

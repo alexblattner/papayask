@@ -2,12 +2,14 @@ import { useEffect, useState, createContext } from 'react';
 import { auth } from '../firebase-auth';
 import api, { setTokenForAPI } from '../utils/api';
 import { UserProps } from '../models/User';
+import { QuestionProps } from '../models/Question';
 
 interface AuthContextReturn {
   user: UserProps | null | undefined;
   updateUser: (utoken: any, body: any) => void;
   token: string | null | undefined;
   setUser: React.Dispatch<React.SetStateAction<UserProps | null | undefined>>;
+  getUser: () => void;
 }
 
 export const AuthContext = createContext<AuthContextReturn>({
@@ -15,7 +17,9 @@ export const AuthContext = createContext<AuthContextReturn>({
   updateUser: () => {},
   token: null,
   setUser: () => {},
+  getUser: () => {},
 });
+
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<UserProps | null | undefined>(undefined);
   const [token, setToken] = useState<string | null | undefined>(undefined);
@@ -51,7 +55,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       getUserQuestions(token),
     ]);
 
-    setUser({ id: user.data._id, ...user.data, questions });
+    setUser({
+      id: user.data._id,
+      ...user.data,
+      questions,
+      newQuestionsCount: newQuestionsCount(questions.received),
+    });
   };
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -69,6 +78,30 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return unsubscribe;
   }, []);
 
+  const newQuestionsCount = (questions: QuestionProps[]) => {
+    return questions.filter((question) => question.status.action === 'pending')
+      .length;
+  };
+
+  const getUser = async () => {
+    if (!token) {
+      return;
+    }
+    const [updatedUser, questions] = await Promise.all([
+      api({
+        method: 'get',
+        url: `/user/${user?.id}`,
+      }),
+      getUserQuestions(token),
+    ]);
+    setUser({
+      id: updatedUser.data._id,
+      ...updatedUser.data,
+      questions,
+      newQuestionsCount: newQuestionsCount(questions.received),
+    });
+  };
+
   const updateUser = async (token: string, body: any) => {
     try {
       const res = await api({
@@ -79,8 +112,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         },
         data: body,
       });
-
-      setUser({ id: res.data.user._id, ...res.data.user });
+      const questions = await getUserQuestions(token);
+      setUser({
+        id: res.data.user._id,
+        ...res.data.user,
+        questions,
+        newQuestionsCount: newQuestionsCount(questions.received),
+      });
     } catch (error) {
       console.log(error);
     }
@@ -90,11 +128,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setTokenForAPI(token);
     }
   }, [token]);
+
   const value: AuthContextReturn = {
     user,
     updateUser,
     token,
     setUser,
+    getUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

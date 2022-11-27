@@ -37,6 +37,7 @@ const useQuestionsService = () => {
       if (user?.questions) {
         const updatedUser = {
           ...user,
+          newQuestionsCount: user.newQuestionsCount - 1,
           questions: {
             sent: [...user.questions.sent],
             received: user.questions.received.map((q) => {

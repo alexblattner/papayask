@@ -145,7 +145,7 @@ const Profile = () => {
             <Text color="primary">(12)</Text>
           </Container>
           <Container>
-            {isOwner ? (
+            {/* {isOwner ? (
               <Container flex gap={12}>
                 {profileUser.verified ? (
                   <Button
@@ -188,7 +188,15 @@ const Profile = () => {
                   <Icon src="Heart" width={25} height={25} />
                 </Button>
               </Container>
-            )}
+            )} */}
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setShowQuestionModal(true);
+              }}
+            >
+              <Icon src="Send" width={25} height={25} />
+            </Button>
           </Container>
         </Container>
         <Text fontSize={46} fontWeight={600}>

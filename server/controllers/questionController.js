@@ -6,6 +6,7 @@ const { login } = require('./userController');
 const Question = require('../models/question');
 const { createOrder, captureOrder } = require('../utils/paypal');
 const Purchase = require('../models/purchase');
+const { sendEventToClient } = require('../utils/eventsHandler');
 
 function escapeRegex(text) {
   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
@@ -39,16 +40,22 @@ exports.getById = async (req, res, next) => {
 };
 
 exports.create = async (req, res, next) => {
-  console.log(req.body);
   try {
     const { description, receiver } = req.body;
-    const question = new Question({
+    let question = new Question({
       description,
       receiver,
       sender: req.user._id,
     });
     await question.save();
-    res.send(question);
+
+    question = await Question.findById(question._id).populate({
+      path: 'sender',
+      model: 'User',
+    });
+
+    sendEventToClient(receiver, question);
+    return res.send(question);
   } catch (err) {
     console.log(err);
     next(err);
@@ -57,7 +64,6 @@ exports.create = async (req, res, next) => {
 
 exports.getAll = async (req, res, next) => {
   try {
-    //find all questions where the user is the sender or receiver and populate the sender and receiver fields and return object with sent and received questions
     const questions = await Question.find({
       $or: [{ sender: req.user._id }, { receiver: req.user._id }],
     })

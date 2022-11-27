@@ -1,17 +1,7 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useContext } from 'react';
 import './Header.css';
-import api, { baseURL } from '../utils/api'; //axios with necessary configurations
 import { auth } from '../firebase-auth';
-import {
-  Navbar,
-  Form,
-  FormControl,
-  Button,
-  Col,
-  Nav,
-  Container,
-  Modal,
-} from 'react-bootstrap';
+import { Form, FormControl, Button, Modal } from 'react-bootstrap';
 // import UsernamePopup from "./UsernamePopup";
 // import default_profile from "../default_profile.svg";
 // import useDevice from "../Hooks/useDevice";
@@ -19,9 +9,40 @@ import { Link } from 'react-router-dom';
 import { AuthContext } from '../Auth/ContextProvider';
 import SignUp from '../Auth/SignUp';
 import LogIn from '../Auth/LogIn';
+import { NotificationsContext } from '../Notifications/notificationsContext';
+import Toast from '../Notifications/Toast';
+import styled from 'styled-components';
+
+const ToastsContainer = styled.div`
+  position: fixed;
+  bottom: 0;
+  right: 50%;
+  transform: translateX(50%);
+`;
+
+const IconContainer = styled.div`
+  position: relative;
+`;
+
+const Badge = styled.div`
+  position: absolute;
+  top: -10px;
+  right: -5px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  font-weight: bold;
+  transition: all 0.2s ease-in-out;
+`;
+
 function Header() {
   const { user } = useContext(AuthContext);
-  console.log(22222, user);
   const [showSignUp, setShowSignUp] = useState(false);
   const [showLogIn, setShowLogIn] = useState(false);
   const [searchInput, setSearchInput] = useState('');
@@ -30,31 +51,15 @@ function Header() {
   };
 
   const handleSearch = () => {};
-
-  function isJSON(str: string) {
-    try {
-      JSON.parse(str);
-    } catch (e) {
-      return false;
-    }
-    return true;
-  }
-
-  useEffect(() => {
-    const eventSource = new EventSource(`${baseURL}realtime-notifications`, {
-      withCredentials: true,
-    });
-    eventSource.onmessage = (e) => {
-      if (isJSON(e.data)) {
-      }
-    };
-    return () => {
-      eventSource.close();
-    };
-  }, []);
+  const { toasts } = useContext(NotificationsContext);
 
   return (
     <>
+      <ToastsContainer>
+        {toasts.map((toast) => (
+          <Toast toast={toast} key={toast.id} />
+        ))}
+      </ToastsContainer>
       {!(
         window.location.href.includes('/sign-up') ||
         window.location.href.includes('/log-in')
@@ -89,7 +94,15 @@ function Header() {
                     className="header-img"
                     src={'/assets/images/directRequest.svg'}
                   />
-                  <img className="header-img" src={'/assets/images/bell.svg'} />
+                  <IconContainer>
+                    {user.newQuestionsCount > 0 && (
+                      <Badge>{user.newQuestionsCount}</Badge>
+                    )}
+                    <img
+                      className="header-img"
+                      src={'/assets/images/bell.svg'}
+                    />
+                  </IconContainer>
                   <img
                     className="header-img"
                     src={'/assets/images/message.svg'}
