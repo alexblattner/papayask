@@ -250,6 +250,7 @@ exports.update = async (req, res) => {
       country,
       picture,
       request_settings,
+      questionsInstructions,
     } = req.body;
 
     //create experiences and store their ids in an array
@@ -321,6 +322,7 @@ exports.update = async (req, res) => {
       country,
       picture,
       request_settings,
+      questionsInstructions,
     };
 
     try {

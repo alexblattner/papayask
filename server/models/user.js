@@ -4,12 +4,8 @@ const mongoose = require('mongoose'),
     {
       bio: { type: String, default: '' },
       social: [{ type: String }],
-      experience: [
-        { type: Schema.Types.ObjectId, ref: 'Experience' },
-      ],
-      education: [
-        { type: Schema.Types.ObjectId, ref: 'Education' },
-      ],
+      experience: [{ type: Schema.Types.ObjectId, ref: 'Experience' }],
+      education: [{ type: Schema.Types.ObjectId, ref: 'Education' }],
       name: { type: String, required: false },
       skills: [{ type: Schema.Types.ObjectId, ref: 'Skill' }],
       email: { type: String, required: true, select: false },
@@ -34,8 +30,9 @@ const mongoose = require('mongoose'),
         type: Boolean,
         default: false,
       },
-      authTime: { type: String, required: false, select: false },
-    },
+      questionsInstructions: { type: String },
+      authTime: { type: String, required: false, select: false },
+    },
     {
       timestamps: true,
     }

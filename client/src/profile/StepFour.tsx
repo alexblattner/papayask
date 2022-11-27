@@ -3,8 +3,7 @@ import LanguagesSelect from '../shared/LanguagesSelect';
 import Badge from './components/Badge';
 import { Container } from '../shared/Container';
 import { Text } from '../shared/Text';
-import { RequestSettings } from '../models/User';
-import { Input } from '../shared/Input';
+import { TextArea } from '../shared/TextArea';
 
 interface Props {
   addLanguage: (language: string) => void;
@@ -36,7 +35,6 @@ const StepFour = (props: Props) => {
           ></Badge>
         ))}
       </Container>
-     
      
     </>
   );
