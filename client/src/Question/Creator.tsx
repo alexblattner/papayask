@@ -8,7 +8,10 @@ import { TextArea } from '../shared/TextArea';
 import Alert from '../shared/Alert';
 import formatCurrency from '../utils/formatCurrency';
 import { AuthContext } from '../Auth/ContextProvider';
+import useQuestionsService from './questionsService';
+
 import api from '../utils/api';
+import { Container } from '../shared/Container';
 const BackDrop = styled.div`
   position: fixed;
   top: 0;
@@ -55,6 +58,10 @@ const BoldSpan = styled.span`
   font-size: 18px;
 `;
 
+const ItalicText = styled(Text)`
+  font-style: italic;
+`;
+
 interface Props {
   setShowQuestionModal: React.Dispatch<React.SetStateAction<boolean>>;
   user: UserProps;
@@ -75,6 +82,7 @@ const Creator = (props: Props) => {
 
   const { token } = React.useContext(AuthContext);
   const messageRef = useRef<HTMLTextAreaElement>(null);
+  const { sendQuestion } = useQuestionsService();
 
   const closeModal = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (e.target === e.currentTarget) {
@@ -105,13 +113,9 @@ const Creator = (props: Props) => {
       setAlertType('info');
       setAlertMessage('Sending Your Question...');
       setShowAlert(true);
-      const res = await api.post(
-        '/question',
-        {
-          receiver: props.user.id,
-          description: messageRef.current?.value,
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
+      const res = await sendQuestion(
+        props.user.id,
+        messageRef.current?.value as string
       );
       if (res.status === 200) {
         setTimeout(() => {
@@ -155,9 +159,7 @@ const Creator = (props: Props) => {
       capture: data.orderID,
     };
     try {
-      const res = await api.post('/pay', info, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await api.post('/pay', info);
       if (res.status === 200) {
         sendRequest();
       }
@@ -182,13 +184,29 @@ const Creator = (props: Props) => {
             {formatCurrency(props.user.request_settings.cost)}
           </BoldSpan>
         </Text>
-        <Text fontSize={18} mb={32} align="center">
+        <Text
+          fontSize={18}
+          mb={props.user.questionsInstructions ? 0 : 32}
+          align="center"
+        >
           {props.user.name.split(' ')[0]} will respond within{' '}
           {responseTime(
             props.user.request_settings.time_limit.days,
             props.user.request_settings.time_limit.hours
           )}
         </Text>
+        {props.user.questionsInstructions && (
+          <Container width="100%">
+            <Text fontSize={18} fontWeight={700}>
+              {props.user.name.split(' ')[0]}'s instruction for questions:
+            </Text>
+          </Container>
+        )}
+        {props.user.questionsInstructions && (
+          <ItalicText fontSize={18} mb={32} align="center">
+            "{props.user.questionsInstructions}"
+          </ItalicText>
+        )}
         <Alert
           show={showAlert}
           message={alertMessage}
@@ -198,14 +216,15 @@ const Creator = (props: Props) => {
         <TextArea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          ref = {messageRef}
-        ></TextArea>
+          ref={messageRef}
+        />
 
         <PayPalButtons
           disabled={loading || message === ''}
           fundingSource={undefined}
           createOrder={createOrder}
           onApprove={onApprove}
+          
         />
       </Modal>
     </BackDrop>

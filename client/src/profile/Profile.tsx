@@ -1,8 +1,5 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { scale } from '@cloudinary/url-gen/actions/resize';
-import { AdvancedImage } from '@cloudinary/react';
-import { CloudinaryImage } from '@cloudinary/url-gen';
 
 import { AuthContext } from '../Auth/ContextProvider';
 import Icon from '../shared/Icon';
@@ -10,8 +7,6 @@ import { Button } from '../shared/Button';
 import { Container } from '../shared/Container';
 import { Text } from '../shared/Text';
 import ProfileSetup from './ProfileSetup';
-import { cld } from '../utils/CloudinaryConfig';
-import { byRadius } from '@cloudinary/url-gen/actions/roundCorners';
 import Creator from '../Question/Creator';
 import { UserProps } from '../models/User';
 import api from '../utils/api';

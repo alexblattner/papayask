@@ -71,7 +71,6 @@ const ProfileSetup = ({
   const [languages, setLanguages] = useState<string[]>([]);
   const [country, setCountry] = useState<string>('');
   const [cloudinaryImageId, setCloudinaryImageId] = React.useState<string>('');
-  
 
   const [inputSkill, setInputSkill] = useState<UserSkill>({
     name: '',
@@ -107,7 +106,6 @@ const ProfileSetup = ({
     setSkills(newSkills);
   };
 
-  
   const onChangeEducation = (
     name: string,
     value: string | University | Date
@@ -248,13 +246,13 @@ const ProfileSetup = ({
     try {
       updateUser(token, {
         isSetUp: true,
-        title: title,
-        bio: bio,
-        skills: skills,
-        education: education,
-        experience: experience,
-        languages: languages,
-        country: country,
+        title,
+        bio,
+        skills,
+        education,
+        experience,
+        languages,
+        country,
         picture: cloudinaryImageId,
       });
       setShowProfileSetup(false);
@@ -278,6 +276,7 @@ const ProfileSetup = ({
       setTitle(user.title ?? '');
       setLanguages(user.languages);
       setCountry(user.country);
+
       if (user.picture) {
         setImage(
           `https://res.cloudinary.com/snipcritics/image/upload/v1668941778/${process.env.REACT_APP_ENV}/${user.picture}.jpg`

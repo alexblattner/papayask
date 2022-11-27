@@ -30,6 +30,7 @@ const mongoose = require("mongoose"),
         type: Boolean,
         default: false,
       },
+      questionsInstructions: { type: String },
       authTime: { type: String, required: false, select: false },
     },
     {
