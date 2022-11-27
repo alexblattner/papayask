@@ -1,21 +1,17 @@
-const mongoose = require('mongoose'),
+const mongoose = require("mongoose"),
   { Schema } = mongoose,
   userSchema = new Schema(
     {
-      bio: { type: String, default: '' },
+      bio: { type: String, default: "" },
       social: [{ type: String }],
-      experience: [
-        { type: Schema.Types.ObjectId, ref: 'Experience' },
-      ],
-      education: [
-        { type: Schema.Types.ObjectId, ref: 'Education' },
-      ],
+      experience: [{ type: Schema.Types.ObjectId, ref: "Experience" }],
+      education: [{ type: Schema.Types.ObjectId, ref: "Education" }],
       name: { type: String, required: false },
-      skills: [{ type: Schema.Types.ObjectId, ref: 'Skill' }],
+      skills: [{ type: Schema.Types.ObjectId, ref: "Skill" }],
       email: { type: String, required: true, select: false },
       title: { type: String, required: false },
       picture: { type: String },
-      coverPicture: { type: Schema.Types.ObjectId, ref: 'File' },
+      coverPicture: { type: Schema.Types.ObjectId, ref: "File" },
       description: { type: String, required: false },
       request_settings: { type: Schema.Types.Mixed, required: false },
       reputation: { type: Number, required: true, default: 0 },
@@ -27,17 +23,17 @@ const mongoose = require('mongoose'),
       appleId: { type: String },
       verified: { type: Boolean, default: false },
       uid: { type: String, required: true },
-      password: { type: String, required: true, select: false },
+      // password: { type: String, required: true, select: false },
       languages: [{ type: String }],
       country: { type: String },
       isSetUp: {
         type: Boolean,
         default: false,
       },
-      authTime: { type: String, required: false, select: false },
-    },
+      authTime: { type: String, required: false, select: false },
+    },
     {
       timestamps: true,
     }
   );
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model("User", userSchema);

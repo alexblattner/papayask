@@ -1,7 +1,7 @@
-import { useEffect, useState, createContext } from 'react';
-import { auth } from '../firebase-auth';
-import api,{setTokenForAPI} from '../utils/api';
-import { UserProps } from '../models/User';
+import { useEffect, useState, createContext } from "react";
+import { auth } from "../firebase-auth";
+import api, { setTokenForAPI } from "../utils/api";
+import { UserProps } from "../models/User";
 
 interface AuthContextReturn {
   user: UserProps | null | undefined;
@@ -14,6 +14,7 @@ export const AuthContext = createContext<AuthContextReturn>({
   updateUser: () => {},
   token: null,
 });
+
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<UserProps | null | undefined>(undefined);
   const [token, setToken] = useState<string | null | undefined>(undefined);
@@ -22,13 +23,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       auth.currentUser?.getIdToken().then((token) => {
         setToken(token);
       });
-    }else if(user === null){
+    } else if (user === null) {
       setToken(null);
     }
   }, [user]);
 
   const getUserQuestions = async (utoken: string) => {
-    const res = await api.get('/questions', {
+    const res = await api.get("/questions", {
       headers: {
         Authorization: `Bearer ${utoken}`,
       },
@@ -37,24 +38,34 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const register = async (token: any, body: any) => {
-    const [user, questions] = await Promise.all([
+    // we use promise all setteled beacuse of the first register
+    const [userData, questionsData] = await Promise.allSettled([
       api({
-        method: 'post',
-        url: '/user',
+        method: "post",
+        url: "/user",
         headers: {
-          Authorization: 'Bearer ' + token,
+          Authorization: "Bearer " + token,
         },
         data: body,
       }),
       getUserQuestions(token),
     ]);
-
-    setUser({ id: user.data._id, ...user.data, questions });
+    if (userData.status == "rejected") return;
+    setUser({
+      id: userData.value.data._id,
+      ...userData.value.data,
+      questions:
+        questionsData.status == "fulfilled"
+          ? questionsData.value.data
+          : undefined,
+    });
   };
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
+        console.log(user);
         const token = await user.getIdToken();
+        // console.log(123456, user, "token", token);
         register(token, {
           email: user.email,
           displayName: user.displayName,
@@ -70,10 +81,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const updateUser = async (token: string, body: any) => {
     try {
       const res = await api({
-        method: 'patch',
+        method: "patch",
         url: `/user/${user?.id}`,
         headers: {
-          Authorization: 'Bearer ' + token,
+          Authorization: "Bearer " + token,
         },
         data: body,
       });
@@ -83,8 +94,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       console.log(error);
     }
   };
+
   useEffect(() => {
-    if (token!==undefined) {
+    if (token !== undefined) {
       setTokenForAPI(token);
     }
   }, [token]);
