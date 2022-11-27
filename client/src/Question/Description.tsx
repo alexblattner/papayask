@@ -19,8 +19,22 @@ const Description = (props:Props) => {
     const descRef=useRef<HTMLDivElement>(null);
     const [selectedNote,setSelectedNote]=useState<NoteProps|null>(null);
     useEffect(()=>{
-        console.log(8758,notes)
-    },[notes])
+        if(descRef.current&&descRef.current.innerHTML.length>0){
+            for(let i=0; i<notes.length; i++){
+                if(notes[i].coordinates){
+                    let coordinates=notes[i].coordinates;
+                    if(coordinates){
+                        let start=coordinates.start;
+                        let end=coordinates.end;
+                        let text=description.substring(start,end);
+                        let regex=new RegExp(text,"g");
+                        let newHtml=descRef.current.innerHTML.replace(regex,`<span class="highlight">${text}</span>`);
+                        descRef.current.innerHTML=newHtml;
+                    }
+                }
+            }
+        }
+    },[notes,descRef])
     const clickOutside=(e:any)=>{
         if(descRef.current?.getAttribute("locked")=='false'){
             window.removeEventListener("click", clickOutside);
@@ -108,7 +122,7 @@ const Description = (props:Props) => {
                     const end=range.endOffset;
                     if(start!=end){
                         const note:NoteProps={
-                            description:selection.toString(),
+                            content:selection.toString(),
                             coordinates:{
                                 start,
                                 end

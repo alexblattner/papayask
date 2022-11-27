@@ -74,8 +74,8 @@ function Question() {
               </Row>
                 {postContent()}
             </div>
-            {notes&&<SideBar notes={notes}/>}
-            <Input currentNote={currentNote} addNote={addNote} removeCurrentNote={removeCurrentNote}/>
+            {notes&&data?.description&&<SideBar description={data?.description} notes={notes}/>}
+            {data?.description&&<Input description={data.description} currentNote={currentNote} addNote={addNote} removeCurrentNote={removeCurrentNote}/>}
           </>
     );
   }

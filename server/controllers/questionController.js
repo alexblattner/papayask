@@ -30,7 +30,11 @@ exports.getById = async (req, res, next) => {
     const question = await Question.findById(id).populate({
       path: 'sender',
       model: 'User',
-    });
+    }).populate({
+      path: 'notes',
+      model: 'Note',
+      });
+      console.log(question);
 
     res.send(question);
   } catch (error) {

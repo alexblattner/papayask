@@ -162,13 +162,23 @@ exports.create= async (req, res, next) => {
   const question = await Question.findById(req.body.questionId).exec();
   if (question && question.receiver.toString() == req.user._id.toString()) {
     let content= Array.isArray(req.body.content) ? req.body.content[0] : req.body.content;
-    await Note.create({
+    let submission={
       user: req.user._id,
       question: req.body.questionId,
       content: content,
-    })
+    }
+    if(req.body.coordinates) submission.coordinates=req.body.coordinates;
+    await Note.create(submission)
       .then(async(data) => {
-        
+        if(!question.status||!question.status.action||question.status.action=="pending"){
+          if(question.status){
+            question.status.action="answered";
+          }else{
+            question.status={action:"accepted",done:false,reason:""};
+          }
+        }
+        question.notes.push(data._id);
+        await question.save();
         return res.send(data);
       })
   } else {

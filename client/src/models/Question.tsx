@@ -34,8 +34,8 @@ type ImageCoordinates = {
 }
 export type NoteProps = {
     user?: UserProps,
-    description: string,
-    coordinates: TextCoordinates[] | ImageCoordinates[] | DescriptionCoordinates | null,
+    content: string,
+    coordinates: DescriptionCoordinates | null,
     order?: number,
     question?: string | QuestionProps,
     createdAt?: string,
