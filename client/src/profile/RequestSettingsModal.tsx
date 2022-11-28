@@ -12,9 +12,9 @@ const BackDrop = styled.div`
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
+  width: 100vw;
+  height: 100vh;
+  overflow: scroll;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 999;
   display: grid;
@@ -22,6 +22,7 @@ const BackDrop = styled.div`
 `;
 
 const Modal = styled.div<{ modalLoaded: boolean }>`
+  margin-top: 100px;
   background-color: #fff;
   width: 45%;
   border-radius: 8px;
@@ -30,7 +31,11 @@ const Modal = styled.div<{ modalLoaded: boolean }>`
   text-align: center;
   padding: 32px;
 
-  @media (max-width: 768px) {
+  @media (max-width: 1200px) {
+    width: 70%;
+  }
+
+  @media (max-width: 950px) {
     width: 90%;
   }
 `;

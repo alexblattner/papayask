@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
-interface ButtonProps {
-  onClick: () => void;
+interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   variant: 'primary' | 'secondary';
   disabled?: boolean;
   children: React.ReactNode;

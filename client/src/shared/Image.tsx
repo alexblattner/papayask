@@ -16,7 +16,7 @@ const StyledImage = styled.div<Props>`
   }
 `;
 
-interface Props {
+interface Props extends React.HTMLAttributes<HTMLDivElement> {
   src?: string | null;
   alt?: string;
   size?: number;

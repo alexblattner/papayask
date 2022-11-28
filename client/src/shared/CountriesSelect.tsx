@@ -6,11 +6,11 @@ import { Text } from './Text';
 import countries from '../data/countries';
 import { Suggestions, Suggestion } from './Suggestions';
 
-interface Props {
+interface Props{
   value: string;
   onChange: (country: string) => void;
   inputName: string;
-  size?: 'small' | 'large';
+  width?: string;
   options?: string[];
   adder?: (value: string) => void;
 }
@@ -59,7 +59,7 @@ const CountriesSelect = (props: Props) => {
         value={value}
         placeholder="Country"
         name={inputName}
-        width={props.size === 'small' ? '188px' : undefined}
+        width={props.width || '100%'}
         onChange={(e) => onChange(e.target.value)}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}

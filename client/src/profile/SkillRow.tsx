@@ -15,6 +15,7 @@ import styled from 'styled-components';
 import { Button } from '../shared/Button';
 import { Input } from '../shared/Input';
 import formatDate from '../utils/formatDate';
+import useWidth from '../Hooks/useWidth';
 
 const ListItem = styled('div')`
   cursor: pointer;
@@ -72,6 +73,8 @@ const SkillRow = ({
   const [yearsInputs, setYearsInput] = React.useState<
     { index: number; years: number }[]
   >([]);
+
+  const { width } = useWidth();
 
   const selectEducation = (index: number) => {
     if (educationIndexSelected.includes(index)) {
@@ -336,13 +339,12 @@ const SkillRow = ({
       }
       <Container
         flex
-        align="center"
         py={16}
         borderBottom="1px solid #f8cbc9"
         key={skill.name}
       >
         <Container
-          width="200px"
+          width="20%"
           flex
           align="center"
           gap={16}
@@ -353,7 +355,7 @@ const SkillRow = ({
           </Container>
         </Container>
         <Container
-          width="calc(50% - 112px)"
+          width="40%"
           px={16}
           flex
           align="center"
@@ -380,30 +382,24 @@ const SkillRow = ({
             <Icon src="plus" width={15} height={15} />
           </Container>
         </Container>
-        <Container
-          width="calc(50% - 112px)"
-          pl={16}
-          flex
-          align="center"
-          gap={16}
-        >
+        <Container width="40%" pl={16} align="center" gap={16} flexWrap position='relative'>
           {relatedExperience.map((exp, i) => (
-            <div key={i}>
-              <Container flex>
-                <Text fontSize={18} fontWeight={'bold'}>
-                  {exp.experience.company.name}
-                </Text>
-                <Text fontSize={18}>/</Text>
-                <Text fontSize={14}>{exp.experience.name}</Text>
-              </Container>
-
+            <Container flex gap={4} align="center" key={i}>
+              <Text fontSize={18} fontWeight={'bold'}>
+                {exp.experience.company.name}
+              </Text>
+              <Text fontSize={24} fontWeight="bold">
+                ·
+              </Text>
               <Text>{exp.years} Years</Text>
-            </div>
+            </Container>
           ))}
           <Container
             width="25px"
-            ml={'auto'}
             onClick={() => setShowRelatedExperience(true)}
+            position='absolute'
+            right={'0'}
+            top = {'calc(50% - 12.5px)'}
           >
             {' '}
             <Icon src="plus" width={15} height={15} />

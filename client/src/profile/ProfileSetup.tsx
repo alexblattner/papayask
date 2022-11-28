@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { AuthContext } from '../Auth/ContextProvider';
 import { auth } from '../firebase-auth';
 import styled from 'styled-components';
+import useWidth from '../Hooks/useWidth';
 
 import {
   University,
@@ -20,15 +21,16 @@ import StepThree from './StepThree';
 import StepFour from './StepFour';
 
 const SetupModal = styled('div')<{ pageLoaded: boolean }>`
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
-  right: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: scroll;
   background-color: #fff;
-  width: 100%;
-  z-index: 999;
   transform: translateY(${(props) => (props.pageLoaded ? '0' : '100%')});
   transition: transform 0.3s ease-in-out;
+  z-index: 100;
 `;
 
 interface ProfileSetupProps {
@@ -99,6 +101,8 @@ const ProfileSetup = ({
     type: '',
     geographic_specialization: '',
   });
+
+  const { width } = useWidth();
 
   const removeSkill = (index: number) => {
     const newSkills = [...skills];
@@ -306,7 +310,7 @@ const ProfileSetup = ({
     <SetupModal pageLoaded={pageLoaded}>
       <Container
         width="100%"
-        minH="90vh"
+        minH="100vh"
         flex
         dir="column"
         align="center"
@@ -318,7 +322,7 @@ const ProfileSetup = ({
           step={step}
           stepsDone={stepsDone}
         />
-        <Container width="75%" pt={50}>
+        <Container width={width > 950 ? '75%' : '90%'} pt={50}>
           {step === 0 && (
             <StepOne
               bio={bio}
