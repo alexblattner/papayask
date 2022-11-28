@@ -313,9 +313,9 @@ exports.update = async (req, res) => {
 
     const body = {
       bio,
-      experience: experienceIds,
-      education: educationIds,
-      skills: skillIds,
+      experience: experience ? experienceIds : undefined,
+      education: education ? educationIds : undefined,
+      skills: skills ? skillIds : undefined,
       title,
       isSetUp,
       languages,
