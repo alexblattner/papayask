@@ -20,7 +20,7 @@ const Search = () => {
   const { search } = useLocation();
   const [allResults, setAllResults] = useState<UserProps[]>([]);
   const [results, setResults] = useState<UserProps[]>([]);
-  const [budget, setBudget] = useState<[number, number]>([0, 0]);
+  const [budget, setBudget] = useState<[number, number]>([0, 1]);
   const [yearsOfExperience, setYearsOfExperience] = useState<[number, number]>([
     0, 0,
   ]);
@@ -134,6 +134,14 @@ const Search = () => {
           else expmin = minexp; //set the min to the years of experience for this experience
         }
       }
+      if (!result.request_settings.cost) {
+        push = false;
+      } else if (
+        result.request_settings.cost > budget[1] ||
+        result.request_settings.cost < budget[0]
+      ) {
+        push = false;
+      }
       if (result.education.length > 0) {
         //if the user has education
         let edupush: boolean = false;
@@ -216,8 +224,29 @@ const Search = () => {
     if (allLanguages.length == 0)
       //if the languages are not set
       setAllLanguages(Array.from(languages));
+    console.log(1234567, farr);
     setResults(farr);
   };
+
+  useEffect(() => {
+    if (results.length > 1) {
+      let min = results[0].request_settings.cost;
+      let max = results[0].request_settings.cost;
+      results.forEach((result) => {
+        if (result.request_settings) {
+          if (result.request_settings?.cost > max) {
+            max = result.request_settings.cost;
+          } else if (result.request_settings?.cost < min) {
+            min = result.request_settings.cost;
+          }
+        }
+        if (min == max) {
+          min--;
+        }
+      });
+      setBudget([min, max]);
+    }
+  }, [results]);
   const expRange = () => {
     // for(let i=0;i<results.length;i++){
     //     if(results[i].experience){

@@ -65,7 +65,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           : undefined,
       newQuestionsCount:
         questionsData.status == "fulfilled"
-          ? newQuestionsCount(questionsData.value.data.received)
+          ? newQuestionsCount(questionsData.value.received)
           : 0,
     });
   };

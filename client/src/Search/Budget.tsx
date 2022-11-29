@@ -10,7 +10,8 @@ interface Props {
 }
 const Budget = (props: Props) => {
   const [menu, setMenu] = useState<boolean>(false);
-  const [budget, setBudget] = useState<[number, number]>(props.range);
+  console.log(123456, props.range);
+  // const [budget, setBudget] = useState<[number, number]>(props.range);
   return (
     <div className="filter-popup">
       <button onClick={() => setMenu(!menu)}>
@@ -19,8 +20,8 @@ const Budget = (props: Props) => {
       </button>
       {menu && (
         <MinMax
-          values={budget}
-          setValues={setBudget}
+          values={props.range}
+          setValues={props.setValues}
           min={props.range[0]}
           step={1}
           max={props.range[1]}
