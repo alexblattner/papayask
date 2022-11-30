@@ -6,9 +6,10 @@ const StyledBadge = styled.div`
   align-items: center;
   padding: 6px 12px;
   border-radius: 4px;
-  background-color: ${(props) => props.theme.colors.primary};
-  color: #fff;
+  background-color: ${(props) => props.theme.colors.primary_L2};
+  color: ${(props) => props.theme.colors.primary_D1};
   cursor: pointer;
+  font-weight: bold;
   gap: 12px;
 `;
 

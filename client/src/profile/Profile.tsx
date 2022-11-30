@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 
 import { AuthContext } from '../Auth/ContextProvider';
-import Icon from '../shared/Icon';
 import { Button } from '../shared/Button';
 import { Container } from '../shared/Container';
 import { Text } from '../shared/Text';
@@ -11,6 +10,7 @@ import Creator from '../Question/Creator';
 import { UserProps } from '../models/User';
 import api from '../utils/api';
 import Image from '../shared/Image';
+import SvgIcon from '../shared/SvgIcon';
 import RequestSettingsModal from './RequestSettingsModal';
 import { formatDateNamed } from '../utils/formatDate';
 import Badge from '../shared/Badge';
@@ -137,7 +137,7 @@ const Profile = () => {
             {Array(5)
               .fill(0)
               .map((_, i) => (
-                <Icon src="Star_Fill" width={30} height={30} key={i} />
+                <SvgIcon src="star_fill" width={30} height={30} key={i} color='#DC693F'/>
               ))}
             <Text color="primary">(12)</Text>
           </Container>
@@ -150,7 +150,12 @@ const Profile = () => {
                     onClick={() => setShowSettings(true)}
                   >
                     <Container flex align="center" gap={8}>
-                      <Icon src="Settings" width={25} height={25} /> Settings
+                      <SvgIcon
+                        src="settings"
+                        width={25}
+                        height={25}
+                      />{' '}
+                      Settings
                     </Container>
                   </Button>
                 ) : (
@@ -162,7 +167,13 @@ const Profile = () => {
                 )}
                 <Button variant="primary" onClick={openProfileSetup}>
                   <Container flex align="center" gap={8}>
-                    <Icon src="Edit_White" width={20} height={20} /> EDIT
+                    <SvgIcon
+                      src="edit_white"
+                      width={20}
+                      height={20}
+                      color="white"
+                    />{' '}
+                    EDIT
                   </Container>
                 </Button>
               </Container>
@@ -175,24 +186,24 @@ const Profile = () => {
                       setShowQuestionModal(true);
                     }}
                   >
-                    <Icon src="Send" width={25} height={25} />
+                    <SvgIcon src="send" width={25} height={25} />
                   </Button>
                 )}
                 <Button variant="secondary" onClick={() => {}}>
-                  <Icon src="Share" width={25} height={25} />
+                  <SvgIcon src="share" width={25} height={25} />
                 </Button>
                 <Button variant="secondary" onClick={() => {}}>
-                  <Icon src="Heart" width={25} height={25} />
+                  <SvgIcon src="heart" width={25} height={25} />
                 </Button>
               </Container>
             )}
           </Container>
         </Container>
         <Container flex align="center" gap={12} mt={12}>
-          <Text fontSize={46}>{profileFlag}</Text>
           <Text fontSize={46} fontWeight={700}>
             {profileUser.name}
           </Text>
+          <Text fontSize={46}>{profileFlag}</Text>
         </Container>
         <Text fontSize={24} fontWeight={500}>
           {profileUser.title}
@@ -211,7 +222,7 @@ const Profile = () => {
               onClick={() => openProfileSetupInStep(0)}
             >
               {' '}
-              {isOwner && <Icon src="Edit_Black" width={25} height={25} />}
+              {isOwner && <SvgIcon src="pencil_fill" width={25} height={25} />}
               {'  '}
               <Text fontSize={32} fontWeight={600}>
                 {' '}
@@ -229,7 +240,7 @@ const Profile = () => {
               onClick={() => openProfileSetupInStep(2)}
             >
               {' '}
-              {isOwner && <Icon src="Edit_Black" width={25} height={25} />}
+              {isOwner && <SvgIcon src="pencil_fill" width={25} height={25} />}
               {'  '}
               <Text fontSize={32} fontWeight={600}>
                 Skills
@@ -247,7 +258,7 @@ const Profile = () => {
               onClick={() => openProfileSetupInStep(3)}
             >
               {' '}
-              {isOwner && <Icon src="Edit_Black" width={25} height={25} />}
+              {isOwner && <SvgIcon src="pencil_fill" width={25} height={25} />}
               {'  '}
               <Text fontSize={32} fontWeight={600}>
                 Languages
@@ -274,7 +285,9 @@ const Profile = () => {
                   mb={16}
                   onClick={() => openProfileSetupInStep(1)}
                 >
-                  {isOwner && <Icon src="Edit_Black" width={25} height={25} />}{' '}
+                  {isOwner && (
+                    <SvgIcon src="pencil_fill" width={25} height={25} />
+                  )}{' '}
                   <Text fontSize={32} fontWeight={600}>
                     Experience
                   </Text>
@@ -287,7 +300,7 @@ const Profile = () => {
                       justify="center"
                       width="100px"
                     >
-                      <Icon src="Work" width={50} height={50} />
+                      <SvgIcon src="work" width={50} height={50} />
                     </Container>
                     <Container
                       key={i}
@@ -317,7 +330,9 @@ const Profile = () => {
                   mb={16}
                   onClick={() => openProfileSetupInStep(1)}
                 >
-                  {isOwner && <Icon src="Edit_Black" width={25} height={25} />}{' '}
+                  {isOwner && (
+                    <SvgIcon src="pencil_fill" width={25} height={25} />
+                  )}{' '}
                   <Text fontSize={32} fontWeight={600}>
                     Education
                   </Text>
@@ -330,7 +345,7 @@ const Profile = () => {
                       justify="center"
                       width="100px"
                     >
-                      <Icon src="Study" width={50} height={50} />
+                      <SvgIcon src="study" width={50} height={50} />
                     </Container>
                     <Container
                       flex

@@ -9,13 +9,13 @@ import {
   UserSkill,
 } from '../models/User';
 import { Container } from '../shared/Container';
-import Icon from '../shared/Icon';
 import { Text } from '../shared/Text';
 import styled from 'styled-components';
 import { Button } from '../shared/Button';
 import { Input } from '../shared/Input';
 import formatDate from '../utils/formatDate';
 import useWidth from '../Hooks/useWidth';
+import SvgIcon from '../shared/SvgIcon';
 
 const ListItem = styled('div')`
   cursor: pointer;
@@ -284,7 +284,7 @@ const SkillRow = ({
                       </Text>
                     </div>
                     <CheckIcon selected={educationIndexSelected.includes(i)}>
-                      <Icon src="check" width={30} height={30} />
+                      <SvgIcon src="check" width={30} height={30} />
                     </CheckIcon>
                   </ListItem>
                 ))}
@@ -320,7 +320,7 @@ const SkillRow = ({
                       )}
                     </div>
                     <CheckIcon selected={experienceIndexSelected.includes(i)}>
-                      <Icon src="check" width={30} height={30} />
+                      <SvgIcon src="check" width={30} height={30} />
                     </CheckIcon>
                   </ListItem>
                 ))}
@@ -351,7 +351,7 @@ const SkillRow = ({
           borderRight="1px solid #f8cbc9"
         >
           <Container onClick={() => removeSkill(index)}>
-            <Icon src="Delete" /> {skill.name}
+            <SvgIcon src="delete" /> {skill.name}
           </Container>
         </Container>
         <Container
@@ -379,7 +379,7 @@ const SkillRow = ({
             onClick={() => setShowRelatedEducation(true)}
           >
             {' '}
-            <Icon src="plus" width={15} height={15} />
+            <SvgIcon src="plus" width={15} height={15} />
           </Container>
         </Container>
         <Container width="40%" pl={16} align="center" gap={16} flexWrap position='relative'>
@@ -402,7 +402,7 @@ const SkillRow = ({
             top = {'calc(50% - 12.5px)'}
           >
             {' '}
-            <Icon src="plus" width={15} height={15} />
+            <SvgIcon src="plus" width={15} height={15} />
           </Container>
         </Container>
       </Container>

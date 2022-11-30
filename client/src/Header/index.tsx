@@ -1,17 +1,88 @@
-import { useState, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import './Header.css';
 import { auth } from '../firebase-auth';
 import { Form, FormControl, Button, Modal } from 'react-bootstrap';
-// import UsernamePopup from "./UsernamePopup";
-// import default_profile from "../default_profile.svg";
-// import useDevice from "../Hooks/useDevice";
+import styled from 'styled-components';
+
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../Auth/ContextProvider';
 import SignUp from '../Auth/SignUp';
 import LogIn from '../Auth/LogIn';
 import { NotificationsContext } from '../Notifications/notificationsContext';
 import Toast from '../Notifications/Toast';
-import styled from 'styled-components';
+import { ReactComponent as FullLogo } from '../full_logo.svg';
+import SvgIcon from '../shared/SvgIcon';
+import { Text } from '../shared/Text';
+import { Container } from '../shared/Container';
+
+const StyledHeader = styled.header`
+  width: 100%;
+  height: 80px;
+  top: 0;
+  left: 0;
+  border-bottom: 1px solid #e4e5e7;
+  background: white;
+  z-index: 1000;
+  position: fixed;
+`;
+
+const HeaderContainer = styled.div`
+  position: fixed;
+  display: flex;
+  gap: 16px;
+  width: 80%;
+  left: 10%;
+  padding: 20px 0px;
+`;
+
+const SearchWrapper = styled(Form)`
+  position: relative;
+  display: flex;
+  border-radius: 8px;
+  width: 250px;
+  border: 2px solid black;
+  transition: all 0.3s ease-in-out;
+
+  &:focus,
+  &:focus-within {
+    width: 100%;
+  }
+`;
+
+const SpeakerIcon = styled('div')`
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+`;
+
+const SearchButton = styled(Button)`
+  all: unset;
+  padding: 0.5rem 1rem;
+`;
+
+const SearchInput = styled(FormControl)`
+  height: 100%;
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+  color: black;
+
+  ::placeholder {
+    font-size: 1.1rem;
+    font-weight: bold;
+  }
+
+  &:focus,
+  &:focus-within {
+    outline: none;
+    border: none;
+    -moz-box-shadow: none;
+    -goog-ms-box-shadow: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+  }
+`;
 
 const ToastsContainer = styled.div`
   position: fixed;
@@ -41,6 +112,24 @@ const Badge = styled.div`
   transition: all 0.2s ease-in-out;
 `;
 
+const SellerButton = styled('div')`
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background-color: ${({ theme }) => theme.colors.primary};
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+  padding: 4px 1px 4px 8px;
+`;
+
+const StyledLink = styled(Link)`
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+`;
+
 function Header() {
   const { user } = useContext(AuthContext);
   const [showSignUp, setShowSignUp] = useState(false);
@@ -64,64 +153,54 @@ function Header() {
         window.location.href.includes('/sign-up') ||
         window.location.href.includes('/log-in')
       ) && (
-        <header className="header-container">
-          <div className="inner">
-            <Link id="logo" to="/">
-              <img src="/assets/images/PapayaLogo.svg" />
-              Papayask
+        <StyledHeader>
+          <HeaderContainer>
+            <Link to="/">
+              <FullLogo width={150} height={50} />
             </Link>
-            <Form id="search-bar">
-              <Button
-                onClick={handleSearch}
-                variant="success"
-                id="search-button"
-              >
-                <img src={'/assets/images/search.svg'} />
-              </Button>
-              <FormControl
+
+            <SearchWrapper>
+              <SearchButton onClick={handleSearch}>
+                <SvgIcon src="search" />
+              </SearchButton>
+              <SearchInput
                 type="text"
                 placeholder="Search..."
                 className="mr-sm-2"
-                id="search-input"
                 value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setSearchInput(e.target.value)
+                }
               />
-            </Form>
+              <SpeakerIcon>
+                <SvgIcon src="speaker" />
+              </SpeakerIcon>
+            </SearchWrapper>
+
             {user ? (
               <>
-                <div className="images-header-container">
-                  <img
-                    className="header-img"
-                    src={'/assets/images/directRequest.svg'}
-                  />
-                  <IconContainer>
-                    {user.newQuestionsCount > 0 && (
-                      <Badge>{user.newQuestionsCount}</Badge>
-                    )}
-                    <img
-                      className="header-img"
-                      src={'/assets/images/bell.svg'}
-                    />
-                  </IconContainer>
-                  <img
-                    className="header-img"
-                    src={'/assets/images/message.svg'}
-                  />
-                  <img
-                    className="header-img"
-                    src={'/assets/images/heart.svg'}
-                  />
-                  <Link to={`/profile/${user.id}`}>
-                    {' '}
-                    <img
-                      className="header-img"
-                      src={'/assets/images/user.svg'}
-                    />{' '}
-                  </Link>
-                </div>
+                <Container flex align="center" gap={16} ml="auto">
+                  <Text fontSize={18} fontWeight={'bold'}>
+                    Requests
+                  </Text>
+                  <Text fontSize={18} fontWeight={'bold'}>
+                    Notifications
+                  </Text>
+                  <Text fontSize={18} fontWeight={'bold'}>
+                    Favorites
+                  </Text>
+                  <StyledLink to={`/profile/${user.id}`}>
+                    <SellerButton>
+                      <Text fontSize={18} fontWeight="bold" color="white">
+                        Giver
+                      </Text>
+                      <SvgIcon src="user" color="white" />
+                    </SellerButton>
+                  </StyledLink>
+                </Container>
               </>
             ) : (
-              <div className="images-header-container">
+              <Container flex align="center" gap={16} ml="auto">
                 <img
                   className="header-img"
                   src={'/assets/images/direction.svg'}
@@ -140,7 +219,7 @@ function Header() {
                 >
                   Sign Up
                 </button>
-              </div>
+              </Container>
             )}
 
             {/* {user ? (
@@ -151,8 +230,8 @@ function Header() {
               <Button onClick={() => setShowLogIn(true)}>Log In</Button>
             </>
           )} */}
-          </div>
-        </header>
+          </HeaderContainer>
+        </StyledHeader>
       )}
       {showSignUp ? (
         <Modal

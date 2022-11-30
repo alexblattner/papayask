@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { PayPalButtons } from '@paypal/react-paypal-js';
 
@@ -11,52 +11,7 @@ import { AuthContext } from '../Auth/ContextProvider';
 import useQuestionsService from './questionsService';
 import api from '../utils/api';
 import { Container } from '../shared/Container';
-
-const BackDrop = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  overflow: scroll;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-  display: grid;
-  place-items: center;
-  padding-top: 50px;
-`;
-
-const Modal = styled.div<{ modalLoaded: boolean }>`
-  background-color: #fff;
-  width: 50%;
-  border-radius: 8px;
-  transform: translateY(${(props) => (props.modalLoaded ? '0' : '100%')});
-  transition: transform 0.3s ease-in-out;
-  text-align: center;
-  padding: 32px;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 50px;
-
-  @media (max-width: 1200px) {
-    width: 70%;
-  }
-
-  @media (max-width: 950px) {
-    width: 90%;
-  }
-`;
-const CloseButton = styled.div`
-  position: absolute;
-  top: 16px;
-  right: 32px;
-  cursor: pointer;
-  font-size: 20px;
-  font-weight: bold;
-  color: ${(props) => props.theme.colors.primary};
-`;
+import Modal from '../shared/Modal';
 
 const BoldSpan = styled.span`
   font-weight: bold;
@@ -73,7 +28,6 @@ interface Props {
 }
 
 const Creator = (props: Props) => {
-  const [modalLoaded, setModalLoaded] = React.useState<boolean>(false);
   const [loading, setLoading] = React.useState<boolean>(false);
   const [message, setMessage] = React.useState<string>('');
   const [alertType, setAlertType] = React.useState<
@@ -81,19 +35,10 @@ const Creator = (props: Props) => {
   >('info');
   const [alertMessage, setAlertMessage] = React.useState<string>('');
   const [showAlert, setShowAlert] = React.useState<boolean>(false);
-  useEffect(() => {
-    setModalLoaded(true);
-  }, []);
 
   const { token } = React.useContext(AuthContext);
   const messageRef = useRef<HTMLTextAreaElement>(null);
   const { sendQuestion } = useQuestionsService();
-
-  const closeModal = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    if (e.target === e.currentTarget) {
-      props.setShowQuestionModal(false);
-    }
-  };
 
   const responseTime = (days: number, hours: number) => {
     let responseTime = '';
@@ -175,11 +120,8 @@ const Creator = (props: Props) => {
   };
 
   return (
-    <BackDrop onClick={(e) => closeModal(e)}>
-      <Modal modalLoaded={modalLoaded}>
-        <CloseButton onClick={() => props.setShowQuestionModal(false)}>
-          X
-        </CloseButton>
+    <Modal setShowModal={props.setShowQuestionModal}>
+      <>
         <Text fontSize={32} fontWeight="bold" align="center">
           Ask {props.user.name.split(' ')[0]} a Question
         </Text>
@@ -230,8 +172,8 @@ const Creator = (props: Props) => {
           createOrder={createOrder}
           onApprove={onApprove}
         />
-      </Modal>
-    </BackDrop>
+      </>
+    </Modal>
   );
 };
 

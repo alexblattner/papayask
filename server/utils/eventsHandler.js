@@ -16,11 +16,9 @@ exports.eventsHandler = (req, res, next) => {
     id: userId,
     res,
   };
-  console.log('new client connected - ' + userId);
   clients.push(newClient);
 
   req.on('close', () => {
-    console.log(`${userId} Connection closed`);
     clients = clients.filter((client) => client.id !== userId);
   });
 };

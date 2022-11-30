@@ -8,8 +8,8 @@ import { Text } from '../shared/Text';
 import { QuestionProps } from '../models/Question';
 import Image from '../shared/Image';
 import { Button } from '../shared/Button';
-import Icon from '../shared/Icon';
 import RejectModal from './RejectModal';
+import SvgIcon from '../shared/SvgIcon';
 
 type TabType = 'sent' | 'recieved';
 
@@ -167,7 +167,7 @@ const QuestionsList = () => {
                     navigate(`/questions/${question._id}`);
                   }}
                 >
-                  <Icon src="check" width={15} height={15} />
+                  <SvgIcon src="check" width={15} height={15} />
                 </Button>
                 <Button
                   variant="secondary"
@@ -176,7 +176,7 @@ const QuestionsList = () => {
                     setShowRejectionModal(true);
                   }}
                 >
-                  <Icon src="close" width={15} height={15} />
+                  <SvgIcon src="close" width={15} height={15} />
                 </Button>
               </Actions>
             )}

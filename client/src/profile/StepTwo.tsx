@@ -3,7 +3,6 @@ import React from 'react';
 import { University, UserEducation, UserExperience } from '../models/User';
 import CountriesSelect from '../shared/CountriesSelect';
 import { DateInput } from '../shared/DateInput';
-import Icon from '../shared/Icon';
 import UniversitiesSelect from '../shared/UniversitiesSelect';
 import formatDate from '../utils/formatDate';
 import { Button } from '../shared/Button';
@@ -11,8 +10,8 @@ import { Container } from '../shared/Container';
 import { Input } from '../shared/Input';
 import { Text } from '../shared/Text';
 import { Education, Experience } from './ProfileSetup';
-import Divider from '../shared/Divider';
 import useWidth from '../Hooks/useWidth';
+import SvgIcon from '../shared/SvgIcon';
 
 interface Props {
   inputEducation: Education;
@@ -156,7 +155,7 @@ const StepTwo = (props: Props) => {
                 right={'15px'}
                 onClick={() => removeEducation(i)}
               >
-                <Icon src="close" width={20} height={20} />
+                <SvgIcon src="close" width={20} height={20} />
               </Container>
             </Container>
           ))}
@@ -244,7 +243,7 @@ const StepTwo = (props: Props) => {
                   top={'10px'}
                   right={'15px'}
                 >
-                  <Icon src="close" width={20} height={20} />
+                  <SvgIcon src="close" width={20} height={20} />
                 </Container>
               </Container>
             ))}
