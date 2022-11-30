@@ -1,29 +1,32 @@
-import React, { useContext, useState, useEffect } from 'react';
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
-import { auth } from '../firebase-auth';
-import { AuthContext } from './ContextProvider';
-import { Navigate } from 'react-router-dom';
-import './Auth.css';
-import api from '../utils/api';
+import React, { useContext, useState, useEffect } from "react";
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
+import { auth } from "../firebase-auth";
+import { AuthContext } from "./ContextProvider";
+import { Navigate } from "react-router-dom";
+import "./Auth.css";
+import api from "../utils/api";
 interface Props {
-  type: string;//whether it is sign up or log in
+  type: string; //whether it is sign up or log in
 }
 //https://www.quackit.com/html/codes/html_popup_window_code.cfm
 const AuthForm = (props: Props) => {
-  const {user} = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const [type, setType] = useState(props.type);
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [error, setError] = useState<string>('');
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const google = async () => {
     await auth
       .signInWithPopup(new firebase.auth.GoogleAuthProvider())
       .then(async (userCred: any) => {
         if (userCred) {
-          window.localStorage.setItem('auth', 'true');
+          window.localStorage.setItem("auth", "true");
         }
+      })
+      .catch((error) => {
+        console.log(12345, error);
       });
   };
   const facebook = async () => {
@@ -31,12 +34,13 @@ const AuthForm = (props: Props) => {
       .signInWithPopup(new firebase.auth.FacebookAuthProvider())
       .then(async (userCred: any) => {
         if (userCred) {
-          window.localStorage.setItem('auth', 'true');
+          window.localStorage.setItem("auth", "true");
         }
-      }).catch((err) => {
+      })
+      .catch((err) => {
         let message = err.message;
-        if (message.includes('email')) {
-          message = 'Email already in use';
+        if (message.includes("email")) {
+          message = "Email already in use";
         }
         alert(message);
       });
@@ -50,12 +54,12 @@ const AuthForm = (props: Props) => {
       (e.target as HTMLInputElement).childNodes[1] as HTMLInputElement
     ).value;
     console.log(email, password);
-    if (props.type == 'login') {
+    if (props.type == "login") {
       await auth
         .signInWithEmailAndPassword(email, password)
         .then(async (userCred: any) => {
           if (userCred) {
-            window.localStorage.setItem('auth', 'true');
+            window.localStorage.setItem("auth", "true");
           }
         })
         .catch((err: any) => {
@@ -66,7 +70,7 @@ const AuthForm = (props: Props) => {
         .createUserWithEmailAndPassword(email, password)
         .then(async (userCred: any) => {
           if (userCred) {
-            window.localStorage.setItem('auth', 'true');
+            window.localStorage.setItem("auth", "true");
           }
         })
         .catch((err: any) => {
@@ -74,13 +78,13 @@ const AuthForm = (props: Props) => {
         });
     }
   };
-  
+
   if (user) {
     return <Navigate to="/" />;
   }
   return (
     <div className="connection">
-      <h2>{type == 'login' ? 'Log In' : 'Sign Up'}</h2>
+      <h2>{type == "login" ? "Log In" : "Sign Up"}</h2>
       <button id="facebook" className="thirdparty" onClick={facebook}>
         facebook
       </button>
@@ -99,21 +103,21 @@ const AuthForm = (props: Props) => {
           onChange={(e) => setPassword((e.target as HTMLInputElement).value)}
           type="password"
         />
-        <input type="submit" value={type == 'login' ? 'Log In!' : 'Sign Up!'} />
+        <input type="submit" value={type == "login" ? "Log In!" : "Sign Up!"} />
       </form>
-      {type == 'login' ? (
+      {type == "login" ? (
         <span id="forgot-password">I forgot my password</span>
       ) : null}
       <p>
-        {type == 'login' ? (
+        {type == "login" ? (
           <>
-            Don't have an account?{' '}
-            <span onClick={() => setType('signup')}>Sign Up</span>
+            Don't have an account?{" "}
+            <span onClick={() => setType("signup")}>Sign Up</span>
           </>
         ) : (
           <>
-            Already have an account?{' '}
-            <span onClick={() => setType('login')}>Log In</span>
+            Already have an account?{" "}
+            <span onClick={() => setType("login")}>Log In</span>
           </>
         )}
       </p>

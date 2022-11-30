@@ -19,12 +19,12 @@ const StepFour = (props: Props) => {
         Geographic Specialization
       </Text>
       <CountriesSelect
-        value={props.country}
+        value={props.country ?? ''}
         onChange={props.setCountry}
         inputName=""
-        width='300px'
+        width="300px"
       />
-      <LanguagesSelect addLanguage={props.addLanguage} width='300px'/>
+      <LanguagesSelect addLanguage={props.addLanguage} width="300px" />
       <Container flex flexWrap gap={12} mb={36}>
         {props.languages.map((language, index) => (
           <Badge

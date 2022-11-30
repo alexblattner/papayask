@@ -284,7 +284,7 @@ const SkillRow = ({
                       </Text>
                     </div>
                     <CheckIcon selected={educationIndexSelected.includes(i)}>
-                      <SvgIcon src="check" width={30} height={30} />
+                      <SvgIcon src="check" size={30} />
                     </CheckIcon>
                   </ListItem>
                 ))}
@@ -320,7 +320,7 @@ const SkillRow = ({
                       )}
                     </div>
                     <CheckIcon selected={experienceIndexSelected.includes(i)}>
-                      <SvgIcon src="check" width={30} height={30} />
+                      <SvgIcon src="check" size={30} />
                     </CheckIcon>
                   </ListItem>
                 ))}
@@ -379,7 +379,7 @@ const SkillRow = ({
             onClick={() => setShowRelatedEducation(true)}
           >
             {' '}
-            <SvgIcon src="plus" width={15} height={15} />
+            <SvgIcon src="plus" size={15} />
           </Container>
         </Container>
         <Container width="40%" pl={16} align="center" gap={16} flexWrap position='relative'>
@@ -402,7 +402,7 @@ const SkillRow = ({
             top = {'calc(50% - 12.5px)'}
           >
             {' '}
-            <SvgIcon src="plus" width={15} height={15} />
+            <SvgIcon src="plus" size={15} />
           </Container>
         </Container>
       </Container>

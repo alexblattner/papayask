@@ -73,6 +73,7 @@ const ProfileSetup = ({
   const [languages, setLanguages] = useState<string[]>([]);
   const [country, setCountry] = useState<string>('');
   const [cloudinaryImageId, setCloudinaryImageId] = React.useState<string>('');
+  const [progress, setProgress] = useState<number>(0);
 
   const [inputSkill, setInputSkill] = useState<UserSkill>({
     name: '',
@@ -249,7 +250,7 @@ const ProfileSetup = ({
   const submit = () => {
     try {
       updateUser(token, {
-        isSetUp: true,
+        isSetUp: progress > 70 ? true : false,
         title,
         bio,
         skills,
@@ -289,6 +290,38 @@ const ProfileSetup = ({
       }
     }
   }, [user]);
+
+  useEffect(() => {
+    setProgress(0);
+    const titleProgress = title ? 10 : 0;
+    const bioProgress = bio ? 10 : 0;
+    const skillsProgress = skills.length > 0 ? 15 : 0;
+    const educationProgress = education.length > 0 ? 15 : 0;
+    const experienceProgress = experience.length > 0 ? 15 : 0;
+    const languagesProgress = languages.length > 0 ? 10 : 0;
+    const countryProgress = country ? 10 : 0;
+    const pictureProgress = cloudinaryImageId ? 15 : 0;
+
+    setProgress(
+      titleProgress +
+        bioProgress +
+        skillsProgress +
+        educationProgress +
+        experienceProgress +
+        languagesProgress +
+        countryProgress +
+        pictureProgress
+    );
+  }, [
+    title,
+    bio,
+    skills,
+    education,
+    experience,
+    languages,
+    country,
+    cloudinaryImageId,
+  ]);
 
   useEffect(() => {
     if (initialStep) {
@@ -378,9 +411,9 @@ const ProfileSetup = ({
           setStep={setStep}
           stepsDone={stepsDone}
           setStepsDone={setStepsDone}
-          token={token}
           setShowProfileSetup={setShowProfileSetup}
           type={type}
+          progress={progress}
         />
       </Container>
     </SetupModal>

@@ -43,7 +43,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const register = async (token: any, body: any) => {
-    const [user, questions] = await Promise.all([
+    // we use promise all setteled beacuse of the first register
+    const [userData, questionsData] = await Promise.allSettled([
       api({
         method: 'post',
         url: '/user',
@@ -54,12 +55,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }),
       getUserQuestions(token),
     ]);
-
+    if (userData.status == 'rejected') return;
     setUser({
-      id: user.data._id,
-      ...user.data,
-      questions,
-      newQuestionsCount: newQuestionsCount(questions.received),
+      id: userData.value.data._id,
+      ...userData.value.data,
+      questions:
+        questionsData.status == 'fulfilled'
+          ? questionsData.value.data
+          : undefined,
+      newQuestionsCount:
+        questionsData.status == 'fulfilled'
+          ? newQuestionsCount(questionsData.value.received)
+          : 0,
     });
   };
   useEffect(() => {
@@ -123,6 +130,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       console.log(error);
     }
   };
+
   useEffect(() => {
     if (token !== undefined) {
       setTokenForAPI(token);

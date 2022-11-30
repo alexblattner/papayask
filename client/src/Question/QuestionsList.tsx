@@ -167,7 +167,7 @@ const QuestionsList = () => {
                     navigate(`/questions/${question._id}`);
                   }}
                 >
-                  <SvgIcon src="check" width={15} height={15} />
+                  <SvgIcon src="check" size={15} />
                 </Button>
                 <Button
                   variant="secondary"
@@ -176,7 +176,7 @@ const QuestionsList = () => {
                     setShowRejectionModal(true);
                   }}
                 >
-                  <SvgIcon src="close" width={15} height={15} />
+                  <SvgIcon src="close" size={15} />
                 </Button>
               </Actions>
             )}

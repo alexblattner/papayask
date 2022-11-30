@@ -155,7 +155,7 @@ const StepTwo = (props: Props) => {
                 right={'15px'}
                 onClick={() => removeEducation(i)}
               >
-                <SvgIcon src="close" width={20} height={20} />
+                <SvgIcon src="close" size={20} />
               </Container>
             </Container>
           ))}
@@ -243,7 +243,7 @@ const StepTwo = (props: Props) => {
                   top={'10px'}
                   right={'15px'}
                 >
-                  <SvgIcon src="close" width={20} height={20} />
+                  <SvgIcon src="close" size={20} />
                 </Container>
               </Container>
             ))}

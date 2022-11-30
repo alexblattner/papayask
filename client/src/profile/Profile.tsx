@@ -28,6 +28,19 @@ const ProfileImage = styled.div`
   overflow: hidden;
 `;
 
+const EditPictureButton = styled('div')`
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+  background-color: ${({ theme }) => theme.colors.primary_L2};
+  border-radius: 6px;
+`;
+
 const Profile = () => {
   const [isOwner, setIsOwner] = React.useState<boolean>(false);
   const [showQuestionModal, setShowQuestionModal] =
@@ -122,6 +135,9 @@ const Profile = () => {
       <Container width="100%" height="300px" position="relative" maxH="300px">
         <ProfileImage>
           <Image src={profileUser?.picture} size={250} />
+          <EditPictureButton onClick={() => openProfileSetupInStep(0)}>
+            <SvgIcon src="pencil_fill" size={20} color="#dc693f" />
+          </EditPictureButton>
         </ProfileImage>
       </Container>
 
@@ -137,7 +153,7 @@ const Profile = () => {
             {Array(5)
               .fill(0)
               .map((_, i) => (
-                <SvgIcon src="star_fill" width={30} height={30} key={i} color='#DC693F'/>
+                <SvgIcon src="star_fill" size={30} key={i} color="#DC693F" />
               ))}
             <Text color="primary">(12)</Text>
           </Container>
@@ -150,12 +166,7 @@ const Profile = () => {
                     onClick={() => setShowSettings(true)}
                   >
                     <Container flex align="center" gap={8}>
-                      <SvgIcon
-                        src="settings"
-                        width={25}
-                        height={25}
-                      />{' '}
-                      Settings
+                      <SvgIcon src="settings" size={25} /> Settings
                     </Container>
                   </Button>
                 ) : (
@@ -167,13 +178,7 @@ const Profile = () => {
                 )}
                 <Button variant="primary" onClick={openProfileSetup}>
                   <Container flex align="center" gap={8}>
-                    <SvgIcon
-                      src="edit_white"
-                      width={20}
-                      height={20}
-                      color="white"
-                    />{' '}
-                    EDIT
+                    <SvgIcon src="pencil_fill" size={20} color="white" /> EDIT
                   </Container>
                 </Button>
               </Container>
@@ -186,14 +191,14 @@ const Profile = () => {
                       setShowQuestionModal(true);
                     }}
                   >
-                    <SvgIcon src="send" width={25} height={25} />
+                    <SvgIcon src="send" size={25} />
                   </Button>
                 )}
                 <Button variant="secondary" onClick={() => {}}>
-                  <SvgIcon src="share" width={25} height={25} />
+                  <SvgIcon src="share" size={25} />
                 </Button>
                 <Button variant="secondary" onClick={() => {}}>
-                  <SvgIcon src="heart" width={25} height={25} />
+                  <SvgIcon src="heart" size={25} />
                 </Button>
               </Container>
             )}
@@ -222,7 +227,7 @@ const Profile = () => {
               onClick={() => openProfileSetupInStep(0)}
             >
               {' '}
-              {isOwner && <SvgIcon src="pencil_fill" width={25} height={25} />}
+              {isOwner && <SvgIcon src="pencil_fill" size={25} />}
               {'  '}
               <Text fontSize={32} fontWeight={600}>
                 {' '}
@@ -240,7 +245,7 @@ const Profile = () => {
               onClick={() => openProfileSetupInStep(2)}
             >
               {' '}
-              {isOwner && <SvgIcon src="pencil_fill" width={25} height={25} />}
+              {isOwner && <SvgIcon src="pencil_fill" size={25} />}
               {'  '}
               <Text fontSize={32} fontWeight={600}>
                 Skills
@@ -258,7 +263,7 @@ const Profile = () => {
               onClick={() => openProfileSetupInStep(3)}
             >
               {' '}
-              {isOwner && <SvgIcon src="pencil_fill" width={25} height={25} />}
+              {isOwner && <SvgIcon src="pencil_fill" size={25} />}
               {'  '}
               <Text fontSize={32} fontWeight={600}>
                 Languages
@@ -285,9 +290,7 @@ const Profile = () => {
                   mb={16}
                   onClick={() => openProfileSetupInStep(1)}
                 >
-                  {isOwner && (
-                    <SvgIcon src="pencil_fill" width={25} height={25} />
-                  )}{' '}
+                  {isOwner && <SvgIcon src="pencil_fill" size={25} />}{' '}
                   <Text fontSize={32} fontWeight={600}>
                     Experience
                   </Text>
@@ -300,7 +303,7 @@ const Profile = () => {
                       justify="center"
                       width="100px"
                     >
-                      <SvgIcon src="work" width={50} height={50} />
+                      <SvgIcon src="work" size={50} />
                     </Container>
                     <Container
                       key={i}
@@ -330,9 +333,7 @@ const Profile = () => {
                   mb={16}
                   onClick={() => openProfileSetupInStep(1)}
                 >
-                  {isOwner && (
-                    <SvgIcon src="pencil_fill" width={25} height={25} />
-                  )}{' '}
+                  {isOwner && <SvgIcon src="pencil_fill" size={25} />}{' '}
                   <Text fontSize={32} fontWeight={600}>
                     Education
                   </Text>
@@ -345,7 +346,7 @@ const Profile = () => {
                       justify="center"
                       width="100px"
                     >
-                      <SvgIcon src="study" width={50} height={50} />
+                      <SvgIcon src="study" size={50} />
                     </Container>
                     <Container
                       flex
