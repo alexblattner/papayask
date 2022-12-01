@@ -34,6 +34,30 @@ const SearchWrapper = styled(Form)`
   }
 `;
 
+const Badge = styled.div`
+  position: absolute;
+  top: -10px;
+  right: -5px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  font-weight: bold;
+  transition: all 0.2s ease-in-out;
+`;
+
+const NavItem = styled(Link)`
+  cursor: pointer;
+  position: relative;
+  color: black;
+  text-decoration: none;
+`;
+
 const SpeakerIcon = styled('div')`
   position: absolute;
   top: 50%;
@@ -131,27 +155,36 @@ const DesktopHeader = (props: Props) => {
       {user ? (
         <>
           <Container flex align="center" gap={16} ml="auto">
-            {width > 1290 ? (
-              <Text fontSize={18} fontWeight={'bold'}>
-                Questions
-              </Text>
-            ) : (
-              <SvgIcon src="send" />
-            )}
-            {width > 1290 ? (
-              <Text fontSize={18} fontWeight={'bold'}>
-                Notifications
-              </Text>
-            ) : (
-              <SvgIcon src="bell" />
-            )}
-            {width > 1290 ? (
-              <Text fontSize={18} fontWeight={'bold'}>
-                Favorites
-              </Text>
-            ) : (
-              <SvgIcon src="heart" />
-            )}
+            <NavItem to="/questions">
+              {user.newQuestionsCount > 0 && (
+                <Badge>{user.newQuestionsCount}</Badge>
+              )}
+              {width > 1290 ? (
+                <Text fontSize={18} fontWeight={'bold'}>
+                  Questions
+                </Text>
+              ) : (
+                <SvgIcon src="send" />
+              )}
+            </NavItem>
+            <NavItem to="">
+              {width > 1290 ? (
+                <Text fontSize={18} fontWeight={'bold'}>
+                  Notifications
+                </Text>
+              ) : (
+                <SvgIcon src="bell" />
+              )}
+            </NavItem>
+            <NavItem to="">
+              {width > 1290 ? (
+                <Text fontSize={18} fontWeight={'bold'}>
+                  Favorites
+                </Text>
+              ) : (
+                <SvgIcon src="heart" />
+              )}
+            </NavItem>
             {!user.isSetUp && (
               <Button
                 variant="outline"

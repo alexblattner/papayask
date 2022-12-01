@@ -32,26 +32,6 @@ const ToastsContainer = styled.div`
   transform: translateX(50%);
 `;
 
-const IconContainer = styled.div`
-  position: relative;
-`;
-
-const Badge = styled.div`
-  position: absolute;
-  top: -10px;
-  right: -5px;
-  background-color: red;
-  color: white;
-  border-radius: 50%;
-  width: 18px;
-  height: 18px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 12px;
-  font-weight: bold;
-  transition: all 0.2s ease-in-out;
-`;
 
 function Header() {
   const { user } = useContext(AuthContext);
