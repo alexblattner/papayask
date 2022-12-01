@@ -134,12 +134,14 @@ const Search = () => {
           else expmin = minexp; //set the min to the years of experience for this experience
         }
       }
-      if (!result.request_settings.cost) {
+      if (!result.request_settings || !result.request_settings.cost) {
+        console.log(1212, result.request_settings);
         push = false;
       } else if (
         result.request_settings.cost > budget[1] ||
         result.request_settings.cost < budget[0]
       ) {
+        console.log(1212, result.request_settings.cost, budget[1], budget[0]);
         push = false;
       }
       if (result.education.length > 0) {
@@ -229,10 +231,10 @@ const Search = () => {
   };
 
   useEffect(() => {
-    if (results.length > 1) {
-      let min = results[0].request_settings.cost;
-      let max = results[0].request_settings.cost;
-      results.forEach((result) => {
+    if (allResults.length > 1) {
+      let min = allResults[0].request_settings.cost;
+      let max = allResults[0].request_settings.cost;
+      allResults.forEach((result) => {
         if (result.request_settings) {
           if (result.request_settings?.cost > max) {
             max = result.request_settings.cost;
@@ -246,7 +248,7 @@ const Search = () => {
       });
       setBudget([min, max]);
     }
-  }, [results]);
+  }, [allResults]);
   const expRange = () => {
     // for(let i=0;i<results.length;i++){
     //     if(results[i].experience){
@@ -263,6 +265,8 @@ const Search = () => {
   useEffect(() => {
     dataAdjustment(allResults);
   }, [search, budget, education, location, yearsOfExperience]);
+
+  console.log(1212, results);
   return (
     <div>
       <div id="top">
