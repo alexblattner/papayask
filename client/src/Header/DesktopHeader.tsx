@@ -72,13 +72,10 @@ const SearchInput = styled(FormControl)`
 const SellerButton = styled('div')`
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 8px;
   background-color: ${({ theme }) => theme.colors.primary};
-  border-top-left-radius: 8px;
-  border-bottom-left-radius: 8px;
-  border-top-right-radius: 20px;
-  border-bottom-right-radius: 20px;
-  padding: 4px 1px 4px 8px;
+  border-radius: 8px;
+  padding: 4px 8px;
 `;
 
 const StyledLink = styled(Link)`

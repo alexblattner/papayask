@@ -1,5 +1,4 @@
 import React, { useState, useContext } from 'react';
-import './Header.css';
 import { auth } from '../firebase-auth';
 import { Modal } from 'react-bootstrap';
 import styled from 'styled-components';
