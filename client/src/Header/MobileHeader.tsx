@@ -41,8 +41,7 @@ interface Props {
 }
 
 const MobileHeader = (props: Props) => {
-  const { setShowProfileSetup, setShowLogIn, setShowSignUp } =
-    props;
+  const { setShowProfileSetup, setShowLogIn, setShowSignUp } = props;
   const { user } = React.useContext(AuthContext);
   return (
     <HeaderContainer>
@@ -51,7 +50,12 @@ const MobileHeader = (props: Props) => {
       </Link>
 
       {user ? (
-        <Container flex align="center" ml={'auto'} gap={12}>
+        <Container flex align="center" gap={16} ml="auto">
+          {!user.isSetUp && (
+            <Button variant="outline" onClick={() => setShowProfileSetup(true)}>
+              BECOME A GIVER
+            </Button>
+          )}
           {user.isSetUp ? (
             <StyledLink to={`/profile/${user.id}`}>
               <SellerButton>
@@ -62,9 +66,9 @@ const MobileHeader = (props: Props) => {
               </SellerButton>
             </StyledLink>
           ) : (
-            <Button variant="outline" onClick={() => setShowProfileSetup(true)}>
-              BECOME A GIVER
-            </Button>
+            <Link to={`/profile/${user.id}`}>
+              <SvgIcon src="user" color="black" size={30} />
+            </Link>
           )}
         </Container>
       ) : (

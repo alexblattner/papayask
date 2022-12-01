@@ -19,6 +19,7 @@ import StepOne from './StepOne';
 import StepTwo from './StepTwo';
 import StepThree from './StepThree';
 import StepFour from './StepFour';
+import SetupWarning from './SetupWarning';
 
 const SetupModal = styled('div')<{ pageLoaded: boolean }>`
   position: fixed;
@@ -74,6 +75,7 @@ const ProfileSetup = ({
   const [country, setCountry] = useState<string>('');
   const [cloudinaryImageId, setCloudinaryImageId] = React.useState<string>('');
   const [progress, setProgress] = useState<number>(0);
+  const [showWarning, setShowWarning] = useState<boolean>(false);
 
   const [inputSkill, setInputSkill] = useState<UserSkill>({
     name: '',
@@ -248,6 +250,10 @@ const ProfileSetup = ({
   };
 
   const submit = () => {
+    if (!showWarning && progress < 75) {
+      setShowWarning(true);
+      return;
+    }
     try {
       updateUser(token, {
         isSetUp: progress > 75 ? true : false,
@@ -341,6 +347,13 @@ const ProfileSetup = ({
 
   return (
     <SetupModal pageLoaded={pageLoaded}>
+      {showWarning && (
+        <SetupWarning
+          setShowWarning={setShowWarning}
+          progress={progress}
+          submit={submit}
+        />
+      )}
       <Container
         width="100%"
         minH="100vh"
