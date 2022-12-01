@@ -4,7 +4,7 @@ interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   variant: 'primary' | 'secondary' | 'outline' | 'text';
   disabled?: boolean;
   children: React.ReactNode;
-  width?: number;
+  width?: number | string;
 }
 
 const StyledButton = styled('button')<ButtonProps>`
@@ -28,7 +28,7 @@ const StyledButton = styled('button')<ButtonProps>`
   font-weight: bold;
   border-radius: 8px;
   padding: 8px 16px;
-  width: ${(props) => (props.width ? `${props.width}px` : 'auto')};
+  width: ${(props) => (props.width ? `${props.width}` : 'auto')};
   transition: all 0.2s ease-in-out;
   cursor: pointer;
 
