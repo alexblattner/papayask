@@ -72,7 +72,7 @@ const Drawer = (props: Props) => {
           </Container>
           <Container py={12}>
             <Text fontSize={22} fontWeight={'bold'}>
-              Requests
+              Questions
             </Text>
           </Container>
           <Container py={12}>

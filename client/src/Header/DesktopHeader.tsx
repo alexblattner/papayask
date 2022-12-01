@@ -136,7 +136,7 @@ const DesktopHeader = (props: Props) => {
           <Container flex align="center" gap={16} ml="auto">
             {width > 1290 ? (
               <Text fontSize={18} fontWeight={'bold'}>
-                Requests
+                Questions
               </Text>
             ) : (
               <SvgIcon src="send" />

@@ -250,7 +250,7 @@ const ProfileSetup = ({
   const submit = () => {
     try {
       updateUser(token, {
-        isSetUp: progress > 70 ? true : false,
+        isSetUp: progress > 75 ? true : false,
         title,
         bio,
         skills,
