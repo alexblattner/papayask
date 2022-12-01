@@ -24,11 +24,8 @@ const SellerButton = styled('div')`
   align-items: center;
   gap: 4px;
   background-color: ${({ theme }) => theme.colors.primary};
-  border-top-left-radius: 8px;
-  border-bottom-left-radius: 8px;
-  border-top-right-radius: 20px;
-  border-bottom-right-radius: 20px;
-  padding: 4px 2px 4px 8px;
+  border-radius: 8px;
+  padding: 4px 8px;
 `;
 
 const StyledLink = styled(Link)`
@@ -41,11 +38,10 @@ interface Props {
   setShowProfileSetup: React.Dispatch<React.SetStateAction<boolean>>;
   setShowSignUp: React.Dispatch<React.SetStateAction<boolean>>;
   setShowLogIn: React.Dispatch<React.SetStateAction<boolean>>;
-  setShowDrawer: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const MobileHeader = (props: Props) => {
-  const { setShowProfileSetup, setShowLogIn, setShowSignUp, setShowDrawer } =
+  const { setShowProfileSetup, setShowLogIn, setShowSignUp } =
     props;
   const { user } = React.useContext(AuthContext);
   return (
@@ -70,9 +66,6 @@ const MobileHeader = (props: Props) => {
               BECOME A GIVER
             </Button>
           )}
-          <Container onClick={() => setShowDrawer(true)}>
-            <SvgIcon src="plus" />
-          </Container>
         </Container>
       ) : (
         <Container flex align="center" gap={16} ml="auto">

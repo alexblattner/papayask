@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { Button } from '../shared/Button';
 import { Container } from '../shared/Container';
 import { Text } from '../shared/Text';
+import useWidth from '../Hooks/useWidth';
 
 interface Props {
   step: number;
@@ -26,7 +27,6 @@ const Progress = styled.div<{ progress: number }>`
   clip-path: circle(50%);
   position: relative;
   background: ${({ theme }) => theme.colors.primary};
-  
 
   &::before {
     content: '';
@@ -68,6 +68,7 @@ const ProfileSetupFooter = ({
   type,
   progress,
 }: Props) => {
+  const { width } = useWidth();
   const nextStep = () => {
     if (step < 3) {
       setStep(step + 1);
@@ -82,7 +83,13 @@ const ProfileSetupFooter = ({
   };
 
   return (
-    <Container flex align="center" gap={16} width="75%" mt={'auto'}>
+    <Container
+      flex
+      align="center"
+      gap={10}
+      width={width > 768 ? '75%' : '90%'}
+      mt={'auto'}
+    >
       <Button variant="secondary" onClick={() => setShowProfileSetup(false)}>
         Cancel
       </Button>

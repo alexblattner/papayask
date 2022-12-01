@@ -40,6 +40,10 @@ const PaginationLine = styled('div')`
   height: 2px;
   background-color: ${(props) => props.theme.colors.primary_L2};
   margin: 10px;
+
+  @media (max-width: 768px) {
+    width: 20px;
+  }
 `;
 
 type StepStatus = 'done' | 'todo' | 'active';

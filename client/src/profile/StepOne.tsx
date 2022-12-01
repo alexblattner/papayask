@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import axios, { AxiosProgressEvent } from 'axios';
 
 import api from '../utils/api';
+import useWidth from '../Hooks/useWidth';
 import compressImage from '../utils/compressImage';
 import { Button } from '../shared/Button';
 import { Container } from '../shared/Container';
@@ -62,6 +63,8 @@ const StepOne = (props: Props) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
   const uploadRef = useRef<HTMLDivElement>(null);
+
+  const { width } = useWidth();
 
   const getCloudinarySignature = async () => {
     const res = await api.post('cloudinary-signature');
@@ -145,21 +148,24 @@ const StepOne = (props: Props) => {
         placeholder="Enter a link and press enter"
         onChange={(e) => setTitle(e.target.value)}
         name="headline"
-        width='300px'
+        width="300px"
       />
       <Text fontSize={32} fontWeight={600} mb={16}>
         Tell your clients about yourself
       </Text>
-      <TextArea
-        value={bio}
-        onChange={(e) => setBio(e.target.value)}
-      />
+      <TextArea value={bio} onChange={(e) => setBio(e.target.value)} />
       <HiddenInput
         type="file"
         ref={fileInputRef}
         onChange={(e) => onFileChosen(e)}
       />
-      <Container flex align="flex-start" gap={48}>
+      <Container
+        flex
+        dir={width > 768 ? 'row' : 'column'}
+        align="flex-start"
+        gap={48}
+        mb={48}
+      >
         <Button variant="primary" onClick={() => fileInputRef.current?.click()}>
           Upload profile picture
         </Button>

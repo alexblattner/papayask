@@ -20,65 +20,13 @@ const HeaderContainer = styled.div`
   padding: 20px 0px;
 `;
 
-const SearchWrapper = styled(Form)`
-  position: relative;
-  display: flex;
-  border-radius: 8px;
-  width: 250px;
-  border: 2px solid black;
-  transition: all 0.3s ease-in-out;
-
-  &:focus,
-  &:focus-within {
-    width: 100%;
-  }
-`;
-
-const SpeakerIcon = styled('div')`
-  position: absolute;
-  top: 50%;
-  right: 10px;
-  transform: translateY(-50%);
-`;
-
-const SearchButton = styled('button')`
-  all: unset;
-  padding: 0.5rem 1rem;
-`;
-
-const SearchInput = styled(FormControl)`
-  height: 100%;
-  width: 100%;
-  border: none;
-  border-radius: 8px;
-  color: black;
-
-  ::placeholder {
-    font-size: 1.1rem;
-    font-weight: bold;
-  }
-
-  &:focus,
-  &:focus-within {
-    outline: none;
-    border: none;
-    -moz-box-shadow: none;
-    -goog-ms-box-shadow: none;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-  }
-`;
-
 const SellerButton = styled('div')`
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 8px;
   background-color: ${({ theme }) => theme.colors.primary};
-  border-top-left-radius: 8px;
-  border-bottom-left-radius: 8px;
-  border-top-right-radius: 20px;
-  border-bottom-right-radius: 20px;
-  padding: 4px 1px 4px 8px;
+  border-radius: 8px;
+  padding: 4px 8px;
 `;
 
 const StyledLink = styled(Link)`
@@ -113,48 +61,9 @@ const DesktopHeader = (props: Props) => {
         <FullLogo width={150} height={50} />
       </Link>
 
-      <SearchWrapper>
-        <SearchButton onClick={(e) => handleSearch(e)}>
-          <SvgIcon src="search" />
-        </SearchButton>
-        <SearchInput
-          type="text"
-          placeholder="Search..."
-          className="mr-sm-2"
-          value={searchInput}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setSearchInput(e.target.value)
-          }
-        />
-        <SpeakerIcon>
-          <SvgIcon src="speaker" />
-        </SpeakerIcon>
-      </SearchWrapper>
-
       {user ? (
         <>
           <Container flex align="center" gap={16} ml="auto">
-            {width > 1290 ? (
-              <Text fontSize={18} fontWeight={'bold'}>
-                Questions
-              </Text>
-            ) : (
-              <SvgIcon src="send" />
-            )}
-            {width > 1290 ? (
-              <Text fontSize={18} fontWeight={'bold'}>
-                Notifications
-              </Text>
-            ) : (
-              <SvgIcon src="bell" />
-            )}
-            {width > 1290 ? (
-              <Text fontSize={18} fontWeight={'bold'}>
-                Favorites
-              </Text>
-            ) : (
-              <SvgIcon src="heart" />
-            )}
             {!user.isSetUp && (
               <Button
                 variant="outline"
