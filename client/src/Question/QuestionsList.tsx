@@ -49,6 +49,9 @@ const Tab = styled.div`
 
 const AnimatedContainer = styled('div')<{ currentTab: TabType }>`
   width: 50%;
+  @media (max-width: 890px) {
+    width: 100%;
+  }
 `;
 
 const QuestionItem = styled('div')`
@@ -114,7 +117,7 @@ const QuestionsList = () => {
   }, [user, currentTab]);
 
   return (
-    <Container width="60%" mx={'auto'} flex dir="column" align="center">
+    <Container width="90%" mx={'auto'} flex dir="column" align="center">
       {showRejectionModal && (
         <RejectModal
           setShowRejectModal={setShowRejectionModal}
@@ -159,27 +162,28 @@ const QuestionsList = () => {
               </Text>
               <TruncatedText>{question.description}</TruncatedText>
             </Container>
-            {currentTab === 'recieved' && question.status.action === 'pending' && (
-              <Actions>
-                <Button
-                  variant="secondary"
-                  onClick={() => {
-                    navigate(`/questions/${question._id}`);
-                  }}
-                >
-                  <SvgIcon src="check" size={15} />
-                </Button>
-                <Button
-                  variant="secondary"
-                  onClick={() => {
-                    setSelectedQuestionId(question._id);
-                    setShowRejectionModal(true);
-                  }}
-                >
-                  <SvgIcon src="close" size={15} />
-                </Button>
-              </Actions>
-            )}
+            {currentTab === 'recieved' &&
+              question.status.action === 'pending' && (
+                <Actions>
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      navigate(`/questions/${question._id}`);
+                    }}
+                  >
+                    <SvgIcon src="check" size={15} />
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      setSelectedQuestionId(question._id);
+                      setShowRejectionModal(true);
+                    }}
+                  >
+                    <SvgIcon src="close" size={15} />
+                  </Button>
+                </Actions>
+              )}
             {currentTab === 'recieved' &&
               question.status.action === 'rejected' && (
                 <Actions>

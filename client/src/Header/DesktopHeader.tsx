@@ -37,7 +37,7 @@ const SearchWrapper = styled(Form)`
 const Badge = styled.div`
   position: absolute;
   top: -10px;
-  right: -5px;
+  right: -10px;
   background-color: red;
   color: white;
   border-radius: 50%;

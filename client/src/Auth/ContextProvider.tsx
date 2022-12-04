@@ -34,39 +34,38 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, [user]);
 
   const getUserQuestions = async (utoken: string) => {
-    const res = await api.get('/questions', {
-      headers: {
-        Authorization: `Bearer ${utoken}`,
-      },
-    });
-    return res.data;
+    try {
+      const res = await api.get('/questions', {
+        headers: {
+          Authorization: `Bearer ${utoken}`,
+        },
+      });
+
+      return res.data;
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const register = async (token: any, body: any) => {
     // we use promise all setteled beacuse of the first register
-    const [userData, questionsData] = await Promise.allSettled([
-      api({
-        method: 'post',
-        url: '/user',
-        headers: {
-          Authorization: 'Bearer ' + token,
-        },
-        data: body,
-      }),
-      getUserQuestions(token),
-    ]);
-    if (userData.status == 'rejected') return;
+
+    const userData = await api({
+      method: 'post',
+      url: '/user',
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+      data: body,
+    });
+
+    const questions = await getUserQuestions(token);
+
     setUser({
-      id: userData.value.data._id,
-      ...userData.value.data,
-      questions:
-        questionsData.status == 'fulfilled'
-          ? questionsData.value.data
-          : undefined,
-      newQuestionsCount:
-        questionsData.status == 'fulfilled'
-          ? newQuestionsCount(questionsData.value.received)
-          : 0,
+      id: userData.data._id,
+      ...userData.data,
+      questions,
+      newQuestionsCount: newQuestionsCount(questions.received),
     });
   };
   useEffect(() => {
@@ -86,6 +85,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const newQuestionsCount = (questions: QuestionProps[]) => {
+    console.log(questions);
+    
     return questions.filter((question) => question.status.action === 'pending')
       .length;
   };
