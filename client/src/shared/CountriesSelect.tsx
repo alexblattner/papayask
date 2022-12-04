@@ -6,7 +6,7 @@ import { Text } from './Text';
 import countries from '../data/countries';
 import { Suggestions, Suggestion } from './Suggestions';
 
-interface Props{
+interface Props {
   value: string;
   onChange: (country: string) => void;
   inputName: string;
@@ -32,7 +32,7 @@ const CountriesSelect = (props: Props) => {
         filteredCountries.forEach((country) => {
           finalSuggestions.push(country.name);
         });
-      
+
         const startsWithSuggestions = finalSuggestions.filter((suggestion) =>
           suggestion.toLowerCase().startsWith(value.toLowerCase())
         );
