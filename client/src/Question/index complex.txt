@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect, useContext } from "react";
 import { Container, Row, Button, Spinner } from "react-bootstrap";
 import moment from "moment";
 import PDF from "./PDF";
-import SideBar from "./SideBar";
+import SideBar from "./Answer/SideBar";
 import Image from "./Image";
 import useDevice from "../Hooks/useDevice";
 import {NoteProps,QuestionProps} from '../models/Question';
@@ -16,6 +16,7 @@ function Question() {
   const [highlightedNoteId, setHighlightedNoteId] = useState<string>("");
   const [data, setData] = useState<QuestionProps | null>(null); //question data
   const [notes, setNotes] = useState<NoteProps[]>([]); //answer data
+  const [currentNote, setCurrentNote] = useState<NoteProps | null>(null); //current note
   const [cutting, setCutting] = useState(false);
   const { device } = useDevice();
   useEffect(() => {
@@ -54,6 +55,9 @@ function Question() {
       }
     }
   };
+  const removeCurrentNote = () => {
+    setCurrentNote(null);
+  }
   const addNote = (note:NoteProps) => {
     setNotes([...notes,note]);
   }
@@ -69,11 +73,12 @@ function Question() {
             >
               <Row>
                 {" "}
-                {data?.description!=undefined&&<Description description={data?.description} />}
+                {data?.description!=undefined&&<Description highlight={highlightedNoteId} setHighlight={setHighlightedNoteId} description={data?.description} notes={notes} setCurrentNote={setCurrentNote}/>}
               </Row>
                 {postContent()}
             </div>
-            {notes&&data?.description&&<SideBar senderId={data?.sender.id} done={data?.status?.done} addNote={addNote} description={data?.description} notes={notes}/>}
+            {notes&&data?.description&&<SideBar  highlight={highlightedNoteId} setHighlight={setHighlightedNoteId} description={data?.description} notes={notes}/>}
+            {data?.description&&<Input description={data.description} currentNote={currentNote} addNote={addNote} removeCurrentNote={removeCurrentNote}/>}
           </>
     );
   }

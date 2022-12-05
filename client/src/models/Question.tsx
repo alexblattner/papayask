@@ -13,7 +13,9 @@ export type QuestionProps = {
     description: string,
     createdAt: string,
     uptedAt: string,
-    done: boolean
+    status: {
+        done: boolean,
+    }
 }
 type DescriptionCoordinates = {
     start: number,
@@ -33,6 +35,7 @@ type ImageCoordinates = {
     height: number
 }
 export type NoteProps = {
+    _id?: string,
     user?: UserProps,
     content: string,
     coordinates: DescriptionCoordinates | null,

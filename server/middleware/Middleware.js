@@ -4,6 +4,7 @@ const User = require('../models/user');
 class Middleware {
   async decodeToken(req, res, next) {
     if (!req.headers.authorization) {
+      console.log('No authorization header');
       return res.status(401).json({ error: 'Unauthorized' });
     }
     const token = req.headers.authorization.split(' ')[1];

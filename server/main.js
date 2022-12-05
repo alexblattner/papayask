@@ -195,6 +195,7 @@ app.get('/user/:id', userController.getById);
 app.get('/questions', middleware.decodeToken, questionController.getAll);
 app.get('/question/:id', middleware.decodeToken, questionController.getById);
 app.post('/question', middleware.decodeToken, questionController.create);
+app.post('/question/finish', middleware.decodeToken, questionController.finish);
 app.post('/pay', middleware.decodeToken, questionController.pay);
 // app.get('/post/:id/:tag', postController.getById, (req, res, next) => {
 //   return res.send(req.data);
