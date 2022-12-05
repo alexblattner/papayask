@@ -3,7 +3,6 @@ import React from 'react';
 import { University, UserEducation, UserExperience } from '../models/User';
 import CountriesSelect from '../shared/CountriesSelect';
 import { DateInput } from '../shared/DateInput';
-import Icon from '../shared/Icon';
 import UniversitiesSelect from '../shared/UniversitiesSelect';
 import formatDate from '../utils/formatDate';
 import { Button } from '../shared/Button';
@@ -11,6 +10,8 @@ import { Container } from '../shared/Container';
 import { Input } from '../shared/Input';
 import { Text } from '../shared/Text';
 import { Education, Experience } from './ProfileSetup';
+import useWidth from '../Hooks/useWidth';
+import SvgIcon from '../shared/SvgIcon';
 
 interface Props {
   inputEducation: Education;
@@ -46,6 +47,8 @@ const StepTwo = (props: Props) => {
     onChangeExperienceCountry,
   } = props;
 
+  const { width } = useWidth();
+
   const addEducationDisabled = () => {
     return (
       !inputEducation.startDate ||
@@ -67,8 +70,8 @@ const StepTwo = (props: Props) => {
   };
 
   return (
-    <Container flex justify="space-between" height="100%">
-      <Container width="50%">
+    <Container flex justify="space-between" height="100%" flexWrap gap={12}>
+      <Container width={width > 750 ? '45%' : '90%'} mx="auto">
         <Text fontSize={32} fontWeight={600} mb={16}>
           Education
         </Text>
@@ -79,14 +82,14 @@ const StepTwo = (props: Props) => {
               value={inputEducation.name}
               placeholder="field of study"
               name="name"
-              width="282px"
+              width="70%"
               onChange={(e) => onChangeEducation('name', e.target.value)}
             />
             <Input
               type="text"
               placeholder="Level"
               name="level"
-              width="110px"
+              width="30%"
               value={inputEducation.level}
               onChange={(e) => onChangeEducation('level', e.target.value)}
             />
@@ -120,7 +123,6 @@ const StepTwo = (props: Props) => {
             />
           </Container>
           <Button
-            width={400}
             variant="primary"
             onClick={addEducation}
             disabled={addEducationDisabled()}
@@ -128,37 +130,38 @@ const StepTwo = (props: Props) => {
             Add
           </Button>
         </Container>
-        <Container flex flexWrap gap={20} my={20}>
+        <Container my={20}>
           {education.map((edu, i) => (
             <Container
               key={i}
-              width="220px"
+              width="100%"
               border="1px solid #f8cbc9"
-              borderRadius="8px"
               position="relative"
+              borderRadius="8px"
               px={16}
               py={16}
+              mb={16}
             >
               <Text fontSize={18} fontWeight="bold">
                 {edu.name}
               </Text>
               <Text fontSize={16}>{edu.university.name}</Text>
-              <Text>
+              <Text fontSize={14}>
                 {formatDate(edu.startDate)} - {formatDate(edu.endDate)}
               </Text>
               <Container
                 position="absolute"
-                top={10}
-                right={15}
+                top={'10px'}
+                right={'15px'}
                 onClick={() => removeEducation(i)}
               >
-                <Icon src="close" width={20} height={20} />
+                <SvgIcon src="close" size={20} />
               </Container>
             </Container>
           ))}
         </Container>
       </Container>
-      <Container width="50%" pl={100} borderLeft="1px solid #f8cbc9">
+      <Container width={width > 750 ? '45%' : '90%'} mx="auto">
         <Text fontSize={32} fontWeight={600} mb={16}>
           Experience
         </Text>
@@ -183,14 +186,13 @@ const StepTwo = (props: Props) => {
               value={inputExperience.type}
               placeholder="Experience type"
               name="type"
-              width="200px"
+              width="60%"
               onChange={(e) => onChangeExperience('type', e)}
             />
             <CountriesSelect
               value={inputExperience.geographic_specialization}
               onChange={onChangeExperienceCountry}
               inputName="geographic_specialization"
-              size="small"
             />
           </Container>
           <Container flex gap={12} align="center">
@@ -211,37 +213,37 @@ const StepTwo = (props: Props) => {
           </Container>
           <Button
             variant="primary"
-            width={400}
             onClick={addExperience}
             disabled={addExperienceDisabled()}
           >
             Add
           </Button>
-          <Container flex flexWrap gap={20} my={20}>
+          <Container my={20}>
             {experience.map((exp, i) => (
               <Container
                 key={i}
-                width="200px"
+                width="100%"
                 border="1px solid #f8cbc9"
                 borderRadius="8px"
                 position="relative"
                 px={16}
                 py={16}
+                mb={16}
               >
                 <Text fontSize={18} fontWeight="bold">
                   {exp.name}
                 </Text>
-                <Text fontSize={18}>{exp.company.name}</Text>
-                <Text>
+                <Text fontSize={16}>{exp.company.name}</Text>
+                <Text fontSize={14}>
                   {formatDate(exp.startDate)} - {formatDate(exp.endDate)}
                 </Text>
                 <Container
                   onClick={() => removeExperience(i)}
                   position="absolute"
-                  top={10}
-                  right={15}
+                  top={'10px'}
+                  right={'15px'}
                 >
-                  <Icon src="close" width={20} height={20} />
+                  <SvgIcon src="close" size={20} />
                 </Container>
               </Container>
             ))}

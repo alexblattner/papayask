@@ -145,6 +145,7 @@ const StepOne = (props: Props) => {
         placeholder="Enter a link and press enter"
         onChange={(e) => setTitle(e.target.value)}
         name="headline"
+        width='300px'
       />
       <Text fontSize={32} fontWeight={600} mb={16}>
         Tell your clients about yourself

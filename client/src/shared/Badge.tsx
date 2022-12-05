@@ -1,15 +1,15 @@
-import React from 'react';
 import styled from 'styled-components';
 import Divider from './Divider';
 
 const StyledBadge = styled.div`
   display: flex;
   align-items: center;
-  padding: 8px 12px;
+  padding: 6px 12px;
   border-radius: 4px;
-  background-color: ${(props) => props.theme.colors.primary};
-  color: #fff;
+  background-color: ${(props) => props.theme.colors.primary_L2};
+  color: ${(props) => props.theme.colors.primary_D1};
   cursor: pointer;
+  font-weight: bold;
   gap: 12px;
 `;
 

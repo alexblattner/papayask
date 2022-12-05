@@ -1,10 +1,8 @@
 import CountriesSelect from '../shared/CountriesSelect';
 import LanguagesSelect from '../shared/LanguagesSelect';
-import Badge from './components/Badge';
+import Badge from '../shared/Badge';
 import { Container } from '../shared/Container';
 import { Text } from '../shared/Text';
-import { RequestSettings } from '../models/User';
-import { Input } from '../shared/Input';
 
 interface Props {
   addLanguage: (language: string) => void;
@@ -21,11 +19,12 @@ const StepFour = (props: Props) => {
         Geographic Specialization
       </Text>
       <CountriesSelect
-        value={props.country}
+        value={props.country ?? ''}
         onChange={props.setCountry}
         inputName=""
+        width="300px"
       />
-      <LanguagesSelect addLanguage={props.addLanguage} />
+      <LanguagesSelect addLanguage={props.addLanguage} width="300px" />
       <Container flex flexWrap gap={12} mb={36}>
         {props.languages.map((language, index) => (
           <Badge
@@ -36,8 +35,6 @@ const StepFour = (props: Props) => {
           ></Badge>
         ))}
       </Container>
-     
-     
     </>
   );
 };

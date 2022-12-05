@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-interface ContainerProps {
+interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode | React.ReactNode[];
   onClick?: () => void;
   width?: string;
@@ -30,10 +30,10 @@ interface ContainerProps {
   borderTop?: string;
   borderBottom?: string;
   position?: 'relative' | 'absolute' | 'fixed';
-  top?: number;
-  right?: number;
-  bottom?: number;
-  left?: number;
+  top?: string;
+  right?: string;
+  bottom?: string;
+  left?: string;
   zIndex?: number;
   maxH?: string;
   minH?: string;
@@ -46,13 +46,13 @@ const StyledContainer = styled('div')<ContainerProps>`
   width: ${(props) => (props.width ? props.width : '')};
   height: ${(props) => (props.height ? props.height : '')};
   position: ${(props) => (props.position ? props.position : '')};
-  top: ${(props) => (props.top ? props.top + 'px' : '')};
-  right: ${(props) => (props.right ? props.right + 'px' : '')};
-  bottom: ${(props) => (props.bottom ? props.bottom + 'px' : '')};
-  left: ${(props) => (props.left ? props.left + 'px' : '')};
+  top: ${(props) => (props.top ? props.top : '')};
+  right: ${(props) => (props.right ? props.right : '')};
+  bottom: ${(props) => (props.bottom ? props.bottom : '')};
+  left: ${(props) => (props.left ? props.left : '')};
   display: ${(props) => (props.flex ? 'flex' : 'block')};
   flex-direction: ${(props) => props.dir};
-  flex-wrap: ${(props) => (props.flexWrap ? 'wrap' : 'nowrap')};
+  flex-wrap: ${(props) => (props.flexWrap ? 'wrap' : '')};
   align-items: ${(props) => props.align};
   justify-content: ${(props) => props.justify};
   gap: ${(props) => (props.gap ? props.gap + 'px' : '')};
@@ -91,7 +91,7 @@ const StyledContainer = styled('div')<ContainerProps>`
   min-height: ${(props) => (props.minH ? props.minH : '')};
   max-width: ${(props) => (props.maxW ? props.maxW : '')};
   min-width: ${(props) => (props.minW ? props.minW : '')};
-  overflow: ${(props) => (props.overflow ? props.overflow : 'visible')};
+  overflow: ${(props) => (props.overflow ? props.overflow : '')};
 `;
 
 export const Container = (props: ContainerProps) => {

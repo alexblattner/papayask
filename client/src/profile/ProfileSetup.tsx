@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { AuthContext } from '../Auth/ContextProvider';
 import { auth } from '../firebase-auth';
 import styled from 'styled-components';
+import useWidth from '../Hooks/useWidth';
 
 import {
   University,
@@ -18,17 +19,19 @@ import StepOne from './StepOne';
 import StepTwo from './StepTwo';
 import StepThree from './StepThree';
 import StepFour from './StepFour';
+import SetupWarning from './SetupWarning';
 
 const SetupModal = styled('div')<{ pageLoaded: boolean }>`
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
-  right: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: scroll;
   background-color: #fff;
-  width: 100%;
-  z-index: 999;
   transform: translateY(${(props) => (props.pageLoaded ? '0' : '100%')});
   transition: transform 0.3s ease-in-out;
+  z-index: 100;
 `;
 
 interface ProfileSetupProps {
@@ -71,7 +74,8 @@ const ProfileSetup = ({
   const [languages, setLanguages] = useState<string[]>([]);
   const [country, setCountry] = useState<string>('');
   const [cloudinaryImageId, setCloudinaryImageId] = React.useState<string>('');
-  
+  const [progress, setProgress] = useState<number>(0);
+  const [showWarning, setShowWarning] = useState<boolean>(false);
 
   const [inputSkill, setInputSkill] = useState<UserSkill>({
     name: '',
@@ -101,13 +105,14 @@ const ProfileSetup = ({
     geographic_specialization: '',
   });
 
+  const { width } = useWidth();
+
   const removeSkill = (index: number) => {
     const newSkills = [...skills];
     newSkills.splice(index, 1);
     setSkills(newSkills);
   };
 
-  
   const onChangeEducation = (
     name: string,
     value: string | University | Date
@@ -245,16 +250,20 @@ const ProfileSetup = ({
   };
 
   const submit = () => {
+    if (!showWarning && progress < 75) {
+      setShowWarning(true);
+      return;
+    }
     try {
       updateUser(token, {
-        isSetUp: true,
-        title: title,
-        bio: bio,
-        skills: skills,
-        education: education,
-        experience: experience,
-        languages: languages,
-        country: country,
+        isSetUp: progress > 75 ? true : false,
+        title,
+        bio,
+        skills,
+        education,
+        experience,
+        languages,
+        country,
         picture: cloudinaryImageId,
       });
       setShowProfileSetup(false);
@@ -278,6 +287,7 @@ const ProfileSetup = ({
       setTitle(user.title ?? '');
       setLanguages(user.languages);
       setCountry(user.country);
+
       if (user.picture) {
         setImage(
           `https://res.cloudinary.com/snipcritics/image/upload/v1668941778/${process.env.REACT_APP_ENV}/${user.picture}.jpg`
@@ -286,6 +296,38 @@ const ProfileSetup = ({
       }
     }
   }, [user]);
+
+  useEffect(() => {
+    setProgress(0);
+    const titleProgress = title ? 10 : 0;
+    const bioProgress = bio ? 10 : 0;
+    const skillsProgress = skills.length > 0 ? 15 : 0;
+    const educationProgress = education.length > 0 ? 15 : 0;
+    const experienceProgress = experience.length > 0 ? 15 : 0;
+    const languagesProgress = languages.length > 0 ? 10 : 0;
+    const countryProgress = country ? 10 : 0;
+    const pictureProgress = cloudinaryImageId ? 15 : 0;
+
+    setProgress(
+      titleProgress +
+        bioProgress +
+        skillsProgress +
+        educationProgress +
+        experienceProgress +
+        languagesProgress +
+        countryProgress +
+        pictureProgress
+    );
+  }, [
+    title,
+    bio,
+    skills,
+    education,
+    experience,
+    languages,
+    country,
+    cloudinaryImageId,
+  ]);
 
   useEffect(() => {
     if (initialStep) {
@@ -305,9 +347,16 @@ const ProfileSetup = ({
 
   return (
     <SetupModal pageLoaded={pageLoaded}>
+      {showWarning && (
+        <SetupWarning
+          setShowWarning={setShowWarning}
+          progress={progress}
+          submit={submit}
+        />
+      )}
       <Container
         width="100%"
-        minH="90vh"
+        minH="100vh"
         flex
         dir="column"
         align="center"
@@ -319,7 +368,7 @@ const ProfileSetup = ({
           step={step}
           stepsDone={stepsDone}
         />
-        <Container width="75%" pt={50}>
+        <Container width={width > 950 ? '75%' : '90%'} pt={50}>
           {step === 0 && (
             <StepOne
               bio={bio}
@@ -375,9 +424,9 @@ const ProfileSetup = ({
           setStep={setStep}
           stepsDone={stepsDone}
           setStepsDone={setStepsDone}
-          token={token}
           setShowProfileSetup={setShowProfileSetup}
           type={type}
+          progress={progress}
         />
       </Container>
     </SetupModal>

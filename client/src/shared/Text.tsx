@@ -1,10 +1,9 @@
 import styled from 'styled-components';
 
-interface TextProps {
+interface TextProps extends React.HTMLAttributes<HTMLParagraphElement> {
   children: React.ReactNode;
   fontSize?: number;
   fontWeight?: number | string;
-  color?: string;
   mb?: number;
   ml?: number;
   align?: string;

@@ -21,6 +21,7 @@ const mongoose = require('mongoose');
 const fs = require('fs');
 const util = require('util');
 const unlinkFile = util.promisify(fs.unlink);
+let { eventsHandler } = require('./utils/eventsHandler');
 console.log(
   'mongodb+srv://SnipCritics:' +
     process.env.MONGODB_PASSWORD +
@@ -188,6 +189,34 @@ app.get('/university/:search', async (req, res, next) => {
 
 //   });
 // })
+
+// const eventsHandler = (req, res, next) => {
+//   const headers = {
+//     'Content-Type': 'text/event-stream',
+//     Connection: 'keep-alive',
+//     'Cache-Control': 'no-cache',
+//   };
+//   res.writeHead(200, headers);
+
+//   const data = `data: connection opened\n\n`;
+
+//   res.write(data);
+//   const userId = req.params.id;
+//   const newClient = {
+//     id: userId,
+//     res,
+//   };
+//   console.log('new client connected - ' + userId);
+//   clients.push(newClient);
+
+//   req.on('close', () => {
+//     console.log(`${userId} Connection closed`);
+//     clients = clients.filter((client) => client.id !== userId);
+//   });
+// };
+
+app.get('/realtime-notifications/:id', eventsHandler);
+
 app.post('/user', middleware.decodeToken, userController.createOrLogin);
 app.post('/note', middleware.decodeToken, noteController.create);
 app.patch('/user/:userId', middleware.decodeToken, userController.update);
@@ -197,6 +226,11 @@ app.get('/question/:id', middleware.decodeToken, questionController.getById);
 app.post('/question', middleware.decodeToken, questionController.create);
 app.post('/question/finish', middleware.decodeToken, questionController.finish);
 app.post('/pay', middleware.decodeToken, questionController.pay);
+app.post(
+  '/question/update-status/:id',
+  middleware.decodeToken,
+  questionController.updateStatus
+);
 // app.get('/post/:id/:tag', postController.getById, (req, res, next) => {
 //   return res.send(req.data);
 // });

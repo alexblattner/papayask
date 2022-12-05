@@ -32,6 +32,7 @@ const StepThree = (props: Props) => {
       <Input
         name="skills"
         type="text"
+        width='400px'
         value={inputSkill.name}
         placeholder="Type a skill and press enter"
         onChange={(e) => setInputSkill({ ...inputSkill, name: e.target.value })}
@@ -53,11 +54,11 @@ const StepThree = (props: Props) => {
         py={12}
         borderBottom="1px solid var(--primary)"
       >
-        <Container width="200px" borderRight="1px solid #f8cbc9">
+        <Container width="20%" borderRight="1px solid #f8cbc9">
           Skill
         </Container>
         <Container
-          width="calc(50% - 112px)"
+          width="40%"
           px={16}
           flex
           align="center"
@@ -67,7 +68,7 @@ const StepThree = (props: Props) => {
           Related Education
         </Container>
         <Container
-          width="calc(50% - 112px)"
+          width="40%"
           px={16}
           flex
           align="center"
@@ -76,18 +77,20 @@ const StepThree = (props: Props) => {
           Related Experience
         </Container>
       </Container>
-      {skills.map((skill, i) => (
-        <SkillRow
-          skill={skill}
-          key={i}
-          index={i}
-          education={education}
-          experience={experience}
-          skills={skills}
-          setSkills={setSkills}
-          removeSkill={props.removeSkill}
-        />
-      ))}
+      <Container mb={12}>
+        {skills.map((skill, i) => (
+          <SkillRow
+            skill={skill}
+            key={i}
+            index={i}
+            education={education}
+            experience={experience}
+            skills={skills}
+            setSkills={setSkills}
+            removeSkill={props.removeSkill}
+          />
+        ))}
+      </Container>
     </Container>
   );
 };

@@ -87,8 +87,10 @@ export interface UserProps {
   country: string;
   verified: boolean;
   request_settings: RequestSettings;
+  questionsInstructions?: string;
   questions?: {
     received: QuestionProps[];
     sent: QuestionProps[];
   };
+  newQuestionsCount: number;
 }

@@ -1,26 +1,34 @@
 import styled from 'styled-components';
 
-interface ButtonProps {
-  onClick: () => void;
-  variant: 'primary' | 'secondary';
+interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
+  variant: 'primary' | 'secondary' | 'outline' | 'text';
   disabled?: boolean;
   children: React.ReactNode;
-  width?: number;
+  width?: number | string;
 }
 
 const StyledButton = styled('button')<ButtonProps>`
   background-color: ${(props) =>
     props.variant === 'primary'
       ? props.theme.colors.primary
-      : props.theme.colors.primary_L2};
+      : props.variant === 'secondary'
+      ? props.theme.colors.primary_L2
+      : 'transparent'};
   color: ${(props) =>
-    props.variant === 'secondary' ? props.theme.colors.primary : 'white'};
+    props.variant === 'secondary' || props.variant === 'outline'
+      ? props.theme.colors.primary
+      : props.variant === 'primary'
+      ? 'white'
+      : 'black'};
+  border: ${(props) =>
+    props.variant === 'outline'
+      ? `2px solid ${props.theme.colors.primary}`
+      : 'none'};
   font-size: 18px;
   font-weight: bold;
-  border: none;
   border-radius: 8px;
   padding: 8px 16px;
-  width: ${(props) => (props.width ? `${props.width}px` : 'auto')};
+  width: ${(props) => (props.width ? `${props.width}` : 'auto')};
   transition: all 0.2s ease-in-out;
   cursor: pointer;
 

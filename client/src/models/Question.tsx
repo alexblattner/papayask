@@ -1,4 +1,3 @@
-import { type } from '@testing-library/user-event/dist/type';
 import {UserProps} from './User';
 export type FileProps = {
     id: string,
@@ -14,6 +13,8 @@ export type QuestionProps = {
     createdAt: string,
     uptedAt: string,
     status: {
+        action: 'pending' | 'accepted' | 'rejected',
+        reason?: string,
         done: boolean,
     }
 }

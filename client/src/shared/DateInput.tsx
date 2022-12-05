@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { Education, Experience } from '../profile/ProfileSetup';
 
 const StyledInput = styled('input')`
-  width: 193px;
+  width: 50%;
   height: 15px;
   border: 1px solid ${(props) => props.theme.colors.primary_L2};
   border-radius: 8px;

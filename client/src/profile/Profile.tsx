@@ -1,53 +1,44 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { scale } from '@cloudinary/url-gen/actions/resize';
-import { AdvancedImage } from '@cloudinary/react';
-import { CloudinaryImage } from '@cloudinary/url-gen';
 
 import { AuthContext } from '../Auth/ContextProvider';
-import Icon from '../shared/Icon';
 import { Button } from '../shared/Button';
 import { Container } from '../shared/Container';
 import { Text } from '../shared/Text';
 import ProfileSetup from './ProfileSetup';
-import { cld } from '../utils/CloudinaryConfig';
-import { byRadius } from '@cloudinary/url-gen/actions/roundCorners';
 import Creator from '../Question/Creator';
 import { UserProps } from '../models/User';
 import api from '../utils/api';
 import Image from '../shared/Image';
+import SvgIcon from '../shared/SvgIcon';
 import RequestSettingsModal from './RequestSettingsModal';
-
-const SkillBadge = styled.div`
-  background-color: ${(props) => props.theme.colors.primary_L2};
-  color: ${(props) => props.theme.colors.primary};
-  font-size: 16px;
-  font-weight: bold;
-  padding: 8px 16px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  gap: 16;
-`;
-
-const CoverImage = styled.img`
-  object-fit: cover;
-  width: 100%;
-  height: 100%;
-`;
+import { formatDateNamed } from '../utils/formatDate';
+import Badge from '../shared/Badge';
+import flags from '../data/flags';
+import useWidth from '../Hooks/useWidth';
 
 const ProfileImage = styled.div`
   position: absolute;
   top: 150px;
-  left: 64px;
+  left: 0;
   width: 250px;
   height: 250px;
-  right: 0;
-  bottom: 0;
   border: 1px solid #fff;
   border-radius: 8px;
   overflow: hidden;
-  z-index: 99;
+`;
+
+const EditPictureButton = styled('div')`
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+  background-color: ${({ theme }) => theme.colors.primary_L2};
+  border-radius: 6px;
 `;
 
 const Profile = () => {
@@ -64,8 +55,10 @@ const Profile = () => {
   const [showProfileSetup, setShowProfileSetup] =
     React.useState<boolean>(false);
   const [showSettings, setShowSettings] = React.useState<boolean>(false);
+  const [profileFlag, setProfileFlag] = React.useState<string>('');
 
   const { user } = React.useContext(AuthContext);
+  const { width } = useWidth();
 
   const openProfileSetup = () => {
     setEditType('edit-all');
@@ -83,6 +76,17 @@ const Profile = () => {
 
     setProfileUser({ id: res.data._id, ...res.data });
   };
+
+  useEffect(() => {
+    if (profileUser?.country) {
+      const flag = flags.find(
+        (f) => f.name.toLowerCase() === profileUser.country.toLowerCase()
+      );
+      if (flag) {
+        setProfileFlag(flag.emoji);
+      }
+    }
+  }, [profileUser]);
 
   useEffect(() => {
     const id = window.location.pathname.split('/')[2];
@@ -106,7 +110,12 @@ const Profile = () => {
 
   if (!profileUser) return null;
   return (
-    <Container width="65%" mx={'auto'} position="relative">
+    <Container
+      width="70%"
+      mx={'auto'}
+      overflow={showProfileSetup ? 'hidden' : 'scroll'}
+      position="relative"
+    >
       {showSettings && (
         <RequestSettingsModal setShowRequestSettingsModal={setShowSettings} />
       )}
@@ -124,23 +133,27 @@ const Profile = () => {
         />
       )}
       <Container width="100%" height="300px" position="relative" maxH="300px">
-        <CoverImage
-          src={profileUser.coverPicture ?? 'https://source.unsplash.com/random'}
-          alt="cover-img"
-        />
-
         <ProfileImage>
           <Image src={profileUser?.picture} size={250} />
+          <EditPictureButton onClick={() => openProfileSetupInStep(0)}>
+            <SvgIcon src="pencil_fill" size={20} color="#dc693f" />
+          </EditPictureButton>
         </ProfileImage>
       </Container>
 
-      <Container mt={135} pl={64}>
-        <Container flex align="center" justify="space-between">
+      <Container mt={115}>
+        <Container
+          flex
+          align="center"
+          justify="space-between"
+          gap={12}
+          flexWrap
+        >
           <Container flex align="center" gap={12}>
             {Array(5)
               .fill(0)
               .map((_, i) => (
-                <Icon src="Star_Fill" width={30} height={30} key={i} />
+                <SvgIcon src="star_fill" size={30} key={i} color="#DC693F" />
               ))}
             <Text color="primary">(12)</Text>
           </Container>
@@ -153,7 +166,7 @@ const Profile = () => {
                     onClick={() => setShowSettings(true)}
                   >
                     <Container flex align="center" gap={8}>
-                      <Icon src="Edit_White" width={20} height={20} /> Settings
+                      <SvgIcon src="settings" size={25} /> Settings
                     </Container>
                   </Button>
                 ) : (
@@ -165,7 +178,7 @@ const Profile = () => {
                 )}
                 <Button variant="primary" onClick={openProfileSetup}>
                   <Container flex align="center" gap={8}>
-                    <Icon src="Edit_White" width={20} height={20} /> EDIT
+                    <SvgIcon src="pencil_fill" size={20} color="white" /> EDIT
                   </Container>
                 </Button>
               </Container>
@@ -178,28 +191,97 @@ const Profile = () => {
                       setShowQuestionModal(true);
                     }}
                   >
-                    <Icon src="Send" width={25} height={25} />
+                    <SvgIcon src="send" size={25} />
                   </Button>
                 )}
                 <Button variant="secondary" onClick={() => {}}>
-                  <Icon src="Share" width={25} height={25} />
+                  <SvgIcon src="share" size={25} />
                 </Button>
                 <Button variant="secondary" onClick={() => {}}>
-                  <Icon src="Heart" width={25} height={25} />
+                  <SvgIcon src="heart" size={25} />
                 </Button>
               </Container>
             )}
           </Container>
         </Container>
-        <Text fontSize={46} fontWeight={600}>
-          {profileUser.name}
-        </Text>
-        <Text fontSize={32} fontWeight={600}>
+        <Container flex align="center" gap={12} mt={12}>
+          <Text fontSize={46} fontWeight={700}>
+            {profileUser.name}
+          </Text>
+          <Text fontSize={46}>{profileFlag}</Text>
+        </Container>
+        <Text fontSize={24} fontWeight={500}>
           {profileUser.title}
         </Text>
-        {/* <Container flex flexWrap justify="space-between" mt={24}>
-          <Container flex dir="column" gap={24} width="50%">
-            {user.experience?.length > 0 && (
+        <Container flex flexWrap justify="space-between" mt={24} gap={36}>
+          <Container
+            width={width > 750 ? '45%' : '100%'}
+            flex
+            dir="column"
+            gap={12}
+          >
+            <Container
+              flex
+              align="center"
+              gap={16}
+              onClick={() => openProfileSetupInStep(0)}
+            >
+              {' '}
+              {isOwner && <SvgIcon src="pencil_fill" size={25} />}
+              {'  '}
+              <Text fontSize={32} fontWeight={600}>
+                {' '}
+                Bio:
+              </Text>
+            </Container>
+            <Text fontSize={18} mb={12} align="justify">
+              {profileUser.bio}
+            </Text>
+
+            <Container
+              flex
+              align="center"
+              gap={16}
+              onClick={() => openProfileSetupInStep(2)}
+            >
+              {' '}
+              {isOwner && <SvgIcon src="pencil_fill" size={25} />}
+              {'  '}
+              <Text fontSize={32} fontWeight={600}>
+                Skills
+              </Text>
+            </Container>
+            <Container width="100%" flex flexWrap gap={16}>
+              {profileUser.skills.map((skill, i) => (
+                <Badge key={i} text={skill.name}></Badge>
+              ))}
+            </Container>
+            <Container
+              flex
+              align="center"
+              gap={16}
+              onClick={() => openProfileSetupInStep(3)}
+            >
+              {' '}
+              {isOwner && <SvgIcon src="pencil_fill" size={25} />}
+              {'  '}
+              <Text fontSize={32} fontWeight={600}>
+                Languages
+              </Text>
+            </Container>
+            <Container width="100%" flex flexWrap gap={16}>
+              {profileUser.languages.map((language, i) => (
+                <Badge key={i} text={language}></Badge>
+              ))}
+            </Container>
+          </Container>
+          <Container
+            flex
+            dir="column"
+            gap={24}
+            width={width > 750 ? '45%' : '100%'}
+          >
+            {profileUser.experience?.length > 0 && (
               <div>
                 <Container
                   flex
@@ -208,23 +290,41 @@ const Profile = () => {
                   mb={16}
                   onClick={() => openProfileSetupInStep(1)}
                 >
-                  {isOwner && <Icon src="Edit_Black" width={25} height={25} />}{' '}
+                  {isOwner && <SvgIcon src="pencil_fill" size={25} />}{' '}
                   <Text fontSize={32} fontWeight={600}>
                     Experience
                   </Text>
                 </Container>
-                {user.experience.map((exp, i) => (
-                  <Container mb={12} key={i}>
-                    <Text fontSize={18} fontWeight="bold">
-                      {exp.name}
-                    </Text>
-                    <Text fontSize={18}>{exp.company}</Text>
-                    <Text>{exp.startDate.toString()} - {exp.endDate?.toString() ?? 'Present'}</Text>
+                {profileUser.experience.map((exp, i) => (
+                  <Container flex align="center" mb={12} key={i}>
+                    <Container
+                      flex
+                      align="center"
+                      justify="center"
+                      width="100px"
+                    >
+                      <SvgIcon src="work" size={50} />
+                    </Container>
+                    <Container
+                      key={i}
+                      flex
+                      dir="column"
+                      justify="space-between"
+                    >
+                      <Text fontSize={18} fontWeight="bold">
+                        {exp.name}
+                      </Text>
+                      <Text fontSize={18}>{exp.company.name}</Text>
+                      <Text>
+                        {formatDateNamed(exp.startDate)} -{' '}
+                        {formatDateNamed(exp.endDate)}
+                      </Text>
+                    </Container>
                   </Container>
                 ))}
               </div>
             )}
-            {user.education.length > 0 && (
+            {profileUser.education.length > 0 && (
               <div>
                 <Container
                   flex
@@ -233,63 +333,42 @@ const Profile = () => {
                   mb={16}
                   onClick={() => openProfileSetupInStep(1)}
                 >
-                  {isOwner && <Icon src="Edit_Black" width={25} height={25} />}{' '}
+                  {isOwner && <SvgIcon src="pencil_fill" size={25} />}{' '}
                   <Text fontSize={32} fontWeight={600}>
                     Education
                   </Text>
                 </Container>
-                {user.education.map((edu, i) => (
-                  <Container mb={12} key={i}>
-                    <Text fontSize={18} fontWeight="bold">
-                      {edu.name}
-                    </Text>
-                    <Text fontSize={18}>{edu.university.name}</Text>
-                    <Text>{edu.startDate.toString()} - {edu.endDate?.toString() ?? 'Present'}</Text>
+                {profileUser.education.map((edu, i) => (
+                  <Container flex align="center" mb={12} key={i}>
+                    <Container
+                      flex
+                      align="center"
+                      justify="center"
+                      width="100px"
+                    >
+                      <SvgIcon src="study" size={50} />
+                    </Container>
+                    <Container
+                      flex
+                      dir="column"
+                      justify="space-between"
+                      key={i}
+                    >
+                      <Text fontSize={18} fontWeight="bold">
+                        {edu.name}
+                      </Text>
+                      <Text fontSize={18}>{edu.university.name}</Text>
+                      <Text>
+                        {formatDateNamed(edu.startDate)} -{' '}
+                        {formatDateNamed(edu.endDate)}
+                      </Text>
+                    </Container>
                   </Container>
                 ))}
               </div>
             )}
-            <div>
-              <Container
-                flex
-                align="center"
-                gap={16}
-                onClick={() => openProfileSetupInStep(2)}
-              >
-                {' '}
-                {isOwner && <Icon src="Edit_Black" width={25} height={25} />}
-                {'  '}
-                <Text fontSize={32} fontWeight={600}>
-                  Skills
-                </Text>
-              </Container>
-              <Container width="100%" flex flexWrap gap={16}>
-                {user.skills.map((skill, i) => (
-                  <SkillBadge key={i}>{skill.name}</SkillBadge>
-                ))}
-              </Container>
-            </div>
           </Container>
-          <Container flex align="center" gap={12}>
-            <div>
-              <Container
-                flex
-                align="center"
-                gap={16}
-                onClick={() => openProfileSetupInStep(0)}
-              >
-                {' '}
-                {isOwner && <Icon src="Edit_Black" width={25} height={25} />}
-                {'  '}
-                <Text fontSize={32} fontWeight={600}>
-                  {' '}
-                  Bio:
-                </Text>
-              </Container>
-              <Text fontSize={18}>{user.bio}</Text>
-            </div>
-          </Container>
-        </Container> */}
+        </Container>
       </Container>
     </Container>
   );

@@ -102,4 +102,5 @@ h2 {
 
 .app-container  {
   padding-top: 100px;
+  position: relative;
 }
