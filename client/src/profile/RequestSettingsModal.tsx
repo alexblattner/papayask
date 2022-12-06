@@ -131,7 +131,7 @@ const RequestSettingsModal = (props: Props) => {
       />
       <Container flex align="center" justify="flex-end" gap={16}>
         <Button
-          variant="secondary"
+          variant="outline"
           onClick={() => props.setShowRequestSettingsModal(false)}
         >
           Cancel

@@ -6,9 +6,10 @@ import { Button } from '../shared/Button';
 import { Container } from '../shared/Container';
 import { Text } from '../shared/Text';
 import ProfileSetup from './ProfileSetup';
+import Creator from '../Question/Creator';
 import { UserProps } from '../models/User';
 import api from '../utils/api';
-import Image from '../shared/Image';
+import ProfilePicture from '../shared/ProfilePicture';
 import SvgIcon from '../shared/SvgIcon';
 import RequestSettingsModal from './RequestSettingsModal';
 import { formatDateNamed } from '../utils/formatDate';
@@ -42,7 +43,8 @@ const EditPictureButton = styled('div')`
 
 const Profile = () => {
   const [isOwner, setIsOwner] = React.useState<boolean>(false);
-
+  const [showQuestionModal, setShowQuestionModal] =
+    React.useState<boolean>(false);
   const [profileUser, setProfileUser] = React.useState<UserProps | null>(null);
   const [editType, setEditType] = React.useState<
     'initial' | 'edit-all' | 'edit-one'
@@ -90,7 +92,7 @@ const Profile = () => {
     const id = window.location.pathname.split('/')[2];
 
     if (id) {
-      if (id === user?.id) {
+      if (id === user?._id) {
         setProfileUser(user);
       } else {
         getProfileUser(id);
@@ -100,7 +102,7 @@ const Profile = () => {
 
   useEffect(() => {
     if (profileUser) {
-      if (profileUser?.id === user?.id) {
+      if (profileUser?._id === user?._id) {
         setIsOwner(true);
       }
     }
@@ -109,13 +111,19 @@ const Profile = () => {
   if (!profileUser) return null;
   return (
     <Container
-      width={width > 768 ? '75%' : '90%'}
+      width="70%"
       mx={'auto'}
       overflow={showProfileSetup ? 'hidden' : 'scroll'}
       position="relative"
     >
       {showSettings && (
         <RequestSettingsModal setShowRequestSettingsModal={setShowSettings} />
+      )}
+      {showQuestionModal && (
+        <Creator
+          setShowQuestionModal={setShowQuestionModal}
+          user={profileUser}
+        />
       )}
       {showProfileSetup && (
         <ProfileSetup
@@ -126,18 +134,30 @@ const Profile = () => {
       )}
       <Container width="100%" height="300px" position="relative" maxH="300px">
         <ProfileImage>
-          <Image src={profileUser?.picture} size={250} />
-          {isOwner && (
-            <EditPictureButton onClick={() => openProfileSetupInStep(0)}>
-              <SvgIcon src="pencil_fill" size={20} color="#dc693f" />
-            </EditPictureButton>
-          )}
+          <ProfilePicture src={profileUser?.picture} size={250} />
+          <EditPictureButton onClick={() => openProfileSetupInStep(0)}>
+            <SvgIcon src="pencil_fill" size={20} color="#dc693f" />
+          </EditPictureButton>
         </ProfileImage>
       </Container>
 
       <Container mt={115}>
-        <Container flex>
-          <Container ml={width > 768 ? 'auto' : 0}>
+        <Container
+          flex
+          align="center"
+          justify="space-between"
+          gap={12}
+          flexWrap
+        >
+          <Container flex align="center" gap={12}>
+            {Array(5)
+              .fill(0)
+              .map((_, i) => (
+                <SvgIcon src="star_fill" size={30} key={i} color="#DC693F" />
+              ))}
+            <Text color="primary">(12)</Text>
+          </Container>
+          <Container>
             {isOwner ? (
               <Container flex gap={12}>
                 {profileUser.verified ? (
@@ -152,17 +172,36 @@ const Profile = () => {
                 ) : (
                   <Button variant="primary" onClick={() => {}}>
                     <Container flex align="center" gap={8}>
-                      Verify Account
+                      Verify my account
                     </Container>
                   </Button>
                 )}
                 <Button variant="primary" onClick={openProfileSetup}>
                   <Container flex align="center" gap={8}>
-                    <SvgIcon src="pencil_fill" size={20} color="white" /> Edit
+                    <SvgIcon src="pencil_fill" size={20} color="white" /> EDIT
                   </Container>
                 </Button>
               </Container>
-            ) : null}
+            ) : (
+              <Container flex align="center" gap={12}>
+                {profileUser.verified && (
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      setShowQuestionModal(true);
+                    }}
+                  >
+                    <SvgIcon src="send" size={25} />
+                  </Button>
+                )}
+                <Button variant="secondary" onClick={() => {}}>
+                  <SvgIcon src="share" size={25} />
+                </Button>
+                <Button variant="secondary" onClick={() => {}}>
+                  <SvgIcon src="heart" size={25} />
+                </Button>
+              </Container>
+            )}
           </Container>
         </Container>
         <Container flex align="center" gap={12} mt={12}>
@@ -181,75 +220,60 @@ const Profile = () => {
             dir="column"
             gap={12}
           >
-            {profileUser.bio && (
-              <>
+            <Container
+              flex
+              align="center"
+              gap={16}
+              onClick={() => openProfileSetupInStep(0)}
+            >
+              {' '}
+              {isOwner && <SvgIcon src="pencil_fill" size={25} />}
+              {'  '}
+              <Text fontSize={32} fontWeight={600}>
                 {' '}
-                <Container
-                  flex
-                  align="center"
-                  gap={16}
-                  onClick={() => openProfileSetupInStep(0)}
-                >
-                  {' '}
-                  {isOwner && <SvgIcon src="pencil_fill" size={25} />}
-                  {'  '}
-                  <Text fontSize={32} fontWeight={600}>
-                    {' '}
-                    Bio:
-                  </Text>
-                </Container>
-                <Text fontSize={18} mb={12} align="justify">
-                  {profileUser.bio}
-                </Text>
-              </>
-            )}
+                Bio:
+              </Text>
+            </Container>
+            <Text fontSize={18} mb={12} align="justify">
+              {profileUser.bio}
+            </Text>
 
-            {profileUser.skills.length > 0 && (
-              <>
-                {' '}
-                <Container
-                  flex
-                  align="center"
-                  gap={16}
-                  onClick={() => openProfileSetupInStep(2)}
-                >
-                  {' '}
-                  {isOwner && <SvgIcon src="pencil_fill" size={25} />}
-                  {'  '}
-                  <Text fontSize={32} fontWeight={600}>
-                    Skills
-                  </Text>
-                </Container>
-                <Container width="100%" flex flexWrap gap={16}>
-                  {profileUser.skills.map((skill, i) => (
-                    <Badge key={i} text={skill.name}></Badge>
-                  ))}
-                </Container>{' '}
-              </>
-            )}
-            {profileUser.languages.length > 0 && (
-              <>
-                {' '}
-                <Container
-                  flex
-                  align="center"
-                  gap={16}
-                  onClick={() => openProfileSetupInStep(3)}
-                >
-                  {' '}
-                  {isOwner && <SvgIcon src="pencil_fill" size={25} />}
-                  {'  '}
-                  <Text fontSize={32} fontWeight={600}>
-                    Languages
-                  </Text>
-                </Container>
-                <Container width="100%" flex flexWrap gap={16}>
-                  {profileUser.languages.map((language, i) => (
-                    <Badge key={i} text={language}></Badge>
-                  ))}
-                </Container>{' '}
-              </>
-            )}
+            <Container
+              flex
+              align="center"
+              gap={16}
+              onClick={() => openProfileSetupInStep(2)}
+            >
+              {' '}
+              {isOwner && <SvgIcon src="pencil_fill" size={25} />}
+              {'  '}
+              <Text fontSize={32} fontWeight={600}>
+                Skills
+              </Text>
+            </Container>
+            <Container width="100%" flex flexWrap gap={16}>
+              {profileUser.skills.map((skill, i) => (
+                <Badge key={i} text={skill.name}></Badge>
+              ))}
+            </Container>
+            <Container
+              flex
+              align="center"
+              gap={16}
+              onClick={() => openProfileSetupInStep(3)}
+            >
+              {' '}
+              {isOwner && <SvgIcon src="pencil_fill" size={25} />}
+              {'  '}
+              <Text fontSize={32} fontWeight={600}>
+                Languages
+              </Text>
+            </Container>
+            <Container width="100%" flex flexWrap gap={16}>
+              {profileUser.languages.map((language, i) => (
+                <Badge key={i} text={language}></Badge>
+              ))}
+            </Container>
           </Container>
           <Container
             flex

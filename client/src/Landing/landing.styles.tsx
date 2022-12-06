@@ -4,7 +4,7 @@ export const LandingPage = styled('div')`
   font-family: 'GreycliffCF';
   max-width: 100vw;
   overflow-x: hidden;
-  margin-top: -80px;
+  margin-top: -20px;
   box-sizing: border-box;
   scroll-behavior: smooth;
 
@@ -39,7 +39,7 @@ export const FirstSectionContent = styled('div')`
   width: 66%;
   font-weight: bold;
   line-height: 8vw;
-
+  
   @media (min-width: 600px) {
     top: 25%;
     left: 8%;
@@ -128,7 +128,6 @@ export const SubTitle = styled('h2')`
   font-size: 8vw;
   font-weight: bold;
   margin-bottom: 2vw;
-  color: ${({ theme }) => theme.colors.primary};
   line-height: 10vw;
 
   @media (min-width: 600px) {
@@ -156,7 +155,7 @@ export const MainPage = styled('section')`
 `;
 
 export const Strip = styled('section')`
-  background-color: ${({ theme }) => theme.colors.primary_L2};
+  background-color: rgba(205, 240, 243, 1);
   padding: 8vw 0 1vw 0;
   position: relative;
   margin-bottom: 10vw;
@@ -165,7 +164,7 @@ export const Strip = styled('section')`
     content: '';
     width: 0;
     height: 0;
-    border-bottom: 4vw solid ${({ theme }) => theme.colors.primary_L2};
+    border-bottom: 4vw solid rgba(205, 240, 243, 1);
     border-left: 100vw solid transparent;
     position: absolute;
     bottom: 100%;
@@ -177,7 +176,7 @@ export const Strip = styled('section')`
     content: '';
     width: 0;
     height: 0;
-    border-top: 4vw solid ${({ theme }) => theme.colors.primary_L2};
+    border-top: 4vw solid rgba(205, 240, 243, 1);
     border-right: 100vw solid transparent;
     position: absolute;
     top: 100%;

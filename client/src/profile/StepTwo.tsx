@@ -137,7 +137,7 @@ const StepTwo = (props: Props) => {
               width="100%"
               border="1px solid #f8cbc9"
               position="relative"
-              borderRadius='8px'
+              borderRadius="8px"
               px={16}
               py={16}
               mb={16}
@@ -228,7 +228,7 @@ const StepTwo = (props: Props) => {
                 position="relative"
                 px={16}
                 py={16}
-                mb = {16}
+                mb={16}
               >
                 <Text fontSize={18} fontWeight="bold">
                   {exp.name}

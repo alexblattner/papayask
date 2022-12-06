@@ -4,7 +4,7 @@ interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   variant: 'primary' | 'secondary' | 'outline' | 'text';
   disabled?: boolean;
   children: React.ReactNode;
-  width?: string;
+  width?: number | string;
 }
 
 const StyledButton = styled('button')<ButtonProps>`

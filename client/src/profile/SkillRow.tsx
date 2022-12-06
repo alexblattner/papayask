@@ -337,12 +337,7 @@ const SkillRow = ({
           </Modal.Footer>
         </Modal>
       }
-      <Container
-        flex
-        py={16}
-        borderBottom="1px solid #f8cbc9"
-        key={skill.name}
-      >
+      <Container flex py={16} borderBottom="1px solid #f8cbc9" key={skill.name}>
         <Container
           width="20%"
           flex
@@ -382,7 +377,14 @@ const SkillRow = ({
             <SvgIcon src="plus" size={15} />
           </Container>
         </Container>
-        <Container width="40%" pl={16} align="center" gap={16} flexWrap position='relative'>
+        <Container
+          width="40%"
+          pl={16}
+          align="center"
+          gap={16}
+          flexWrap
+          position="relative"
+        >
           {relatedExperience.map((exp, i) => (
             <Container flex gap={4} align="center" key={i}>
               <Text fontSize={18} fontWeight={'bold'}>
@@ -397,9 +399,9 @@ const SkillRow = ({
           <Container
             width="25px"
             onClick={() => setShowRelatedExperience(true)}
-            position='absolute'
+            position="absolute"
             right={'0'}
-            top = {'calc(50% - 12.5px)'}
+            top={'calc(50% - 12.5px)'}
           >
             {' '}
             <SvgIcon src="plus" size={15} />
