@@ -53,14 +53,14 @@ const MobileHeader = (props: Props) => {
         <Container flex align="center" gap={16} ml="auto">
           {!user.isSetUp && (
             <Button variant="outline" onClick={() => setShowProfileSetup(true)}>
-              BECOME A GIVER
+              BECOME AN ADVISOR
             </Button>
           )}
           {user.isSetUp ? (
             <StyledLink to={`/profile/${user._id}`}>
               <SellerButton>
                 <Text fontSize={18} fontWeight="bold" color="white">
-                  Giver
+                  Advisor
                 </Text>
                 <SvgIcon src="user" color="white" />
               </SellerButton>
