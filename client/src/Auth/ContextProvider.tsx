@@ -84,7 +84,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const newQuestionsCount = (questions: QuestionProps[]) => {
-    console.log(questions);
     
     return questions.filter((question) => question.status.action === 'pending')
       .length;
@@ -93,6 +92,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const getUser = async () => {
     if (!token) {
       return;
+    }else{
+      setTokenForAPI(token);
     }
     const [updatedUser, questions] = await Promise.all([
       api({
