@@ -6,7 +6,7 @@ import { Container } from '../shared/Container';
 import { AuthContext } from '../Auth/ContextProvider';
 import { Text } from '../shared/Text';
 import { QuestionProps } from '../models/Question';
-import Image from '../shared/Image';
+import ProfilePicture from '../shared/ProfilePicture';
 import { Button } from '../shared/Button';
 import RejectModal from './RejectModal';
 import SvgIcon from '../shared/SvgIcon';
@@ -102,7 +102,7 @@ const QuestionsList = () => {
 
   const onClick = (question: QuestionProps) => {
     if (currentTab === 'sent' || question.status.action !== 'pending') {
-      navigate(`/questions/${question._id}`);
+      navigate(`/question/${question._id}`);
     }
   };
 
@@ -146,7 +146,7 @@ const QuestionsList = () => {
       <AnimatedContainer currentTab={currentTab}>
         {questions.map((question, i) => (
           <QuestionItem key={question._id} onClick={() => onClick(question)}>
-            <Image
+            <ProfilePicture
               src={
                 currentTab === 'recieved'
                   ? question.sender.picture
@@ -168,7 +168,7 @@ const QuestionsList = () => {
                   <Button
                     variant="secondary"
                     onClick={() => {
-                      navigate(`/questions/${question._id}`);
+                      navigate(`/question/${question._id}`);
                     }}
                   >
                     <SvgIcon src="check" size={15} />

@@ -9,7 +9,7 @@ import ProfileSetup from './ProfileSetup';
 import Creator from '../Question/Creator';
 import { UserProps } from '../models/User';
 import api from '../utils/api';
-import Image from '../shared/Image';
+import ProfilePicture from '../shared/ProfilePicture';
 import SvgIcon from '../shared/SvgIcon';
 import RequestSettingsModal from './RequestSettingsModal';
 import { formatDateNamed } from '../utils/formatDate';
@@ -92,7 +92,7 @@ const Profile = () => {
     const id = window.location.pathname.split('/')[2];
 
     if (id) {
-      if (id === user?.id) {
+      if (id === user?._id) {
         setProfileUser(user);
       } else {
         getProfileUser(id);
@@ -102,7 +102,7 @@ const Profile = () => {
 
   useEffect(() => {
     if (profileUser) {
-      if (profileUser?.id === user?.id) {
+      if (profileUser?._id === user?._id) {
         setIsOwner(true);
       }
     }
@@ -134,7 +134,7 @@ const Profile = () => {
       )}
       <Container width="100%" height="300px" position="relative" maxH="300px">
         <ProfileImage>
-          <Image src={profileUser?.picture} size={250} />
+          <ProfilePicture src={profileUser?.picture} size={250} />
           <EditPictureButton onClick={() => openProfileSetupInStep(0)}>
             <SvgIcon src="pencil_fill" size={20} color="#dc693f" />
           </EditPictureButton>

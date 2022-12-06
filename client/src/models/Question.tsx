@@ -36,6 +36,7 @@ type ImageCoordinates = {
     height: number
 }
 export type NoteProps = {
+    _id?: string,
     user?: UserProps,
     content: string,
     coordinates: DescriptionCoordinates | null,

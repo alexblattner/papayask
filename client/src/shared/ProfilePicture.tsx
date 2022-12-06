@@ -8,7 +8,13 @@ import { cld } from '../utils/CloudinaryConfig';
 
 const StyledImage = styled.div<Props>`
   width: ${(props) => props.size || 100}px;
+  min-width: ${(props) => props.size || 100}px;
+  max-width: ${(props) => props.size || 100}px;
   height: ${(props) => props.size || 100}px;
+  min-height: ${(props) => props.size || 100}px;
+  max-height: ${(props) => props.size || 100}px;
+  border-radius: ${(props) => props.radius || 0}%;
+  overflow: hidden;
 
   img {
     object-fit: cover;
@@ -23,7 +29,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
   radius?: number;
 }
 
-const Image = (props: Props) => {
+const ProfilePicture = (props: Props) => {
   const [image, setImage] = React.useState<CloudinaryImage | string | null>(
     null
   );
@@ -43,19 +49,21 @@ const Image = (props: Props) => {
   }, [props.src]);
 
   return !image ? (
-    <StyledImage size={props.size}>
+    <StyledImage radius={props.radius} size={props.size}>
       <img
         src={`https://source.unsplash.com/random/${props.size}x${props.size}`}
         alt="profile-img"
       />
     </StyledImage>
   ) : typeof image === 'string' ? (
-    <StyledImage size={props.size}>
+    <StyledImage radius={props.radius} size={props.size}>
       <img src={image} alt={props.alt} />
     </StyledImage>
   ) : (
-    <AdvancedImage cldImg={image} />
+    <StyledImage radius={props.radius} size={props.size}>
+      <AdvancedImage cldImg={image} />
+    </StyledImage>
   );
 };
 
-export default Image;
+export default ProfilePicture;

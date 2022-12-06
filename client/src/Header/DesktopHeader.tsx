@@ -190,11 +190,11 @@ const DesktopHeader = (props: Props) => {
                 variant="outline"
                 onClick={() => setShowProfileSetup(true)}
               >
-                BECOME A GIVER
+                BECOME AN ADVISOR
               </Button>
             )}
             {user.isSetUp ? (
-              <StyledLink to={`/profile/${user.id}`}>
+              <StyledLink to={`/profile/${user._id}`}>
                 <SellerButton>
                   <Text fontSize={18} fontWeight="bold" color="white">
                     Giver
@@ -203,7 +203,7 @@ const DesktopHeader = (props: Props) => {
                 </SellerButton>
               </StyledLink>
             ) : (
-              <Link to={`/profile/${user.id}`}>
+              <Link to={`/profile/${user._id}`}>
                 <SvgIcon src="user" color="black" size={30} />
               </Link>
             )}
@@ -212,7 +212,7 @@ const DesktopHeader = (props: Props) => {
       ) : (
         <Container flex align="center" gap={16} ml="auto">
           <Button variant="outline" onClick={() => setShowSignUp(true)}>
-            BECOME A GIVER
+            BECOME AN ADVISOR
           </Button>
           <Button variant="text" onClick={() => setShowLogIn(true)}>
             <Text fontWeight={700}>LOGIN</Text>
