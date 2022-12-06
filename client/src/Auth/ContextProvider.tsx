@@ -84,7 +84,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [updatedUser] = await Promise.all([
       api({
         method: 'get',
-        url: `/user/${user?.id}`,
+        url: `/user/${user?._id}`,
       }),
       getUserQuestions(token),
     ]);
@@ -98,7 +98,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       const res = await api({
         method: 'patch',
-        url: `/user/${user?.id}`,
+        url: `/user/${user?._id}`,
         headers: {
           Authorization: 'Bearer ' + token,
         },

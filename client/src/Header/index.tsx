@@ -6,13 +6,10 @@ import styled from 'styled-components';
 import { AuthContext } from '../Auth/ContextProvider';
 import SignUp from '../Auth/SignUp';
 import LogIn from '../Auth/LogIn';
-import { NotificationsContext } from '../Notifications/notificationsContext';
-import Toast from '../Notifications/Toast';
 import ProfileSetup from '../profile/ProfileSetup';
 import useWidth from '../Hooks/useWidth';
 import DesktopHeader from './DesktopHeader';
 import MobileHeader from './MobileHeader';
-import Drawer from './Drawer';
 
 const StyledHeader = styled.header`
   width: 100%;
@@ -48,18 +45,10 @@ function Header() {
   const handleSearch = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
   };
-  const { toasts } = useContext(NotificationsContext);
   const { width } = useWidth();
 
   return (
     <>
-      {showDrawer && <Drawer setShowDrawer={setShowDrawer} />}
-      <ToastsContainer>
-        {toasts.map((toast) => (
-          <Toast toast={toast} key={toast.id} />
-        ))}
-      </ToastsContainer>
-
       {!(
         window.location.href.includes('/sign-up') ||
         window.location.href.includes('/log-in')
@@ -87,7 +76,6 @@ function Header() {
                 setShowProfileSetup={setShowProfileSetup}
                 setShowSignUp={setShowSignUp}
                 setShowLogIn={setShowLogIn}
-                setShowDrawer={setShowDrawer}
               />
             )}
           </StyledHeader>

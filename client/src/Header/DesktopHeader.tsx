@@ -73,7 +73,7 @@ const DesktopHeader = (props: Props) => {
               </Button>
             )}
             {user.isSetUp ? (
-              <StyledLink to={`/profile/${user.id}`}>
+              <StyledLink to={`/profile/${user._id}`}>
                 <SellerButton>
                   <Text fontSize={18} fontWeight="bold" color="white">
                     Giver
@@ -82,7 +82,7 @@ const DesktopHeader = (props: Props) => {
                 </SellerButton>
               </StyledLink>
             ) : (
-              <Link to={`/profile/${user.id}`}>
+              <Link to={`/profile/${user._id}`}>
                 <SvgIcon src="user" color="black" size={30} />
               </Link>
             )}

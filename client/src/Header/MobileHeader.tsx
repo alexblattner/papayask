@@ -66,7 +66,7 @@ const MobileHeader = (props: Props) => {
               </SellerButton>
             </StyledLink>
           ) : (
-            <Link to={`/profile/${user.id}`}>
+            <Link to={`/profile/${user._id}`}>
               <SvgIcon src="user" color="black" size={30} />
             </Link>
           )}

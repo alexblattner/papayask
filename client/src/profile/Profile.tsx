@@ -6,7 +6,6 @@ import { Button } from '../shared/Button';
 import { Container } from '../shared/Container';
 import { Text } from '../shared/Text';
 import ProfileSetup from './ProfileSetup';
-import Creator from '../Question/Creator';
 import { UserProps } from '../models/User';
 import api from '../utils/api';
 import ProfilePicture from '../shared/ProfilePicture';
@@ -118,12 +117,6 @@ const Profile = () => {
     >
       {showSettings && (
         <RequestSettingsModal setShowRequestSettingsModal={setShowSettings} />
-      )}
-      {showQuestionModal && (
-        <Creator
-          setShowQuestionModal={setShowQuestionModal}
-          user={profileUser}
-        />
       )}
       {showProfileSetup && (
         <ProfileSetup
