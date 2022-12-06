@@ -3,7 +3,6 @@ import { auth } from '../firebase-auth';
 import api, { setTokenForAPI } from '../utils/api';
 import { UserProps } from '../models/User';
 import { QuestionProps } from '../models/Question';
-
 interface AuthContextReturn {
   user: UserProps | null | undefined;
   updateUser: (utoken: any, body: any) => void;

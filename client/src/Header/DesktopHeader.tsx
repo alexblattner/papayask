@@ -190,7 +190,7 @@ const DesktopHeader = (props: Props) => {
                 variant="outline"
                 onClick={() => setShowProfileSetup(true)}
               >
-                BECOME A GIVER
+                BECOME AN ADVISOR
               </Button>
             )}
             {user.isSetUp ? (
@@ -212,7 +212,7 @@ const DesktopHeader = (props: Props) => {
       ) : (
         <Container flex align="center" gap={16} ml="auto">
           <Button variant="outline" onClick={() => setShowSignUp(true)}>
-            BECOME A GIVER
+            BECOME AN ADVISOR
           </Button>
           <Button variant="text" onClick={() => setShowLogIn(true)}>
             <Text fontWeight={700}>LOGIN</Text>
