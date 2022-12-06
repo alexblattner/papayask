@@ -2,14 +2,15 @@ import React, { useRef, useState, useEffect, useContext } from "react";
 import { Container, Row, Button, Spinner } from "react-bootstrap";
 import moment from "moment";
 import PDF from "./PDF";
-import SideBar from "./SideBar";
 import Image from "./Image";
 import useDevice from "../Hooks/useDevice";
 import {NoteProps,QuestionProps} from '../models/Question';
+import ProfilePicture from '../shared/ProfilePicture';
 import api from '../utils/api';
 import './question.css';
 import Description from "./Description";
 import Input from "./Input";
+import Note from "./Note";
 import { AuthContext } from "../Auth/ContextProvider";
 function Question() {
   const {token,user} = useContext(AuthContext);
@@ -57,6 +58,15 @@ function Question() {
   const addNote = (note:NoteProps) => {
     setNotes([...notes,note]);
   }
+  const finish=()=>{
+    api.post("/question/finish",{
+      questionId:window.location.pathname.split("/question/")[1]
+    }).then((res)=>{
+      window.location.href="/";
+    }).catch((err)=>{
+      console.log(err);
+    })
+  }
   if (device == "mobile") {
     return (
         <div></div>
@@ -67,13 +77,15 @@ function Question() {
             <div
               id="question"
             >
-              <Row>
-                {" "}
-                {data?.description!=undefined&&<Description description={data?.description} />}
-              </Row>
+              {!data?.status.done&&<button onClick={finish}>finished</button>}
+              {data?<div className="note">
+                  <div className="top"><ProfilePicture size={50} radius={200} src={data.sender?.picture}/><span className="user-name">{data.sender.name}</span></div>
+                  <div dangerouslySetInnerHTML={{__html:data.description}} />
+              </div>:null}
                 {postContent()}
+              {notes.map((note) => (<Note data={note} />))}
+              {data?<Input senderId={data?.sender._id} done={data?data.status.done:true} addNote={addNote}/>:null}
             </div>
-            {notes&&data?.description&&<SideBar senderId={data?.sender.id} done={data?.status?.done} addNote={addNote} description={data?.description} notes={notes}/>}
           </>
     );
   }

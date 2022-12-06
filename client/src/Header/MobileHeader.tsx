@@ -57,7 +57,7 @@ const MobileHeader = (props: Props) => {
       {user ? (
         <Container flex align="center" ml={'auto'} gap={12}>
           {user.isSetUp ? (
-            <StyledLink to={`/profile/${user.id}`}>
+            <StyledLink to={`/profile/${user._id}`}>
               <SellerButton>
                 <Text fontSize={18} fontWeight="bold" color="white">
                   Giver

@@ -9,7 +9,7 @@ const BackDrop = styled.div`
   height: 100vh;
   overflow: scroll;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 999;
+  z-index: 1000;
   display: grid;
   place-items: center;
   padding-top: 50px;
@@ -28,6 +28,7 @@ const StyledModal = styled.div<{ modalLoaded: boolean }>`
   flex-direction: column;
   align-items: center;
   margin-top: 50px;
+  margin-bottom: 50px;
 
   @media (max-width: 1200px) {
     width: 70%;
@@ -56,10 +57,12 @@ interface Props {
 const Modal = (props: Props) => {
   const [modalLoaded, setModalLoaded] = useState<boolean>(false);
   useEffect(() => {
+    document.body.style.overflow = 'hidden';
     setModalLoaded(true);
   }, []);
 
   const closeModal = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    document.body.style.overflow = 'unset';
     if (e.target === e.currentTarget) {
       props.setShowModal(false);
     }

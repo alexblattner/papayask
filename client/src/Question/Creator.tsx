@@ -64,7 +64,7 @@ const Creator = (props: Props) => {
       setAlertMessage('Sending Your Question...');
       setShowAlert(true);
       const res = await sendQuestion(
-        props.user.id,
+        props.user._id,
         messageRef.current?.value as string
       );
       if (res.status === 200) {
@@ -96,7 +96,7 @@ const Creator = (props: Props) => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      return res.data.result.id;
+      return res.data.result._id;
     } catch (error) {
       setLoading(false);
       console.log(error);

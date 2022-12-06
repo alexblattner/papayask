@@ -34,10 +34,30 @@ exports.getById = async (req, res, next) => {
     }).populate({
       path: 'notes',
       model: 'Note',
+      populate: {
+        path: "user",
+        model: "User",
+      }
       });
-      console.log(question);
-
-    res.send(question);
+      if(!question){
+        return res.status(404).json({
+          status: "fail",
+          message: "Question not found",
+        });
+      }else if(question.receiver.toString()!==req.user._id.toString()&&question.sender.toString()!==req.user._id.toString()){
+        return res.status(401).json({
+          status: "fail",
+          message: "Unauthorized",
+        });
+      }else{
+        if(question.status.action==='pending'&&question.receiver.toString()==req.user._id.toString()){
+          console.log('here');
+          question.status.action='accepted';
+          question.markModified('status');
+          await question.save();
+        }
+        return res.send(question);
+      }
   } catch (error) {
     console.log(error);
   }
@@ -387,9 +407,15 @@ exports.finish=async(req,res,next)=>{
       message: "Question not found",
     });
   }else{
-    question.status.done=true;
-    await question.save();
-    res.status(200);
+    const notes=await Note.find({question:question._id, user:question.receiver});
+    if(notes.length>0){
+      question.status.done=true;
+      question.markModified('status');
+      await question.save();
+      return res.send("done");
+    }else{
+      return res.status(400);
+    }
   }
 }
 exports.deleteAll = (req, res, next) => {

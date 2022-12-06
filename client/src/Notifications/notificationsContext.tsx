@@ -40,7 +40,7 @@ export const NotificationsProvider = ({
   useEffect(() => {
     if (user && token) {
       const eventSource = new EventSource(
-        `${baseURL}realtime-notifications/${user?.id}`,
+        `${baseURL}realtime-notifications/${user?._id}`,
         {
           withCredentials: true,
         }

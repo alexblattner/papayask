@@ -64,7 +64,7 @@ export interface UserSkill {
 }
 
 export interface UserProps {
-  id: string;
+  _id: string;
   confirmed: boolean;
   createdAt: Date;
   updatedAt: Date;

@@ -7,7 +7,6 @@ import api from "../utils/api";
 interface Props {
     done:boolean;
     senderId:string;
-    description: string;
     addNote:Function;
 }
 const Input = (props:Props) => {
@@ -48,7 +47,7 @@ const Input = (props:Props) => {
         const defaultStyle:string = "font-family: 'Greycliff CF'"
         return (
             <div id="note-writer">
-                <SunEditor onChange={setContent} setDefaultStyle={defaultStyle} setOptions={{
+                <SunEditor setContents={content} onChange={setContent} setDefaultStyle={defaultStyle} setOptions={{
                     height: '200px',
                     font:['Arial','Times New Roman','Verdana','Georgia','Trebuchet MS','Courier New','Impact','Comic Sans MS','Helvetica','Tahoma','Palatino Linotype','Lucida Sans Unicode','MS Serif','MS Sans Serif','Symbol','Webdings','Wingdings','Sans-Serif','Serif','Monospace','Cursive','Fantasy','System'],
                     buttonList: [

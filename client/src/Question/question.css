@@ -17,8 +17,21 @@
 	margin-left: 5%;
 	/* horizontal-align: right; */
 }
-#answer .note {
+.note {
 	margin: 20px;
+	border-bottom: 1px solid var(--secondary);
+	padding-bottom: 10px;
+}
+.note .top{
+	margin-bottom: 10px;
+}
+.note .top *{
+	display: inline-block;
+	vertical-align: middle;
+}
+.note .top .user-name{
+	font-size: 20px;margin-left: 10px;
+	font-weight: 600;
 }
 #answer .quotation {
 	width: 100%;
