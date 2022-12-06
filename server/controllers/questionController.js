@@ -2,7 +2,6 @@ const { uploadFile, deleteFile, getFileStream } = require('../wasabi');
 const mongoose = require('mongoose');
 const User = require('../models/user');
 const Note = require('../models/note');
-const { login } = require('./userController');
 const Question = require('../models/question');
 const { createOrder, captureOrder } = require('../utils/paypal');
 const Purchase = require('../models/purchase');
@@ -67,9 +66,10 @@ exports.create = async (req, res, next) => {
 };
 
 exports.getAll = async (req, res, next) => {
+  let userId = req.user._id;
   try {
     const questions = await Question.find({
-      $or: [{ sender: req.user._id }, { receiver: req.user._id }],
+      $or: [{ sender: userId}, { receiver: userId}],
     })
       .populate({
         path: 'sender',
@@ -88,7 +88,7 @@ exports.getAll = async (req, res, next) => {
       (q) => q.receiver._id.toString() === req.user._id.toString()
     );
 
-    res.send({ sent, received });
+   return  res.send({ sent, received });
   } catch (err) {
     next(err);
     return [];

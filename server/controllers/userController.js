@@ -9,10 +9,36 @@ const experienceController = require('./experienceController');
 const educationController = require('./educationController');
 const skillController = require('./skillController');
 const fileController = require('./fileController');
+const questionsController = require('./questionController');
+const Question = require('../models/question');
 
 function escapeRegex(text) {
   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 }
+
+const getQuestions = async (user, req) => {
+  const questions = await Question.find({
+    $or: [{ sender: user._id }, { receiver: user._id }],
+  })
+    .populate({
+      path: 'sender',
+      model: 'User',
+    })
+    .populate({
+      path: 'receiver',
+      model: 'User',
+    })
+    .exec();
+
+  const sent = questions.filter(
+    (q) => q.sender._id.toString() === req.user._id.toString()
+  );
+  const received = questions.filter(
+    (q) => q.receiver._id.toString() === req.user._id.toString()
+  );
+
+  return { sent, received };
+};
 
 exports.encourageMail = async (req, res, next) => {
   const users = await User.find({
@@ -71,52 +97,7 @@ exports.getByEmail = async (req, res, next) => {
     return new Error(err);
   }
 };
-exports.login = async (req, res, next) => {
-  try {
-    const data = await User.findOneAndUpdate(
-      { uid: req.body.uid },
-      { authTime: req.body.authTime },
-      {
-        upsert: true,
-        new: true,
-      }
-    )
-      .populate({
-        path: 'experience',
-        populate: { path: 'company', model: 'Company' },
-      })
-      .populate({
-        path: 'education',
-        populate: { path: 'university', model: 'University' },
-      })
-      .populate({
-        path: 'skills',
-        model: 'Skill',
-        populate: [
-          {
-            path: 'experiences.experience',
-            model: 'Experience',
-            populate: {
-              path: 'company',
-              model: 'Company',
-            },
-          },
-          {
-            path: 'educations.education',
-            model: 'Education',
-            populate: {
-              path: 'university',
-              model: 'University',
-            },
-          },
-        ],
-      });
 
-    return res.status(200).send(data);
-  } catch (err) {
-    return new Error(err);
-  }
-};
 exports.createOrLogin = async (req, res, next) => {
   try {
     const doesUserExist = await User.findOne({
@@ -152,7 +133,6 @@ exports.createOrLogin = async (req, res, next) => {
           },
         ],
       });
-
     if (!doesUserExist) {
       const newUserOb = {
         uid: req.body.uid,
@@ -197,12 +177,15 @@ exports.createOrLogin = async (req, res, next) => {
             },
           ],
         });
-
+      const questions = await getQuestions(createdUser, req);
+      createdUser.questions = questions;
       return res.send(createdUser);
     } else {
       doesUserExist.authTime = req.body.auth_time;
       await doesUserExist.save();
-      return res.send(doesUserExist);
+      const questions = await getQuestions(doesUserExist, req);
+      doesUserExist.questions = questions;
+      return res.send({ ...doesUserExist._doc, questions });
     }
   } catch (e) {
     next(e);
@@ -360,9 +343,12 @@ exports.update = async (req, res) => {
           ],
         });
 
-      return res
-        .status(200)
-        .json({ message: 'User updated successfully', user });
+      const questions = await getQuestions(user, req);
+
+      return res.status(200).json({
+        message: 'User updated successfully',
+        user: { ...user._doc, questions },
+      });
     } catch (e) {
       console.log(e);
       return res.status(500).json({ error: e });

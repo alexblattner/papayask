@@ -48,8 +48,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const register = async (token: any, body: any) => {
-    // we use promise all setteled beacuse of the first register
-
     const userData = await api({
       method: 'post',
       url: '/user',
