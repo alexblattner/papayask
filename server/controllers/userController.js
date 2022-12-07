@@ -165,38 +165,7 @@ exports.createOrLogin = async (req, res, next) => {
         newUserOb.picture = req.body.photoURL;
       }
       const user = new User(newUserOb);
-      const createdUser = await user
-        .save()
-        .populate({
-          path: 'experience',
-          populate: { path: 'company', model: 'Company' },
-        })
-        .populate({
-          path: 'education',
-          populate: { path: 'university', model: 'University' },
-        })
-        .populate({
-          path: 'skills',
-          model: 'Skill',
-          populate: [
-            {
-              path: 'experiences.experience',
-              model: 'Experience',
-              populate: {
-                path: 'company',
-                model: 'Company',
-              },
-            },
-            {
-              path: 'educations.education',
-              model: 'Education',
-              populate: {
-                path: 'university',
-                model: 'University',
-              },
-            },
-          ],
-        });
+      const createdUser = await user.save()
 
       return res.send(createdUser);
     } else {
