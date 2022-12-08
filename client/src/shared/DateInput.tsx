@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Education, Experience } from '../profile/ProfileSetup';
+import { Education, Experience } from '../profile/profileService';
 
 const StyledInput = styled('input')`
   width: 50%;
@@ -54,12 +54,13 @@ const formatedDate = (date: Date | null | string): string => {
     const dateArr = date.split('-');
     year = dateArr[0];
     month = dateArr[1];
-    day = dateArr[2];
+    day = dateArr[2].slice(0, 2);
   } else {
     year = date.getFullYear();
     month = date.getMonth() + 1;
     day = date.getDate();
   }
+
   return `${year}-${month}-${day}`;
 };
 

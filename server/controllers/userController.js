@@ -258,7 +258,8 @@ exports.update = async (req, res) => {
     if (experience) {
       for (let i = 0; i < experience.length; i++) {
         if (experience[i]._id) {
-          experienceIds.push(experience[i]._id);
+          const id = await experienceController.update(experience[i], user._id);
+          experienceIds.push(id);
         } else {
           try {
             const newExperience = await experienceController.create(
@@ -278,7 +279,8 @@ exports.update = async (req, res) => {
     if (education) {
       for (let i = 0; i < education.length; i++) {
         if (education[i]._id) {
-          educationIds.push(education[i]._id);
+          const id = await educationController.update(education[i], user._id);
+          educationIds.push(id);
         } else {
           try {
             const newEducation = await educationController.create(

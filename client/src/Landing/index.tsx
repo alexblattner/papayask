@@ -26,9 +26,7 @@ const Landing = () => {
   return (
     <LandingPage>
       <FirstSection>
-        <BackgroundImage
-          src={width < 600 ? firstMobile : first}
-        />
+        <BackgroundImage src={width < 600 ? firstMobile : first} />
         <FirstSectionContent>
           <p>
             Access knowledge

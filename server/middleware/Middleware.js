@@ -11,10 +11,6 @@ class Middleware {
       const decoded = await admin.auth().verifyIdToken(token);
       const { uid } = decoded;
       let user = await User.findOne({ uid });
-      // if (!user) {
-      //   user = awiat User.create(decoded);
-      //   // return res.status(401).json({ error: "Unauthorized" });
-      // }
       req.user = user;
       if (decoded) {
         if (req.body) {

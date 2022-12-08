@@ -15,9 +15,10 @@ const BackDrop = styled.div`
   padding-top: 50px;
 `;
 
-const StyledModal = styled.div<{ modalLoaded: boolean }>`
+const StyledModal = styled.div<{ modalLoaded: boolean; fullscreen?: boolean }>`
   background-color: #fff;
-  width: 50%;
+  width: ${(props) => (props.fullscreen ? '90%' : '50%')};
+  height: ${(props) => (props.fullscreen ? '85vh' : 'auto')};
   border-radius: 8px;
   transform: translateY(${(props) => (props.modalLoaded ? '0' : '100%')});
   transition: transform 0.3s ease-in-out;
@@ -31,7 +32,7 @@ const StyledModal = styled.div<{ modalLoaded: boolean }>`
   margin-bottom: 50px;
 
   @media (max-width: 1200px) {
-    width: 70%;
+    width: ${(props) => (props.fullscreen ? '90%' : '70%')};
   }
 
   @media (max-width: 950px) {
@@ -52,6 +53,7 @@ const CloseButton = styled.div`
 interface Props {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   children: React.ReactNode;
+  fullScreen?: boolean;
 }
 
 const Modal = (props: Props) => {
@@ -69,7 +71,7 @@ const Modal = (props: Props) => {
   };
   return (
     <BackDrop onClick={(e) => closeModal(e)}>
-      <StyledModal modalLoaded={modalLoaded}>
+      <StyledModal modalLoaded={modalLoaded} fullscreen={props.fullScreen}>
         <CloseButton onClick={() => props.setShowModal(false)}>X</CloseButton>
         {props.children}
       </StyledModal>

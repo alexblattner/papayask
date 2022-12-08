@@ -10,33 +10,37 @@ import Header from './Header';
 import Profile from './profile/Profile';
 import Main from './main/Main';
 import { theme } from './styledCompunentConfig/theme';
+import { EditProfileProvider, useEditProfile } from './profile/profileService';
 
 function App() {
   const user = useContext(AuthContext);
+
   return (
     <AuthContext.Provider value={user}>
-      <PayPalScriptProvider
-        options={{
-          'client-id': process.env.REACT_APP_PAYPAL_ID as string,
-          currency: 'USD',
-          components: 'buttons',
-        }}
-      >
-        <ThemeProvider theme={theme}>
-          <Router>
-            <Routes>
-              <Route path="*" element={<Header />} />
-            </Routes>
-            <div className="app-container">
+      <EditProfileProvider>
+        <PayPalScriptProvider
+          options={{
+            'client-id': process.env.REACT_APP_PAYPAL_ID as string,
+            currency: 'USD',
+            components: 'buttons',
+          }}
+        >
+          <ThemeProvider theme={theme}>
+            <Router>
               <Routes>
-                <Route path="/*" element={<Main />} />
-                <Route path="/profile/:id" element={<Profile />} />
-                <Route path="/" element={<Main />}></Route>
+                <Route path="*" element={<Header />} />
               </Routes>
-            </div>
-          </Router>
-        </ThemeProvider>
-      </PayPalScriptProvider>
+              <div className="app-container">
+                <Routes>
+                  <Route path="/*" element={<Main />} />
+                  <Route path="/profile/:id" element={<Profile />} />
+                  <Route path="/" element={<Main />}></Route>
+                </Routes>
+              </div>
+            </Router>
+          </ThemeProvider>
+        </PayPalScriptProvider>
+      </EditProfileProvider>
     </AuthContext.Provider>
   );
 }

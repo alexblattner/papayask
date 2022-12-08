@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, {  useRef } from 'react';
 import styled from 'styled-components';
 import axios, { AxiosProgressEvent } from 'axios';
 
@@ -10,6 +10,7 @@ import { Container } from '../shared/Container';
 import { Input } from '../shared/Input';
 import { Text } from '../shared/Text';
 import { TextArea } from '../shared/TextArea';
+import { useEditProfile } from './profileService';
 
 const HiddenInput = styled.input`
   display: none;
@@ -47,24 +48,22 @@ const Uploader = styled('div')<{ progress: number }>`
   z-index: 99;
 `;
 
-interface Props {
-  title: string;
-  bio: string;
-  image: string;
-  setImage: React.Dispatch<React.SetStateAction<string>>;
-  setTitle: React.Dispatch<React.SetStateAction<string>>;
-  setBio: React.Dispatch<React.SetStateAction<string>>;
-  setCloudinaryImageId: React.Dispatch<React.SetStateAction<string>>;
-}
-
-const StepOne = (props: Props) => {
+const StepOne = () => {
   const [progress, setProgress] = React.useState<number>(0);
-  const { title, bio, setTitle, setBio } = props;
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
   const uploadRef = useRef<HTMLDivElement>(null);
 
   const { width } = useWidth();
+  const {
+    title,
+    bio,
+    image,
+    setTitle,
+    setBio,
+    setImage,
+    setCloudinaryImageId,
+  } = useEditProfile()
 
   const getCloudinarySignature = async () => {
     const res = await api.post('cloudinary-signature');
@@ -77,7 +76,7 @@ const StepOne = (props: Props) => {
     reader.readAsDataURL(file);
     reader.onload = async () => {
       const image = reader.result as string;
-      props.setImage(image);
+      setImage(image);
     };
   };
 
@@ -130,7 +129,7 @@ const StepOne = (props: Props) => {
       )
       .then((res) => {
         const imgId = res.data.public_id.replace(`${preset}/`, '');
-        props.setCloudinaryImageId(imgId);
+        setCloudinaryImageId(imgId);
       })
       .catch((err) => {
         console.log(err.response.data.error);
@@ -169,8 +168,8 @@ const StepOne = (props: Props) => {
         <Button variant="primary" onClick={() => fileInputRef.current?.click()}>
           Upload profile picture
         </Button>
-        <ImageContainer ref={imageRef} image={props.image} progress={progress}>
-          {props.image && <img src={props.image} alt="profile" />}
+        <ImageContainer ref={imageRef} image={image} progress={progress}>
+          {image && <img src={image} alt="profile" />}
           <Uploader ref={uploadRef} progress={progress}></Uploader>
         </ImageContainer>
       </Container>

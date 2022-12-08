@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 
 import { Button } from '../shared/Button';
 import { Container } from '../shared/Container';
 import { Text } from '../shared/Text';
 import useWidth from '../Hooks/useWidth';
+import { EditProfileContext, useEditProfile } from './profileService';
 
 interface Props {
   step: number;
@@ -12,9 +13,7 @@ interface Props {
   stepsDone: number[];
   setStepsDone: React.Dispatch<React.SetStateAction<number[]>>;
   setShowProfileSetup: React.Dispatch<React.SetStateAction<boolean>>;
-  submit: () => void;
   type: 'initial' | 'edit-all' | 'edit-one';
-  progress: number;
 }
 
 const Progress = styled.div<{ progress: number }>`
@@ -61,14 +60,22 @@ const Progress = styled.div<{ progress: number }>`
 const ProfileSetupFooter = ({
   step,
   setStep,
-  submit,
   stepsDone,
   setStepsDone,
   setShowProfileSetup,
   type,
-  progress,
 }: Props) => {
+  const [isLoading, setIsLoading] = React.useState(false);
   const { width } = useWidth();
+  const { submit, progress } = useEditProfile();
+
+  const submitProfile = async () => {
+    setIsLoading(true);
+    await submit();
+    setIsLoading(false);
+    setShowProfileSetup(false);
+  };
+
   const nextStep = () => {
     if (step < 3) {
       setStep(step + 1);
@@ -90,7 +97,7 @@ const ProfileSetupFooter = ({
       width={width > 768 ? '75%' : '90%'}
       mt={'auto'}
     >
-      <Button variant="secondary" onClick={() => setShowProfileSetup(false)}>
+      <Button variant="outline" onClick={() => setShowProfileSetup(false)}>
         Cancel
       </Button>
       {type !== 'edit-one' && (
@@ -104,8 +111,8 @@ const ProfileSetupFooter = ({
         </Button>
       )}
       {(step === 3 || type === 'edit-one') && (
-        <Button variant="primary" onClick={submit}>
-          Submit
+        <Button variant="primary" onClick={submitProfile} disabled={isLoading}>
+          {isLoading ? 'Please Wait...' : 'Submit'}
         </Button>
       )}
       <Progress progress={progress}>

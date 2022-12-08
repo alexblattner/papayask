@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode | React.ReactNode[];
+  children?: React.ReactNode | React.ReactNode[];
   onClick?: () => void;
   width?: string;
   height?: string;
