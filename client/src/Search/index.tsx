@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect, useMemo } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import "./search.css";
 import { UserProps, University, UserEducation } from "../models/User";
 import Education from "./Education";
@@ -18,6 +18,7 @@ interface EduProps {
 }
 const Search = () => {
   const { search } = useLocation();
+  const { query } = useParams();
   const [allResults, setAllResults] = useState<UserProps[]>([]);
   const [results, setResults] = useState<UserProps[]>([]);
   const [budget, setBudget] = useState<[number, number]>([0, 1]);
@@ -47,10 +48,12 @@ const Search = () => {
   const getSearch = async () => {
     //initial search
     const urlParams = new URLSearchParams(search);
-    const searchParams = urlParams.get("search");
+    console.log(678, "jjj", query);
+    const searchParams = urlParams.get("query");
+    console.log(678, searchParams);
     const res = await api.get("/search/", {
       params: {
-        search: searchParams,
+        search: query,
         budget,
         education,
         location,
@@ -73,11 +76,8 @@ const Search = () => {
   };
   const dataAdjustment = (users: UserProps[]) => {
     const urlParams = new URLSearchParams(search);
-    const searchParams = urlParams.get("search");
-    const regex = new RegExp(
-      escapeRegex(searchParams ? searchParams : ""),
-      "gi"
-    );
+    // const searchParams = urlParams.get("search");
+    const regex = new RegExp(escapeRegex(query ? query : ""), "gi");
     let expmax = 0; //maximun years of experience
     let expmin = 1000; //minimum years of experience
     let degrees: Set<string> = new Set(); //all degrees available for visible users
@@ -138,8 +138,9 @@ const Search = () => {
         console.log(1212, result.request_settings);
         push = false;
       } else if (
-        result.request_settings.cost > budget[1] ||
-        result.request_settings.cost < budget[0]
+        !(budget[0] == 0 && budget[1] == 1) &&
+        (result.request_settings.cost > budget[1] ||
+          result.request_settings.cost < budget[0])
       ) {
         console.log(1212, result.request_settings.cost, budget[1], budget[0]);
         push = false;
@@ -292,7 +293,7 @@ const Search = () => {
         <Budget setValues={setBudget} range={budget} />
       </div>
       <div id="results">
-        {results.map((result: UserProps) => (
+        {allResults.map((result: UserProps) => (
           <Result data={result} />
         ))}
       </div>
