@@ -204,27 +204,34 @@ const Profile = () => {
           user={profileUser}
         />
       )}
-      <Container flex gap={12}>
-        <Container height="150px" position="relative" maxH="150px">
-          <ProfileImage>
-            <ProfilePicture src={profileUser?.picture} size={150} />
-            <EditPictureButton onClick={() => openProfileSetupInStep(0)}>
-              <SvgIcon src="pencil_fill" size={20} color="white" />
-            </EditPictureButton>
-          </ProfileImage>
-        </Container>
-        <Container>
-          <Container flex align="center" gap={12} mt={12}>
-            <Text fontSize={46} fontWeight={700}>
-              {profileUser.name}
-            </Text>
-            <Text fontSize={46}>{profileFlag}</Text>
+      <Container position="relative" mb={48}>
+        <Container
+          flex
+          align={width > 1000 ? 'flex-end' : 'flex-start'}
+          gap={12}
+          dir={width > 1000 ? 'row' : 'column'}
+        >
+          <Container height="150px" position="relative" maxH="150px">
+            <ProfileImage>
+              <ProfilePicture src={profileUser?.picture} size={150} />
+              <EditPictureButton onClick={() => openProfileSetupInStep(0)}>
+                <SvgIcon src="pencil_fill" size={20} color="white" />
+              </EditPictureButton>
+            </ProfileImage>
           </Container>
-          <Text fontSize={24} fontWeight={700}>
-            {profileUser.title}
-          </Text>
+          <Container>
+            <Container flex align="center" gap={12} mt={12}>
+              <Text fontSize={46} fontWeight={700}>
+                {profileUser.name}
+              </Text>
+              <Text fontSize={46}>{profileFlag}</Text>
+            </Container>
+            <Text fontSize={24} fontWeight={700}>
+              {profileUser.title}
+            </Text>
+          </Container>
         </Container>
-        <Container ml={'auto'}>
+        <Container position="absolute" top="0" right="0">
           {isOwner ? (
             <Container flex gap={12}>
               {profileUser.verified ? (
@@ -267,9 +274,9 @@ const Profile = () => {
             </Container>
           )}
         </Container>
-      </Container>
+      </Container >
       <InfoContainer>
-        <Container flex align="center" gap={16} mb={12}>
+        <Container flex align="center" gap={16} mb={12} >
           <Text fontSize={18} fontWeight="bold">
             Bio:
           </Text>
