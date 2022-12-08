@@ -24,7 +24,7 @@ const SellerButton = styled('div')`
   display: flex;
   align-items: center;
   gap: 8px;
-  background-color: ${({ theme }) => theme.colors.primary};
+  background-color: var(--primary);
   border-radius: 8px;
   padding: 4px 8px;
 `;

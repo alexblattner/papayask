@@ -79,7 +79,7 @@ const Landing = () => {
           </FlexItem>
           <FlexItem>
             <div>
-              <SubTitle>Secured payments, and pay back policy</SubTitle>
+              <SubTitle>Secured payments and pay back policy</SubTitle>
               <Text>
                 The payment process is done through Paypal to ensure the
                 security of the payment. Should there happen to be a legitimate

@@ -51,12 +51,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     });
   };
   useEffect(() => {
+    auth.signOut();
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
+        let name= user.displayName? user.displayName: window.localStorage.getItem("firstName")+ " "+ window.localStorage.getItem("lastName");
+
         const token = await user.getIdToken();
         register(token, {
           email: user.email,
-          displayName: user.displayName,
+          displayName: name,
           uid: user.uid,
         });
       } else {
