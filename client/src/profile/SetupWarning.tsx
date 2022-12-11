@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
+
 import { Button } from '../shared/Button';
 import { Container } from '../shared/Container';
-
 import Modal from '../shared/Modal';
 import { Text } from '../shared/Text';
+import { EditProfileContext, useEditProfile } from './profileService';
 
 const BoldSpan = styled.span`
   font-weight: bold;
@@ -12,11 +13,10 @@ const BoldSpan = styled.span`
 
 interface Props {
   setShowWarning: React.Dispatch<React.SetStateAction<boolean>>;
-  progress: number;
-  submit: () => void;
 }
 
 const SetupWarning = (props: Props) => {
+  const { progress, submit } = useEditProfile();
   return (
     <Modal setShowModal={props.setShowWarning}>
       <Container px={48} py={36}>
@@ -34,14 +34,14 @@ const SetupWarning = (props: Props) => {
           <BoldSpan> 75%</BoldSpan> of the process.
         </Text>
         <Text fontSize={32} align="center" mb={18}>
-          Current progress: <BoldSpan> {props.progress}% </BoldSpan>
+          Current progress: <BoldSpan> {progress}% </BoldSpan>
         </Text>
         <Text fontSize={32} align="center" mb={36}>
           {' '}
           You can save your progress and complete the process later
         </Text>
         <Container flex align="center" gap={16}>
-          <Button variant="outline" onClick={props.submit} width="100%">
+          <Button variant="outline" onClick={submit} width="100%">
           SAVE AND CONTINUE LATER
           </Button>
           <Button

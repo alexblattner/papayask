@@ -5,7 +5,7 @@ import { UserProps } from '../models/User';
 
 interface AuthContextReturn {
   user: UserProps | null | undefined;
-  updateUser: (utoken: any, body: any) => void;
+  updateUser: (body: any) => Promise<void>;
   token: string | null | undefined;
   setUser: React.Dispatch<React.SetStateAction<UserProps | null | undefined>>;
   getUser: () => void;
@@ -13,7 +13,7 @@ interface AuthContextReturn {
 
 export const AuthContext = createContext<AuthContextReturn>({
   user: null,
-  updateUser: () => {},
+  updateUser: async () => {},
   token: null,
   setUser: () => {},
   getUser: () => {},
@@ -32,18 +32,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [user]);
 
-  const getUserQuestions = async (utoken: string) => {
-    const res = await api.get('/questions', {
-      headers: {
-        Authorization: `Bearer ${utoken}`,
-      },
-    });
-    return res.data;
-  };
-
   const register = async (token: any, body: any) => {
     // we use promise all setteled beacuse of the first register
-    const [userData, questionsData] = await Promise.allSettled([
+    const [userData] = await Promise.allSettled([
       api({
         method: 'post',
         url: '/user',
@@ -52,7 +43,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         },
         data: body,
       }),
-      getUserQuestions(token),
     ]);
     if (userData.status == 'rejected') return;
     setUser({
@@ -78,7 +68,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return unsubscribe;
   }, []);
 
-
   const getUser = async () => {
     if (!token) {
       return;
@@ -88,7 +77,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         method: 'get',
         url: `/user/${user?._id}`,
       }),
-      getUserQuestions(token),
     ]);
     setUser({
       id: updatedUser.data._id,
@@ -96,17 +84,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     });
   };
 
-  const updateUser = async (token: string, body: any) => {
+  const updateUser = async ( body: any) => {
     try {
       const res = await api({
         method: 'patch',
         url: `/user/${user?._id}`,
-        headers: {
-          Authorization: 'Bearer ' + token,
-        },
         data: body,
       });
-      const questions = await getUserQuestions(token);
       setUser({
         id: res.data.user._id,
         ...res.data.user,

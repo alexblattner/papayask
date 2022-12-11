@@ -74,8 +74,6 @@ const SkillRow = ({
     { index: number; years: number }[]
   >([]);
 
-  const { width } = useWidth();
-
   const selectEducation = (index: number) => {
     if (educationIndexSelected.includes(index)) {
       setEducationIndexSelected(
@@ -328,7 +326,7 @@ const SkillRow = ({
             )}
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={closeModal}>
+            <Button variant="outline" onClick={closeModal}>
               Cancel
             </Button>
             <Button variant="primary" onClick={add}>

@@ -49,7 +49,7 @@ const RequestSettingsModal = (props: Props) => {
     if (!user || !token) return;
     setLoading(true);
     try {
-      updateUser(token, {
+      updateUser({
         request_settings: requestSettings,
         questionsInstructions,
       });
