@@ -61,7 +61,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     });
   };
   useEffect(() => {
-    auth.signOut();
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
         let name= user.displayName? user.displayName: window.localStorage.getItem("firstName")+ " "+ window.localStorage.getItem("lastName");

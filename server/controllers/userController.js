@@ -431,3 +431,39 @@ exports.search = async (req, res, next) => {
   console.log(users);
   return res.send(users);
 };
+exports.apply = async (req, res, next) => {
+  if(user){
+    let completion=0;
+    if(user.title){
+      completion+=5;
+    }
+    if(user.bio){
+      completion+=15;
+    }
+    if(user.picture){
+      completion+=15;
+    }
+    for(let i=0;i<user.skills.length;i++){
+      if(user.skills[i].experiences.length>0||user.skills[i].educations.length>0){
+        completion+=10;
+      }else{
+        completion+=5;
+      }
+    }
+    for(let i=0;i<user.experience.length;i++){
+      completion+=5;
+    }
+    for(let i=0;i<user.education.length;i++){
+      completion+=5;
+    }
+    if(completion>65){
+      user.isSetUp=true;
+    }else{
+      user.isSetUp=false;
+    }
+    user.save();
+
+  }else{
+    return res.status(401).json({message:"Unauthorized"})
+  }
+}

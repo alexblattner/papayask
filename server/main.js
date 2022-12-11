@@ -256,6 +256,7 @@ app.post('/cloudinary-signature', async (req, res, next) => {
     signature,
   });
 });
+app.post('/confirmation-application', middleware.decodeToken, userController.apply);
 app.post('/user/:userId/register-token', userController.registerToken);
 app.get('/search', userController.search);
 app.post('/search', userController.search);

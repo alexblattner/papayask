@@ -88,15 +88,18 @@ const Profile = () => {
   }, [profileUser]);
 
   useEffect(() => {
-    const id = window.location.pathname.split('/')[2];
-
-    if (id) {
-      if (id === user?._id) {
-        setProfileUser(user);
-      } else {
-        getProfileUser(id);
-      }
+    if (user) {
+      setProfileUser(user);
     }
+    // const id = window.location.pathname.split('/')[2];
+
+    // if (id) {
+    //   if (id === user?._id) {
+    //     setProfileUser(user);
+    //   } else {
+    //     getProfileUser(id);
+    //   }
+    // }
   }, [window.location.pathname, user]);
 
   useEffect(() => {
