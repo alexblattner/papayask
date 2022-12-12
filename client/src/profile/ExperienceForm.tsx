@@ -1,3 +1,4 @@
+import styled from 'styled-components';
 import { Button } from '../shared/Button';
 import { Container } from '../shared/Container';
 import CountriesSelect from '../shared/CountriesSelect';
@@ -6,11 +7,30 @@ import { Input } from '../shared/Input';
 import { Text } from '../shared/Text';
 import { Experience } from './profileService';
 
+const StyledSelect = styled.select`
+  margin-bottom: 30px;
+  border: ${({ theme }) => `1px solid ${theme.colors.primary_L2}`};
+  border-radius: 8px;
+  padding: 3px 12px;
+  width: 50%;
+  -webkit-appearance: none;
+  appearance: none;
+
+  :focus {
+    outline: none;
+  }
+  ::-ms-expand {
+    display: none;
+  }
+`;
+
 interface Props {
   onAddExperience: () => void;
   onChangeExperience: (
     name: string,
-    value: React.ChangeEvent<HTMLInputElement>
+    value:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLSelectElement>
   ) => void;
   inputExperience: Experience;
   onChangeExperienceCountry: (name: string) => void;
@@ -30,6 +50,7 @@ const ExperienceForm = ({
   isLoading,
   submitExperience,
 }: Props) => {
+  const typesOptions = ['Employee', 'Owner', 'FreeLancer'];
   const addExperienceDisabled = () => {
     return (
       isLoading ||
@@ -62,13 +83,24 @@ const ExperienceForm = ({
           onChange={(e) => onChangeExperience('company', e)}
         />
         <Container flex gap={12} align="center">
-          <Input
+          {/* <Input
             type="text"
             value={inputExperience.type}
             placeholder="Experience type"
             name="type"
             onChange={(e) => onChangeExperience('type', e)}
-          />
+          /> */}
+          <StyledSelect
+            value={inputExperience.type}
+            onChange={(e) => onChangeExperience('type', e)}
+          >
+            {typesOptions.map((type) => (
+              <option key={type} value={type}>
+                {type}
+              </option>
+            ))}
+          </StyledSelect>
+
           <CountriesSelect
             value={inputExperience.geographic_specialization}
             onChange={onChangeExperienceCountry}

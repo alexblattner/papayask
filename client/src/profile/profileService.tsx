@@ -60,7 +60,7 @@ interface EditProfileContextReturn {
   onChangeEducation: (name: string, value: string | University | Date) => void;
   onChangeExperience: (
     name: string,
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>
   ) => void;
   onChangeCountry: (country: string) => void;
   onChangeExperienceCountry: (country: string) => void;
@@ -123,7 +123,7 @@ export const EditProfileContext = createContext<EditProfileContextReturn>({
   onChangeEducation: (name: string, value: string | University | Date) => {},
   onChangeExperience: (
     name: string,
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>
   ) => {},
   onChangeCountry: (country: string) => {},
   onChangeExperienceCountry: (country: string) => {},
@@ -220,7 +220,7 @@ export const EditProfileProvider = ({
 
   const onChangeExperience = (
     name: string,
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>
   ) => {
     if (name === 'company') {
       setInputExperience({

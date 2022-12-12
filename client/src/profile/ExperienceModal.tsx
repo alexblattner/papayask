@@ -32,7 +32,7 @@ const ExperienceModal = (props: Props) => {
 
   const onChangeExperience = (
     name: string,
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>
   ) => {
     if (name === 'company') {
       setExperience({
