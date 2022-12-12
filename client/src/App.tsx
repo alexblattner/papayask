@@ -10,7 +10,7 @@ import Header from './Header';
 import Profile from './profile/Profile';
 import Main from './main/Main';
 import { theme } from './styledCompunentConfig/theme';
-import { EditProfileProvider, useEditProfile } from './profile/profileService';
+import { EditProfileProvider } from './profile/profileService';
 
 function App() {
   const user = useContext(AuthContext);
@@ -27,15 +27,13 @@ function App() {
           <ThemeProvider theme={theme}>
             <Router>
               <Routes>
-                {user?.user?
-                <Route path="*" element={<Profile />} />:
-                <Route path="*" element={<Main />} />}
+                <Route path="*" element={<Header />} />
               </Routes>
               <div className="app-container">
                 <Routes>
-                  <Route path="/*" element={<Main />} />
-                  <Route path="/profile/:id" element={<Profile />} />
-                  <Route path="/" element={<Main />}></Route>
+                  {user?
+                  <Route path="*" element={<Profile />} />:
+                  <Route path="*" element={<Main />} />}
                 </Routes>
               </div>
             </Router>

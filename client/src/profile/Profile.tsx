@@ -53,6 +53,7 @@ const InfoContainer = styled('div')<{ width?: string }>`
 
 const Profile = () => {
   const [isOwner, setIsOwner] = React.useState<boolean>(false);
+  const [bioEdit, setBioEdit] = React.useState<boolean>(false);
   const [showEducationModal, setShowEducationModal] =
     React.useState<boolean>(false);
   const [showQuestionModal, setShowQuestionModal] =
@@ -163,7 +164,7 @@ const Profile = () => {
     <Container
       width="70%"
       mx={'auto'}
-      overflow={showProfileSetup ? 'hidden' : 'scroll'}
+      overflow={showProfileSetup ? 'hidden' : 'auto'}
       position="relative"
     >
       {showSettings && (
@@ -237,7 +238,7 @@ const Profile = () => {
         <Container position="absolute" top="0" right="0">
           {isOwner ? (
             <Container flex gap={12}>
-              {profileUser.verified ? (
+              {/*profileUser.verified ? (
                 <Button variant="outline" onClick={() => setShowSettings(true)}>
                   <Container flex align="center" gap={8}>
                     <SvgIcon src="settings" size={25} /> Settings
@@ -249,7 +250,7 @@ const Profile = () => {
                     Verify my account
                   </Container>
                 </Button>
-              )}
+              )*/}
               <Button variant="outline" onClick={openProfileSetup}>
                 <Container flex align="center" gap={8}>
                   <SvgIcon src="pencil_fill" size={20} /> EDIT
@@ -283,7 +284,18 @@ const Profile = () => {
           <Text fontSize={18} fontWeight="bold">
             Bio:
           </Text>
-          {isOwner && <SvgIcon src="pencil_fill" size={16} color="primary" />}
+          {isOwner && <Container onClick={() => openProfileSetupInStep(0)}><SvgIcon src="pencil_fill" size={16} color="primary" /></Container>}
+          {/*bioEdit && (
+            <Container flex gap={8}>
+              <textarea />
+              <Button variant="outline" onClick={() => {}}>
+                Save
+              </Button>
+              <Button variant="outline" onClick={() => {}}>
+                Cancel
+              </Button>
+              </Container>
+          )*/}
         </Container>
         <Text fontSize={18} mb={12} align="justify">
           {profileUser.bio}
