@@ -217,7 +217,7 @@ app.get('/university/:search', async (req, res, next) => {
 
 app.get('/realtime-notifications/:id', eventsHandler);
 
-app.post('/user', middleware.decodeToken, userController.createOrLogin);
+app.post('/user', userController.createOrLogin);
 app.post('/note', middleware.decodeToken, noteController.create);
 app.patch('/user/:userId', middleware.decodeToken, userController.update);
 app.get('/user/:id', userController.getById);

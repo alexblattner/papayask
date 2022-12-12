@@ -165,7 +165,7 @@ exports.createOrLogin = async (req, res, next) => {
         newUserOb.picture = req.body.photoURL;
       }
       const user = new User(newUserOb);
-      const createdUser = await user.save()
+      const createdUser = await user.save();
 
       return res.send(createdUser);
     } else {
@@ -207,6 +207,7 @@ exports.update = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
+    console.log(req.body);
 
     const {
       bio,
