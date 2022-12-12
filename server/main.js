@@ -81,7 +81,7 @@ const domain =
   process.env.NODE_ENV == 'development'
     ? 'localhost:3000'
     : process.env.NODE_ENV == 'production'
-    ? 'snipcritics.com'
+    ? 'papayask.com'
     : 'scbackend.com';
 mongoose.connect(
   'mongodb+srv://papayask:' +
@@ -125,70 +125,70 @@ app.get('/university/:search', async (req, res, next) => {
   res.send(universities);
 });
 //universities setup
-// app.get("/t",(req,res,next)=>{
-//   fs.readFile('t.txt', function(err, data) {
-//     if (err) throw err;
-//     const lines=data.toString().split("\r");
-//     let universities = [];
-//     let current=0
-//     let lastRank=0
-//     for (let i = 0; i < lines.length; i++) {
-//       const line = lines[i];
-//       const tabs = line.split("\t");
+app.get("/t",(req,res,next)=>{
+  fs.readFile('t.txt', function(err, data) {
+    if (err) throw err;
+    const lines=data.toString().split("\r");
+    let universities = [];
+    let current=0
+    let lastRank=0
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      const tabs = line.split("\t");
 
-//       if(i%3==0){
-//         universities.push({
-//           name: tabs[1]
-//         })
-//         current=universities.length-1
-//       }else if(i%3==1){
-//         universities[current].country=line.replace("\n","")
-//       }else{
+      if(i%3==0){
+        universities.push({
+          name: tabs[1]
+        })
+        current=universities.length-1
+      }else if(i%3==1){
+        universities[current].country=line.replace("\n","")
+      }else{
 
-//         if(isNaN(parseFloat(tabs[1]))){
-//           if(lastRank==0)
-//             lastRank=universities.length
-//           universities[current].score=0
-//         }else{
-//           if(isNaN(parseFloat(tabs[0])))
-//             tabs.shift()
-//           let score = parseFloat(tabs[0])
-//           score += parseFloat(tabs[1])
-//           score += parseFloat(tabs[2])
-//           score += parseFloat(tabs[3])
-//           score += parseFloat(tabs[4])
-//           score += parseFloat(tabs[5])
-//           score/=6
-//           universities[current].score=score
-//         }
-//       }
-//     }
-//     universities.sort((a,b)=>{
-//       return b.score-a.score
-//     })
-//     let rank=1
-//     for (let i = 0; i < universities.length; i++) {
-//       if(universities[i].score==0){
-//         universities[i].rank=lastRank
-//       }else{
-//         if(i>0&&universities[i].score==universities[i-1].score){
-//           universities[i].rank=universities[i-1].rank
-//         }else{
-//           universities[i].rank=rank
-//         }
-//       }
-//       rank++
-//     }
-//     const University = require("./models/university");
-//     University.insertMany(universities,(err,docs)=>{
-//       if(err){
-//         console.log(err)
-//       }
-//     })
-//     res.send(universities);
+        if(isNaN(parseFloat(tabs[1]))){
+          if(lastRank==0)
+            lastRank=universities.length
+          universities[current].score=0
+        }else{
+          if(isNaN(parseFloat(tabs[0])))
+            tabs.shift()
+          let score = parseFloat(tabs[0])
+          score += parseFloat(tabs[1])
+          score += parseFloat(tabs[2])
+          score += parseFloat(tabs[3])
+          score += parseFloat(tabs[4])
+          score += parseFloat(tabs[5])
+          score/=6
+          universities[current].score=score
+        }
+      }
+    }
+    universities.sort((a,b)=>{
+      return b.score-a.score
+    })
+    let rank=1
+    for (let i = 0; i < universities.length; i++) {
+      if(universities[i].score==0){
+        universities[i].rank=lastRank
+      }else{
+        if(i>0&&universities[i].score==universities[i-1].score){
+          universities[i].rank=universities[i-1].rank
+        }else{
+          universities[i].rank=rank
+        }
+      }
+      rank++
+    }
+    const University = require("./models/university");
+    University.insertMany(universities,(err,docs)=>{
+      if(err){
+        console.log(err)
+      }
+    })
+    res.send(universities);
 
-//   });
-// })
+  });
+})
 
 // const eventsHandler = (req, res, next) => {
 //   const headers = {
