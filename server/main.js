@@ -258,6 +258,8 @@ app.post("/cloudinary-signature", async (req, res, next) => {
 app.post("/user/:userId/register-token", userController.registerToken);
 app.get("/search", userController.search);
 app.post("/search", userController.search);
+app.get("/searchauto", userController.searchAutomationResults);
+app.post("/searchauto", userController.searchAutomationResults);
 // app.post("/deleteReviews", async (req, res, next) => {
 //   if (req.session.uid) {
 //     ids = req.body.ids.split("/");

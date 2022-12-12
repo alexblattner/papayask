@@ -1,5 +1,5 @@
-const Education = require('../models/education');
-const universityController = require('../controllers/universityController');
+const Education = require("../models/education");
+const universityController = require("../controllers/universityController");
 
 exports.create = async (education, userId) => {
   const { university } = education;
@@ -23,5 +23,17 @@ exports.create = async (education, userId) => {
     return newEducation;
   } catch (e) {
     console.log(e);
+  }
+};
+
+exports.search = async (searchText) => {
+  try {
+    const searchResults = await Education.find({
+      $match: { name: searchText },
+    });
+    console.log(searchText);
+    return searchResults;
+  } catch (e) {
+    return [];
   }
 };

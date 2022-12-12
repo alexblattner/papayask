@@ -5,6 +5,7 @@ const { OAuth2Client } = require("google-auth-library");
 const client = new OAuth2Client(process.env.GOOGLE_APP_ID);
 
 const User = require("../models/user");
+
 const experienceController = require("./experienceController");
 const educationController = require("./educationController");
 const skillController = require("./skillController");
@@ -516,4 +517,27 @@ exports.search = async (req, res, next) => {
   ]).exec();
   console.log(users);
   return res.send(users);
+};
+
+exports.searchAutomationResults = async (req, res) => {
+  const { search } = req.query;
+  const regex = new RegExp(escapeRegex(search));
+  console.log("search", search);
+  try {
+    const educationSearchResults = await educationController.search(regex);
+    // const skillsSearchResults = await skillController.search(regex);
+    // const experienceSearchResults = await experienceController.search(regex);
+    let results = educationSearchResults.map((result) =>
+      result.name.toLowerCase()
+    );
+    // .concat(skillsSearchResults.map((result) => result.name.toLowerCase()))
+    // .concat(
+    // experienceSearchResults.map((result) => result.name.toLowerCase())
+    // );
+    const uniqueStrings = new Set(results);
+    const filteredResults = Array.from(uniqueStrings);
+    res.send(filteredResults);
+  } catch (e) {
+    res.send([]);
+  }
 };

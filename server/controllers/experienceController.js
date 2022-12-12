@@ -1,5 +1,5 @@
-const Experiernce = require('../models/experience');
-const companyContriller = require('./companyController');
+const Experiernce = require("../models/experience");
+const companyContriller = require("./companyController");
 
 exports.create = async (experience, userId) => {
   const { company } = experience;
@@ -24,5 +24,16 @@ exports.create = async (experience, userId) => {
     return newExperience;
   } catch (e) {
     console.log(e);
+  }
+};
+
+exports.search = async (searchText) => {
+  try {
+    const searchResults = await Experiernce.find({
+      $match: { name: searchText },
+    });
+    return searchResults;
+  } catch (e) {
+    return [];
   }
 };

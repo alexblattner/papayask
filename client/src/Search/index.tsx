@@ -48,7 +48,7 @@ const Search = () => {
   const getSearch = async () => {
     //initial search
     const urlParams = new URLSearchParams(search);
-    console.log(678, "jjj", query);
+
     const searchParams = urlParams.get("query");
     console.log(678, searchParams);
     const res = await api.get("/search/", {
