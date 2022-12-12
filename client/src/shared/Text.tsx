@@ -7,6 +7,7 @@ interface TextProps extends React.HTMLAttributes<HTMLParagraphElement> {
   mb?: number;
   ml?: number;
   align?: string;
+  display?: string;
 }
 
 const StyledText = styled('p')<TextProps>`
@@ -16,6 +17,7 @@ const StyledText = styled('p')<TextProps>`
   margin-bottom: ${(props) => (props.mb ? props.mb + 'px' : '0')};
   margin-left: ${(props) => (props.ml ? props.ml + 'px' : '0')};
   text-align: ${(props) => (props.align ? props.align : 'start')};
+  display: ${(props) => (props.display ? props.display : 'block')};
   color: ${(props) =>
     !props.color
       ? '#000'

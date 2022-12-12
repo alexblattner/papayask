@@ -40,6 +40,7 @@ interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
   maxW?: string;
   minW?: string;
   overflow?: 'hidden' | 'scroll' | 'auto';
+  display?: 'flex' | 'grid' | 'block' | 'inline-block' | 'inline';
 }
 
 const StyledContainer = styled('div')<ContainerProps>`
@@ -92,6 +93,7 @@ const StyledContainer = styled('div')<ContainerProps>`
   max-width: ${(props) => (props.maxW ? props.maxW : '')};
   min-width: ${(props) => (props.minW ? props.minW : '')};
   overflow: ${(props) => (props.overflow ? props.overflow : '')};
+  display: ${(props) => (props.display ? props.display : '')};
 `;
 
 export const Container = (props: ContainerProps) => {

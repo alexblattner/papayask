@@ -167,7 +167,7 @@ const DesktopHeader = (props: Props) => {
                 <SvgIcon src="send" />
               )}
             </NavItem>
-            <NavItem to="">
+            <NavItem to="/notifications">
               {width > 1290 ? (
                 <Text fontSize={18} fontWeight={'bold'}>
                   Notifications
