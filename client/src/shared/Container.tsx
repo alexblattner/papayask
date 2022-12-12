@@ -92,6 +92,10 @@ const StyledContainer = styled('div')<ContainerProps>`
   max-width: ${(props) => (props.maxW ? props.maxW : '')};
   min-width: ${(props) => (props.minW ? props.minW : '')};
   overflow: ${(props) => (props.overflow ? props.overflow : '')};
+  cursor: ${(props) => (props.onClick ? 'pointer' : '')};
+  &:hover {
+    background-color: ${(props) => (props.onClick ? '#f5f5f5' : '')};
+  }
 `;
 
 export const Container = (props: ContainerProps) => {

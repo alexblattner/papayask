@@ -1,8 +1,8 @@
-import React from 'react';
+import React,{useState} from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { FormControl, Form } from 'react-bootstrap';
-
+import {auth} from '../firebase-auth';
 import { ReactComponent as FullLogo } from '../full_logo.svg';
 import SvgIcon from '../shared/SvgIcon';
 import { AuthContext } from '../Auth/ContextProvider';
@@ -10,7 +10,7 @@ import { Container } from '../shared/Container';
 import { Text } from '../shared/Text';
 import { Button } from '../shared/Button';
 import useWidth from '../Hooks/useWidth';
-
+import "./Header.css";
 const HeaderContainer = styled.div`
   position: fixed;
   display: flex;
@@ -55,6 +55,11 @@ const DesktopHeader = (props: Props) => {
   } = props;
   const { user } = React.useContext(AuthContext);
   const { width } = useWidth();
+  const [dropDownVisible, setDropDownVisible] = useState(false);
+  const signout = () => {
+    auth.signOut();
+  };
+
   return (
     <HeaderContainer>
       <Link to="/">
@@ -82,9 +87,12 @@ const DesktopHeader = (props: Props) => {
                 </SellerButton>
               </StyledLink>
             ) : (
-              <Link to={`/profile/${user._id}`}>
+              <div id='profile-holder' onClick={()=>setDropDownVisible(!dropDownVisible)}>
                 <SvgIcon src="user" color="black" size={30} />
-              </Link>
+                {dropDownVisible?<div id='profile-dropdown'>
+                  <button onClick={signout}><SvgIcon src="exit" size={18} color='white'/>LOG OUT</button>
+                </div>:null}
+              </div>
             )}
           </Container>
         </>

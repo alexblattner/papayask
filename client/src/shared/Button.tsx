@@ -27,7 +27,7 @@ const StyledButton = styled('button')<ButtonProps>`
   font-size: 18px;
   font-weight: bold;
   border-radius: 8px;
-  padding: 8px 16px;
+  padding: 4px 16px;
   width: ${(props) => (props.width ? `${props.width}` : 'auto')};
   transition: all 0.2s ease-in-out;
   cursor: pointer;

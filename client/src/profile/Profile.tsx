@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 
 import { AuthContext } from '../Auth/ContextProvider';
-import { Button } from '../shared/Button';
 import { Container } from '../shared/Container';
 import { Text } from '../shared/Text';
 import ProfileSetup from './ProfileSetup';
@@ -20,6 +19,7 @@ import { Education, Experience } from './profileService';
 import ExperienceModal from './ExperienceModal';
 import SkillsModal from './SkillsModal';
 import LanguagesModal from './LanguagesModal';
+import ProfileButtons from './ProfileButtons';
 
 const ProfileImage = styled.div`
   position: relative;
@@ -53,6 +53,7 @@ const InfoContainer = styled('div')<{ width?: string }>`
 
 const Profile = () => {
   const [isOwner, setIsOwner] = React.useState<boolean>(false);
+  const [bioEdit, setBioEdit] = React.useState<boolean>(false);
   const [showEducationModal, setShowEducationModal] =
     React.useState<boolean>(false);
   const [showQuestionModal, setShowQuestionModal] =
@@ -135,15 +136,18 @@ const Profile = () => {
   }, [profileUser]);
 
   useEffect(() => {
-    const id = window.location.pathname.split('/')[2];
-
-    if (id) {
-      if (id === user?._id) {
-        setProfileUser(user);
-      } else {
-        getProfileUser(id);
-      }
+    if (user) {
+      setProfileUser(user);
     }
+    // const id = window.location.pathname.split('/')[2];
+
+    // if (id) {
+    //   if (id === user?._id) {
+    //     setProfileUser(user);
+    //   } else {
+    //     getProfileUser(id);
+    //   }
+    // }
   }, [window.location.pathname, user]);
 
   useEffect(() => {
@@ -158,9 +162,9 @@ const Profile = () => {
 
   return (
     <Container
-      width="70%"
+      width={width > 600 ? '70%' : '85%'}
       mx={'auto'}
-      overflow={showProfileSetup ? 'hidden' : 'scroll'}
+      overflow={showProfileSetup ? 'hidden' : 'auto'}
       position="relative"
     >
       {showSettings && (
@@ -207,9 +211,9 @@ const Profile = () => {
       <Container position="relative" mb={48}>
         <Container
           flex
-          align={width > 1000 ? 'flex-end' : 'flex-start'}
+          align={width > 600 ? 'flex-end' : 'flex-start'}
           gap={12}
-          dir={width > 1000 ? 'row' : 'column'}
+          dir={width > 600 ? 'row' : 'column'}
         >
           <Container height="150px" position="relative" maxH="150px">
             <ProfileImage>
@@ -219,70 +223,56 @@ const Profile = () => {
               </EditPictureButton>
             </ProfileImage>
           </Container>
+
+          <Container
+            position={width > 600 ? 'absolute' : 'relative'}
+            top="0"
+            right="0"
+          >
+            <ProfileButtons
+              isOwner={isOwner}
+              openProfileSetup={openProfileSetup}
+              setShowQuestionModal={setShowQuestionModal}
+              profileUser={profileUser}
+            />
+          </Container>
+
           <Container>
             <Container flex align="center" gap={12} mt={12}>
-              <Text fontSize={46} fontWeight={700}>
+              <Text fontSize={width > 1145 ? 46 : 40} fontWeight={700}>
                 {profileUser.name}
               </Text>
-              <Text fontSize={46}>{profileFlag}</Text>
+              <Text fontSize={width > 1145 ? 46 : 40}>{profileFlag}</Text>
             </Container>
-            <Text fontSize={24} fontWeight={700}>
+            <Text fontSize={width > 1145 ? 24 : 22} fontWeight={700}>
               {profileUser.title}
             </Text>
           </Container>
         </Container>
-        <Container position="absolute" top="0" right="0">
-          {isOwner ? (
-            <Container flex gap={12}>
-              {profileUser.verified ? (
-                <Button variant="outline" onClick={() => setShowSettings(true)}>
-                  <Container flex align="center" gap={8}>
-                    <SvgIcon src="settings" size={25} /> Settings
-                  </Container>
-                </Button>
-              ) : (
-                <Button variant="outline" onClick={() => {}}>
-                  <Container flex align="center" gap={8}>
-                    Verify my account
-                  </Container>
-                </Button>
-              )}
-              <Button variant="outline" onClick={openProfileSetup}>
-                <Container flex align="center" gap={8}>
-                  <SvgIcon src="pencil_fill" size={20} /> EDIT
-                </Container>
-              </Button>
-            </Container>
-          ) : (
-            <Container flex align="center" gap={12}>
-              {profileUser.verified && (
-                <Button
-                  variant="secondary"
-                  onClick={() => {
-                    setShowQuestionModal(true);
-                  }}
-                >
-                  <SvgIcon src="send" size={25} />
-                </Button>
-              )}
-              <Button variant="secondary" onClick={() => {}}>
-                <SvgIcon src="share" size={25} />
-              </Button>
-              <Button variant="secondary" onClick={() => {}}>
-                <SvgIcon src="heart" size={25} />
-              </Button>
-            </Container>
-          )}
-        </Container>
-      </Container >
+      </Container>
       <InfoContainer>
-        <Container flex align="center" gap={16} mb={12} >
-          <Text fontSize={18} fontWeight="bold">
+        <Container flex align="center" gap={16} mb={12}>
+          <Text fontSize={width > 1145 ? 18 : 16} fontWeight="bold">
             Bio:
           </Text>
-          {isOwner && <SvgIcon src="pencil_fill" size={16} color="primary" />}
+          {isOwner && (
+            <Container onClick={() => openProfileSetupInStep(0)}>
+              <SvgIcon src="pencil_fill" size={16} color="primary" />
+            </Container>
+          )}
+          {/*bioEdit && (
+            <Container flex gap={8}>
+              <textarea />
+              <Button variant="outline" onClick={() => {}}>
+                Save
+              </Button>
+              <Button variant="outline" onClick={() => {}}>
+                Cancel
+              </Button>
+              </Container>
+          )*/}
         </Container>
-        <Text fontSize={18} mb={12} align="justify">
+        <Text fontSize={width > 1145 ? 18 : 16} mb={12} align="justify">
           {profileUser.bio}
         </Text>
       </InfoContainer>
@@ -295,7 +285,7 @@ const Profile = () => {
             gap={16}
             mb={12}
           >
-            <Text fontSize={18} fontWeight="bold">
+            <Text fontSize={width > 1145 ? 18 : 16} fontWeight="bold">
               Experience:
             </Text>
             {isOwner && (
@@ -326,11 +316,13 @@ const Profile = () => {
                 <SvgIcon src="work" size={50} />
               </Container>
               <Container key={i} flex dir="column" justify="space-between">
-                <Text fontSize={18} fontWeight="bold">
+                <Text fontSize={width > 1145 ? 18 : 16} fontWeight="bold">
                   {exp.name}
                 </Text>
-                <Text fontSize={18}>{exp.company.name}</Text>
-                <Text>
+                <Text fontSize={width > 1145 ? 18 : 16}>
+                  {exp.company.name}
+                </Text>
+                <Text fontSize={width > 1145 ? 16 : 14}>
                   {formatDateNamed(exp.startDate)} -{' '}
                   {formatDateNamed(exp.endDate)}
                 </Text>
@@ -346,7 +338,7 @@ const Profile = () => {
             gap={16}
             mb={12}
           >
-            <Text fontSize={18} fontWeight="bold">
+            <Text fontSize={width > 1145 ? 18 : 16} fontWeight="bold">
               Education:
             </Text>
             {isOwner && (
@@ -371,11 +363,13 @@ const Profile = () => {
                 <SvgIcon src="study" size={50} />
               </Container>
               <Container flex dir="column" justify="space-between" key={i}>
-                <Text fontSize={18} fontWeight="bold">
+                <Text fontSize={width > 1145 ? 18 : 16} fontWeight="bold">
                   {edu.name}
                 </Text>
-                <Text fontSize={18}>{edu.university.name}</Text>
-                <Text>
+                <Text fontSize={width > 1145 ? 18 : 16}>
+                  {edu.university.name}
+                </Text>
+                <Text fontSize={width > 1145 ? 16 : 14}>
                   {formatDateNamed(edu.startDate)} -{' '}
                   {formatDateNamed(edu.endDate)}
                 </Text>
@@ -386,7 +380,7 @@ const Profile = () => {
       </Container>
       <InfoContainer width="100%">
         <Container flex align="center" justify="space-between" gap={16} mb={12}>
-          <Text fontSize={18} fontWeight="bold">
+          <Text fontSize={width > 1145 ? 18 : 16} fontWeight="bold">
             Skills:
           </Text>
           {isOwner && (
@@ -407,7 +401,7 @@ const Profile = () => {
       </InfoContainer>
       <InfoContainer width="100%">
         <Container flex align="center" justify="space-between" gap={16} mb={12}>
-          <Text fontSize={18} fontWeight="bold">
+          <Text fontSize={width > 1145 ? 18 : 16} fontWeight="bold">
             Languages:
           </Text>
           {isOwner && (
