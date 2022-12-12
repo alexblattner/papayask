@@ -211,7 +211,7 @@ const Profile = () => {
       <Container position="relative" mb={48}>
         <Container
           flex
-          align={width > 600 ? 'flex-end' : 'flex-start'}
+          align={width > 600 ? 'flex-end' : 'center'}
           gap={12}
           dir={width > 600 ? 'row' : 'column'}
         >
@@ -238,13 +238,17 @@ const Profile = () => {
           </Container>
 
           <Container>
-            <Container flex align="center" gap={12} mt={12}>
+            <Container flex align="center" gap={12}>
               <Text fontSize={width > 1145 ? 46 : 40} fontWeight={700}>
                 {profileUser.name}
               </Text>
               <Text fontSize={width > 1145 ? 46 : 40}>{profileFlag}</Text>
             </Container>
-            <Text fontSize={width > 1145 ? 24 : 22} fontWeight={700}>
+            <Text
+              fontSize={width > 1145 ? 24 : 22}
+              fontWeight={700}
+              align="center"
+            >
               {profileUser.title}
             </Text>
           </Container>
