@@ -20,7 +20,8 @@ class Middleware {
       }
       return res.status(401).send('Unauthorized');
     } catch (err) {
-      return res.status(500).send('Internal Server Error');
+      console.log(err);
+      return res.status(500).send({ error: err.message });
     }
   }
 }

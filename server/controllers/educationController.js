@@ -13,9 +13,9 @@ exports.create = async (education, userId) => {
     uniId = newUniversity._id;
   }
   const body = {
+    ...education,
     university: uniId,
     user: userId,
-    ...education,
     endDate: education.endDate,
   };
   try {
@@ -38,9 +38,9 @@ exports.update = async (education, userId) => {
     uniId = newUniversity._id;
   }
   const body = {
+    ...education,
     university: uniId,
     user: userId,
-    ...education,
     endDate: education.endDate,
   };
   try {
@@ -53,4 +53,4 @@ exports.update = async (education, userId) => {
   } catch (e) {
     console.log(e);
   }
-}
+};

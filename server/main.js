@@ -23,7 +23,7 @@ const util = require('util');
 const unlinkFile = util.promisify(fs.unlink);
 let { eventsHandler } = require('./utils/eventsHandler');
 console.log(
-  'mongodb+srv://papayask:'+
+  'mongodb+srv://papayask:' +
     process.env.MONGODB_PASSWORD +
     '@cluster' +
     (process.env.NODE_ENV == 'production' ? 0 : 1) +
@@ -84,7 +84,7 @@ const domain =
     ? 'snipcritics.com'
     : 'scbackend.com';
 mongoose.connect(
-  'mongodb+srv://papayask:'+
+  'mongodb+srv://papayask:' +
     process.env.MONGODB_PASSWORD +
     '@cluster' +
     (process.env.NODE_ENV == 'production' ? 0 : 1) +
@@ -256,7 +256,11 @@ app.post('/cloudinary-signature', async (req, res, next) => {
     signature,
   });
 });
-app.post('/confirmation-application', middleware.decodeToken, userController.apply);
+app.post(
+  '/confirmation-application',
+  middleware.decodeToken,
+  userController.apply
+);
 app.post('/user/:userId/register-token', userController.registerToken);
 app.get('/search', userController.search);
 app.post('/search', userController.search);

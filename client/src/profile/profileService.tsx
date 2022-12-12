@@ -320,7 +320,6 @@ export const EditProfileProvider = ({
   const submit = async () => {
     if (!showWarning && progress < 75) {
       setShowWarning(true);
-      return;
     }
 
     try {

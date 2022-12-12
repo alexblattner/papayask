@@ -20,6 +20,7 @@ import ExperienceModal from './ExperienceModal';
 import SkillsModal from './SkillsModal';
 import LanguagesModal from './LanguagesModal';
 import ProfileButtons from './ProfileButtons';
+import { Button } from '../shared/Button';
 
 const ProfileImage = styled.div`
   position: relative;
@@ -247,7 +248,7 @@ const Profile = () => {
             <Text
               fontSize={width > 1145 ? 24 : 22}
               fontWeight={700}
-              align="center"
+              align={width < 600 ? 'center' : 'left'}
             >
               {profileUser.title}
             </Text>
@@ -264,17 +265,17 @@ const Profile = () => {
               <SvgIcon src="pencil_fill" size={16} color="primary" />
             </Container>
           )}
-          {/*bioEdit && (
-            <Container flex gap={8}>
-              <textarea />
-              <Button variant="outline" onClick={() => {}}>
-                Save
-              </Button>
-              <Button variant="outline" onClick={() => {}}>
-                Cancel
-              </Button>
-              </Container>
-          )*/}
+          {/* bioEdit && (
+          <Container flex gap={8}>
+            <textarea />
+            <Button variant="outline" onClick={() => {}}>
+              Save
+            </Button>
+            <Button variant="outline" onClick={() => {}}>
+              Cancel
+            </Button>
+          </Container>
+          ) */}
         </Container>
         <Text fontSize={width > 1145 ? 18 : 16} mb={12} align="justify">
           {profileUser.bio}

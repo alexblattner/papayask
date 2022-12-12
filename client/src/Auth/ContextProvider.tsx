@@ -23,8 +23,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<UserProps | null | undefined>(undefined);
   const [token, setToken] = useState<string | null | undefined>(undefined);
   useEffect(() => {
-    if (user) {
-      auth.currentUser?.getIdToken().then((token) => {
+    if (user && auth.currentUser) {
+      auth.currentUser.getIdToken(true).then((token) => {
         setToken(token);
       });
     } else if (user === null) {
@@ -53,7 +53,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
-        let name= user.displayName? user.displayName: window.localStorage.getItem("firstName")+ " "+ window.localStorage.getItem("lastName");
+        let name = user.displayName
+          ? user.displayName
+          : window.localStorage.getItem('firstName') +
+            ' ' +
+            window.localStorage.getItem('lastName');
 
         const token = await user.getIdToken();
         register(token, {
@@ -84,7 +88,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     });
   };
 
-  const updateUser = async ( body: any) => {
+  const updateUser = async (body: any) => {
+    console.log(body);
+
     try {
       const res = await api({
         method: 'patch',
