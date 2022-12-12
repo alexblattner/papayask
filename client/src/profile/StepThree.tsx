@@ -1,7 +1,3 @@
-import { Container } from '../shared/Container';
-import { Input } from '../shared/Input';
-import { Text } from '../shared/Text';
-import SkillRow from './SkillRow';
 import { useEditProfile } from './profileService';
 import SkillsForm from './SkillsForm';
 

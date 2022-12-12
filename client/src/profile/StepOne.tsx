@@ -1,4 +1,4 @@
-import React, {  useRef } from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 import axios, { AxiosProgressEvent } from 'axios';
 
@@ -63,7 +63,7 @@ const StepOne = () => {
     setBio,
     setImage,
     setCloudinaryImageId,
-  } = useEditProfile()
+  } = useEditProfile();
 
   const getCloudinarySignature = async () => {
     const res = await api.post('cloudinary-signature');
@@ -129,6 +129,8 @@ const StepOne = () => {
       )
       .then((res) => {
         const imgId = res.data.public_id.replace(`${preset}/`, '');
+       
+
         setCloudinaryImageId(imgId);
       })
       .catch((err) => {

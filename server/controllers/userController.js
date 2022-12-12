@@ -8,7 +8,7 @@ const User = require('../models/user');
 const experienceController = require('./experienceController');
 const educationController = require('./educationController');
 const skillController = require('./skillController');
-const fileController = require('./fileController');
+const universityController = require('./universityController');
 
 function escapeRegex(text) {
   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
@@ -207,7 +207,6 @@ exports.update = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    console.log(req.body);
 
     const {
       bio,
@@ -435,38 +434,40 @@ exports.search = async (req, res, next) => {
   return res.send(users);
 };
 exports.apply = async (req, res, next) => {
-  if(user){
-    let completion=0;
-    if(user.title){
-      completion+=5;
+  if (user) {
+    let completion = 0;
+    if (user.title) {
+      completion += 5;
     }
-    if(user.bio){
-      completion+=15;
+    if (user.bio) {
+      completion += 15;
     }
-    if(user.picture){
-      completion+=15;
+    if (user.picture) {
+      completion += 15;
     }
-    for(let i=0;i<user.skills.length;i++){
-      if(user.skills[i].experiences.length>0||user.skills[i].educations.length>0){
-        completion+=10;
-      }else{
-        completion+=5;
+    for (let i = 0; i < user.skills.length; i++) {
+      if (
+        user.skills[i].experiences.length > 0 ||
+        user.skills[i].educations.length > 0
+      ) {
+        completion += 10;
+      } else {
+        completion += 5;
       }
     }
-    for(let i=0;i<user.experience.length;i++){
-      completion+=5;
+    for (let i = 0; i < user.experience.length; i++) {
+      completion += 5;
     }
-    for(let i=0;i<user.education.length;i++){
-      completion+=5;
+    for (let i = 0; i < user.education.length; i++) {
+      completion += 5;
     }
-    if(completion>65){
-      user.isSetUp=true;
-    }else{
-      user.isSetUp=false;
+    if (completion > 65) {
+      user.isSetUp = true;
+    } else {
+      user.isSetUp = false;
     }
     user.save();
-
-  }else{
-    return res.status(401).json({message:"Unauthorized"})
+  } else {
+    return res.status(401).json({ message: 'Unauthorized' });
   }
-}
+};
