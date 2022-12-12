@@ -23,11 +23,11 @@ const util = require('util');
 const unlinkFile = util.promisify(fs.unlink);
 let { eventsHandler } = require('./utils/eventsHandler');
 console.log(
-  'mongodb+srv://SnipCritics:' +
+  'mongodb+srv://papayask:'+
     process.env.MONGODB_PASSWORD +
     '@cluster' +
-    (process.env.NODE_ENV == 'production' ? 0 : 2) +
-    '.rfgl2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
+    (process.env.NODE_ENV == 'production' ? 0 : 1) +
+    '.m1q2dzz.mongodb.net/?retryWrites=true&w=majority'
 );
 const {
   uploadFile,
@@ -84,11 +84,11 @@ const domain =
     ? 'snipcritics.com'
     : 'scbackend.com';
 mongoose.connect(
-  'mongodb+srv://SnipCritics:' +
+  'mongodb+srv://papayask:'+
     process.env.MONGODB_PASSWORD +
     '@cluster' +
-    (process.env.NODE_ENV == 'production' ? 0 : 2) +
-    '.3mops8t.mongodb.net/?retryWrites=true&w=majority',
+    (process.env.NODE_ENV == 'production' ? 0 : 1) +
+    '.m1q2dzz.mongodb.net/?retryWrites=true&w=majority',
   { useNewUrlParser: true, useUnifiedTopology: true }
 );
 
