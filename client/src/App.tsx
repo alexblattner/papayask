@@ -31,9 +31,11 @@ function App() {
               </Routes>
               <div className="app-container">
                 <Routes>
-                  {user?.user?
-                  <Route path="*" element={<Profile />} />:
-                  <Route path="*" element={<Main />} />}
+                  {user?.user ? (
+                    <Route path="*" element={<Profile />} />
+                  ) : (
+                    <Route path="*" element={<Main />} />
+                  )}
                 </Routes>
               </div>
             </Router>
