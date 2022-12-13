@@ -1,13 +1,26 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button } from '../shared/Button';
+
+import SvgIcon from '../shared/SvgIcon';
 import { Container } from '../shared/Container';
 import { Text } from '../shared/Text';
 import { useEditProfile } from './profileService';
+import useWidth from '../Hooks/useWidth';
+
+interface Props {
+  step: number;
+  setStep: React.Dispatch<React.SetStateAction<number>>;
+  stepsDone: number[];
+}
+
+interface PaginationButtonProps {
+  status: StepStatus;
+  onClick: () => void;
+}
 
 const Progress = styled.div<{ progress: number }>`
-  width: 40px;
-  height: 40px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -47,20 +60,28 @@ const Progress = styled.div<{ progress: number }>`
 `;
 
 const StyledSpan = styled.span`
-  margin-bottom: 0;
-  color: ${({ theme }) => theme.colors.secondary};
+  font-weight: bold;
 `;
 
-interface Props {
-  step: number;
-  setStep: React.Dispatch<React.SetStateAction<number>>;
-  stepsDone: number[];
-}
+const SaveButton = styled('div')<{ isLoading: boolean }>`
+  cursor: pointer;
+  color: ${(props) => props.theme.colors.primary};
+  font-weight: bold;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  opacity: ${(props) => (props.isLoading ? 0.5 : 1)};
 
-interface PaginationButtonProps {
-  status: StepStatus;
-  onClick: () => void;
-}
+  &:hover {
+    color: ${(props) =>
+      props.isLoading ? props.theme.colors.primary : 'white'};
+    background-color: ${(props) =>
+      props.isLoading ? 'white' : props.theme.colors.primary};
+  }
+`;
 
 const PaginationButton = styled('div')<PaginationButtonProps>`
   border-radius: 50%;
@@ -102,6 +123,8 @@ const ProfileSetupPagination = ({ step, stepsDone, setStep }: Props) => {
 
   const { submit, progress } = useEditProfile();
 
+  const { width } = useWidth();
+
   const submitProfile = async () => {
     setIsLoading(true);
     await submit();
@@ -142,21 +165,26 @@ const ProfileSetupPagination = ({ step, stepsDone, setStep }: Props) => {
             </React.Fragment>
           ))}
       </Container>
-      <Button
-        variant="outline"
-        onClick={() => submitProfile()}
-        disabled={isLoading}
+
+      <Container
+        dir={width > 520 ? 'row' : 'column'}
+        flex
+        justify="center"
+        align="center"
+        gap={width > 520 ? 12 : 0}
+        mt={12}
       >
-        <Container flex justify="center" align="center" gap={12}>
-          {isLoading ? 'Please Wait...' : 'Save Progress'}
-          <StyledSpan>|</StyledSpan>
-          <Progress progress={progress}>
-            <Text fontWeight={'bold'} fontSize={14}>
-              {progress}%
-            </Text>
-          </Progress>
+        <Container flex align="center" gap={12}>
+          <Progress progress={progress} />
+          <Text>
+            You have completed <StyledSpan>{progress}%</StyledSpan> of your
+            profile
+          </Text>
         </Container>
-      </Button>
+        <SaveButton onClick={submitProfile} isLoading={isLoading}>
+          Save my progress <SvgIcon src="check" size={12} />
+        </SaveButton>
+      </Container>
     </Container>
   );
 };

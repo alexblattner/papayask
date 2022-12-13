@@ -20,7 +20,6 @@ import ExperienceModal from './ExperienceModal';
 import SkillsModal from './SkillsModal';
 import LanguagesModal from './LanguagesModal';
 import ProfileButtons from './ProfileButtons';
-import { Button } from '../shared/Button';
 
 const ProfileImage = styled.div`
   position: relative;
