@@ -12,7 +12,7 @@ const StyledSelect = styled.select`
   border: ${({ theme }) => `1px solid ${theme.colors.primary_L2}`};
   border-radius: 8px;
   padding: 3px 12px;
-  width: 50%;
+  width: 60%;
   -webkit-appearance: none;
   appearance: none;
   background-color: white;

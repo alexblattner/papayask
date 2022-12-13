@@ -4,11 +4,8 @@ import { useRef } from 'react';
 import { Education, Experience } from '../profile/profileService';
 
 const StyledInput = styled('input')`
+  all: unset;
   height: 33px;
-  border: 1px solid ${(props) => props.theme.colors.primary_L2};
-  border-radius: 8px;
-  padding-left: 16px;9f1ca0a04677547687be93e31ff459e45b49b988
-  font-size: 16px;
   font-weight: 500;
   width: 80%;
   padding-left: 15px;

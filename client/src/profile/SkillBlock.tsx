@@ -48,7 +48,7 @@ const SkillBlock = (props: Props) => {
     number[]
   >([]);
   const [yearsInputs, setYearsInput] = React.useState<
-    { index: number; years: number }[]
+    { index: number; years: string }[]
   >([]);
 
   const { width } = useWidth();
@@ -116,14 +116,17 @@ const SkillBlock = (props: Props) => {
     if (!years) {
       return 0;
     }
-    return years * 12 > numberOfMonths(field)
+    return parseFloat(years) * 12 > numberOfMonths(field)
       ? numberOfMonths(field) / 12
-      : years;
+      : parseFloat(years);
   };
 
   const getInputYears = (index: number) => {
     const years = yearsInputs.find((i) => i.index === index)?.years;
-    return years || 0;
+    if (years?.includes('.0')) {
+      return years.replace('.0', '');
+    }
+    return years || '';
   };
 
   const add = () => {
@@ -180,7 +183,7 @@ const SkillBlock = (props: Props) => {
   };
 
   const setYears = (index: number, value: string) => {
-    const years = parseFloat(value);
+    const years = value;
 
     if (years) {
       const newYears = [...yearsInputs];
@@ -195,9 +198,9 @@ const SkillBlock = (props: Props) => {
       const newYears = [...yearsInputs];
       const indexFound = newYears.findIndex((i) => i.index === index);
       if (indexFound !== -1) {
-        newYears[indexFound].years = 0;
+        newYears[indexFound].years = '';
       } else {
-        newYears.push({ index: index, years: 0 });
+        newYears.push({ index: index, years: '' });
       }
 
       setYearsInput(newYears);
@@ -235,11 +238,13 @@ const SkillBlock = (props: Props) => {
     const years = props.experience.map((exp, i) => ({
       index: i,
       years:
-        props.skill.experiences.find(
-          (s) =>
-            s.experience.name === exp.name &&
-            s.experience.company.name === exp.company.name
-        )?.years || 0,
+        props.skill.experiences
+          .find(
+            (s) =>
+              s.experience.name === exp.name &&
+              s.experience.company.name === exp.company.name
+          )
+          ?.years.toString() || '',
     }));
     setYearsInput(years);
   }, [props.experience, props.skill]);

@@ -23,7 +23,7 @@ interface Props {
   ) => void;
   educationIndexSelected: number[];
   experienceIndexSelected: number[];
-  getInputYears: (index: number) => number;
+  getInputYears: (index: number) => string;
   getYearsNumber: (index: number, experience: UserExperience) => number;
   setYears: (index: number, value: string) => void;
 }
