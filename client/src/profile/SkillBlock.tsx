@@ -92,16 +92,18 @@ const SkillBlock = (props: Props) => {
   };
 
   const numberOfMonths = (field: UserEducation | UserExperience): number => {
-    const startMonth = new Date(field.startDate).getMonth();
+    const startMonth = new Date(field.startDate).getMonth() + 1;
     const endMonth = field.endDate
-      ? new Date(field.endDate).getMonth()
-      : new Date().getMonth();
+      ? new Date(field.endDate).getMonth() + 1
+      : new Date().getMonth() + 1;
 
     const startYear = new Date(field.startDate).getFullYear();
     const endYear = field.endDate
       ? new Date(field.endDate).getFullYear()
       : new Date().getFullYear();
+
     const diff = endMonth - startMonth + 12 * (endYear - startYear);
+
     return diff;
   };
 
@@ -113,19 +115,32 @@ const SkillBlock = (props: Props) => {
 
   const getYearsNumber = (index: number, field: UserExperience): number => {
     const years = yearsInputs.find((i) => i.index === index)?.years;
+
     if (!years) {
       return 0;
     }
-    return parseFloat(years) * 12 > numberOfMonths(field)
-      ? numberOfMonths(field) / 12
-      : parseFloat(years);
+
+    let yearsNumber =
+      parseFloat(years) * 12 > numberOfMonths(field)
+        ? numberOfMonths(field) / 12
+        : parseFloat(years);
+
+    if (yearsNumber.toString().includes('.0')) {
+      yearsNumber = parseFloat(yearsNumber.toString().replace('.0', ''));
+    }
+
+    return yearsNumber;
   };
 
   const getInputYears = (index: number) => {
-    const years = yearsInputs.find((i) => i.index === index)?.years;
+    let years = yearsInputs.find((i) => i.index === index)?.years;
+    if (!years) {
+      return null;
+    }
     if (years?.includes('.0')) {
       return years.replace('.0', '');
     }
+
     return years || '';
   };
 
@@ -134,6 +149,7 @@ const SkillBlock = (props: Props) => {
       let newRelatedEducation: RelatedEducation[] = [];
       educationIndexSelected.forEach((index) => {
         const years = numberOfYears(props.education[index]);
+
         const related = {
           education: props.education[index],
           years: years,
@@ -159,6 +175,7 @@ const SkillBlock = (props: Props) => {
       let newRelatedExperience: RelatedExperience[] = [];
       experienceIndexSelected.forEach((index) => {
         const years = getYearsNumber(index, props.experience[index]);
+
         const related = {
           experience: props.experience[index],
           years: parseFloat(years.toFixed(1)),
@@ -183,11 +200,12 @@ const SkillBlock = (props: Props) => {
   };
 
   const setYears = (index: number, value: string) => {
-    const years = value;
+    let years = value;
 
     if (years) {
       const newYears = [...yearsInputs];
       const indexFound = newYears.findIndex((i) => i.index === index);
+
       if (indexFound !== -1) {
         newYears[indexFound].years = years;
       } else {
@@ -349,7 +367,7 @@ const SkillBlock = (props: Props) => {
                 ·
               </Text>
             )}
-            <Text color="#888">{exp.years.toFixed(1)} Years</Text>
+            <Text color="#888">{exp.years} Years</Text>
           </Container>
         ))}
       </InfoContainer>
