@@ -15,6 +15,7 @@ const StyledSelect = styled.select`
   width: 50%;
   -webkit-appearance: none;
   appearance: none;
+  background-color: white;
 
   :focus {
     outline: none;
