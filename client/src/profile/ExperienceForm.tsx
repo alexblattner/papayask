@@ -24,6 +24,8 @@ const StyledSelect = styled.select`
   }
 `;
 
+const StyleOption = styled.option``;
+
 interface Props {
   onAddExperience: () => void;
   onChangeExperience: (
@@ -83,17 +85,17 @@ const ExperienceForm = ({
           onChange={(e) => onChangeExperience('company', e)}
         />
         <Container flex gap={12} align="center">
-          {/* <Input
-            type="text"
-            value={inputExperience.type}
-            placeholder="Experience type"
-            name="type"
-            onChange={(e) => onChangeExperience('type', e)}
-          /> */}
           <StyledSelect
             value={inputExperience.type}
             onChange={(e) => onChangeExperience('type', e)}
           >
+            <StyleOption
+              value=""
+              disabled
+              selected={inputExperience.type === ''}
+            >
+              Experience Type
+            </StyleOption>
             {typesOptions.map((type) => (
               <option key={type} value={type}>
                 {type}

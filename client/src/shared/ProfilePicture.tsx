@@ -50,10 +50,7 @@ const ProfilePicture = (props: Props) => {
 
   return !image ? (
     <StyledImage radius={props.radius} size={props.size}>
-      <img
-        src={`https://source.unsplash.com/random/${props.size}x${props.size}`}
-        alt="profile-img"
-      />
+      <img src={`assets/default.png`} alt="profile-img" />
     </StyledImage>
   ) : typeof image === 'string' ? (
     <StyledImage radius={props.radius} size={props.size}>
