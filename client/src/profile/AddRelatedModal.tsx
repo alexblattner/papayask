@@ -17,12 +17,15 @@ interface Props {
   experience: UserExperience[];
   add: () => void;
   selectEducation: (index: number) => void;
-  selectExperience: (event: React.MouseEvent<HTMLDivElement, MouseEvent>, index: number) => void;
+  selectExperience: (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    index: number
+  ) => void;
   educationIndexSelected: number[];
   experienceIndexSelected: number[];
   getInputYears: (index: number) => number;
-  getYearsNumber: (index: number, experience:UserExperience) => number;
-  setYears: (index: number, value:string) => void;
+  getYearsNumber: (index: number, experience: UserExperience) => number;
+  setYears: (index: number, value: string) => void;
 }
 
 const ListItem = styled('div')`
@@ -60,6 +63,7 @@ const AddRelatedModal = (props: Props) => {
     setYears,
     add,
   } = props;
+
   return (
     <Modal
       show={showRelatedEducation || showRelatedExperience}
@@ -112,7 +116,7 @@ const AddRelatedModal = (props: Props) => {
                         value={getInputYears(i) || getYearsNumber(i, exp) || ''}
                         onChange={(e) => setYears(i, e.target.value)}
                         placeholder=""
-                        type="number"
+                        type="text"
                         width="100px"
                         mb="0px"
                       />

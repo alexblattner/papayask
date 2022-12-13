@@ -91,6 +91,20 @@ const SkillBlock = (props: Props) => {
     return diff;
   };
 
+  const numberOfMonths = (field: UserEducation | UserExperience): number => {
+    const startMonth = new Date(field.startDate).getMonth();
+    const endMonth = field.endDate
+      ? new Date(field.endDate).getMonth()
+      : new Date().getMonth();
+
+    const startYear = new Date(field.startDate).getFullYear();
+    const endYear = field.endDate
+      ? new Date(field.endDate).getFullYear()
+      : new Date().getFullYear();
+    const diff = endMonth - startMonth + 12 * (endYear - startYear);
+    return diff;
+  };
+
   const closeModal = () => {
     setShowRelatedEducation(false);
     setShowRelatedExperience(false);
@@ -102,7 +116,9 @@ const SkillBlock = (props: Props) => {
     if (!years) {
       return 0;
     }
-    return years > numberOfYears(field) ? numberOfYears(field) : years;
+    return years * 12 > numberOfMonths(field)
+      ? numberOfMonths(field) / 12
+      : years;
   };
 
   const getInputYears = (index: number) => {
@@ -142,7 +158,7 @@ const SkillBlock = (props: Props) => {
         const years = getYearsNumber(index, props.experience[index]);
         const related = {
           experience: props.experience[index],
-          years: years,
+          years: parseFloat(years.toFixed(1)),
         };
         newRelatedExperience.push(related);
       });
@@ -164,7 +180,8 @@ const SkillBlock = (props: Props) => {
   };
 
   const setYears = (index: number, value: string) => {
-    const years = parseInt(value);
+    const years = parseFloat(value);
+
     if (years) {
       const newYears = [...yearsInputs];
       const indexFound = newYears.findIndex((i) => i.index === index);
@@ -327,7 +344,7 @@ const SkillBlock = (props: Props) => {
                 ·
               </Text>
             )}
-            <Text color="#888">{exp.years} Years</Text>
+            <Text color="#888">{exp.years.toFixed(1)} Years</Text>
           </Container>
         ))}
       </InfoContainer>
