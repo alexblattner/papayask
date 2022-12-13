@@ -3,10 +3,10 @@ import { Education, Experience } from '../profile/profileService';
 
 const StyledInput = styled('input')`
   width: 50%;
-  height: 15px;
+  height: 33px;
   border: 1px solid ${(props) => props.theme.colors.primary_L2};
   border-radius: 8px;
-  padding: 16px;
+  padding-left: 16px;
   font-size: 16px;
   font-weight: 500;
   margin-bottom: 30px;
