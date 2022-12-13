@@ -129,7 +129,6 @@ const StepOne = () => {
       )
       .then((res) => {
         const imgId = res.data.public_id.replace(`${preset}/`, '');
-       
 
         setCloudinaryImageId(imgId);
       })
@@ -171,7 +170,11 @@ const StepOne = () => {
           Upload profile picture
         </Button>
         <ImageContainer ref={imageRef} image={image} progress={progress}>
-          {image && <img src={image} alt="profile" />}
+          {image ? (
+            <img src={image} alt="profile" />
+          ) : (
+            <img src={`assets/default.png`} alt="default" />
+          )}
           <Uploader ref={uploadRef} progress={progress}></Uploader>
         </ImageContainer>
       </Container>

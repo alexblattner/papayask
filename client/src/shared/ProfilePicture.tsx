@@ -48,7 +48,7 @@ const ProfilePicture = (props: Props) => {
     }
   }, [props.src]);
 
-  return !image ? (
+  return !image || image === '' ? (
     <StyledImage radius={props.radius} size={props.size}>
       <img src={`assets/default.png`} alt="profile-img" />
     </StyledImage>

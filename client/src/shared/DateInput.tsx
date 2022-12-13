@@ -1,28 +1,36 @@
 import styled from 'styled-components';
+import { useRef } from 'react';
+
 import { Education, Experience } from '../profile/profileService';
 
 const StyledInput = styled('input')`
-  width: 50%;
-  height: 15px;
-  border: 1px solid ${(props) => props.theme.colors.primary_L2};
-  border-radius: 8px;
-  padding: 16px;
+  all: unset;
   font-size: 16px;
   font-weight: 500;
-  margin-bottom: 30px;
-  background-color: transparent;
+  width: 80%;
+  padding-left: 15px;
+  font-size: 12px;
+`;
+
+const Wrapper = styled.div<{ value: string; placeholder: string }>`
+  height: 35px;
+  width: 50%;
+  border: 1px solid ${(props) => props.theme.colors.primary_L2};
+  border-radius: 8px;
   position: relative;
+  background-color: transparent;
+  margin-bottom: 30px;
+  padding-top: 4px;
 
   &::before {
     content: ${(props) => (!props.value ? 'attr(placeholder)' : 'none')};
     position: absolute;
-    height: 100%;
     left: 15px;
-    width: calc(100% - 50px);
-    padding-top: 4px;
+    width: calc(100% - 60px);
     color: #aaa;
     background-color: white;
     transition: all 0.2s;
+    pointer-events: none;
   }
 
   &:focus {
@@ -65,6 +73,8 @@ const formatedDate = (date: Date | null | string): string => {
 };
 
 export const DateInput = (props: InputProps) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+
   const minDate = () => {
     let date = '1977-01-01';
     if (props.name.includes('end')) {
@@ -100,15 +110,22 @@ export const DateInput = (props: InputProps) => {
     return date;
   };
   return (
-    <StyledInput
-      {...props}
+    <Wrapper
       value={formatedDate(props.value)}
-      type="date"
-      max={maxDate()}
-      min={minDate()}
-      onChange={(e) => {
-        props.onChange(e);
-      }}
-    />
+      placeholder={props.placeholder}
+      onClick={() => inputRef.current?.click()}
+    >
+      <StyledInput
+        {...props}
+        ref={inputRef}
+        value={formatedDate(props.value)}
+        type="date"
+        max={maxDate()}
+        min={minDate()}
+        onChange={(e) => {
+          props.onChange(e);
+        }}
+      />
+    </Wrapper>
   );
 };
