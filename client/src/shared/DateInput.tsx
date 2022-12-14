@@ -1,5 +1,7 @@
 import styled from 'styled-components';
-import { useRef } from 'react';
+import { useEffect, useState } from 'react';
+import 'react-datepicker/dist/react-datepicker.css';
+import DatePicker from 'react-datepicker';
 
 import { Education, Experience } from '../profile/profileService';
 
@@ -43,10 +45,25 @@ const Wrapper = styled.div<{ value: string; placeholder: string }>`
   }
 `;
 
+const CustomInput = styled.input`
+  height: 15px;
+  border: 1px solid ${(props) => props.theme.colors.primary_L2};
+  border-radius: 8px;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 30px;
+
+  &:focus {
+    outline: none;
+    border: 2px solid ${(props) => props.theme.colors.primary};
+  }
+`;
+
 interface InputProps {
   name: string;
   value: Date | null | string;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (date: string | Date) => void;
   error?: string;
   placeholder: string;
   inputEducation?: Education;
@@ -73,7 +90,13 @@ const formatedDate = (date: Date | null | string): string => {
 };
 
 export const DateInput = (props: InputProps) => {
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [date, setDate] = useState<Date | null>(null);
+
+  const changeDate = (date: Date | null) => {
+    if (date) {
+      props.onChange(date);
+    }
+  };
 
   const minDate = () => {
     let date = '1977-01-01';
@@ -109,23 +132,27 @@ export const DateInput = (props: InputProps) => {
 
     return date;
   };
+
+  useEffect(() => {
+    if (props.value) {
+      setDate(new Date(formatedDate(props.value)));
+    }
+  }, [props.value]);
+
   return (
-    <Wrapper
-      value={formatedDate(props.value)}
-      placeholder={props.placeholder}
-      onClick={() => inputRef.current?.click()}
-    >
-      <StyledInput
-        {...props}
-        ref={inputRef}
-        value={formatedDate(props.value)}
-        type="date"
-        max={maxDate()}
-        min={minDate()}
-        onChange={(e) => {
-          props.onChange(e);
-        }}
-      />
-    </Wrapper>
+    <DatePicker
+      selected={date}
+      onChange={(date) => changeDate(date)}
+      customInput={<CustomInput />}
+      minDate={new Date(minDate())}
+      maxDate={new Date(maxDate())}
+      placeholderText={`${props.placeholder} (dd/mm/yyyy)`}
+      adjustDateOnChange={true}
+      dateFormat="dd/MM/yyyy"
+      scrollableYearDropdown
+      showYearDropdown
+      yearDropdownItemNumber={100}
+      autoComplete="off"
+    />
   );
 };

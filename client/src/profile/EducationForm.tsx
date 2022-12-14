@@ -80,14 +80,14 @@ const EducationForm = ({
         <Container flex gap={12} align="center">
           <DateInput
             value={inputEducation.startDate}
-            onChange={(e) => onChangeEducation('startDate', e.target.value)}
+            onChange={(date) => onChangeEducation('startDate', date)}
             name="startDate"
             placeholder="Start Date"
             inputEducation={inputEducation}
           />
           <DateInput
             value={inputEducation.endDate}
-            onChange={(e) => onChangeEducation('endDate', e.target.value)}
+            onChange={(date) => onChangeEducation('endDate', date)}
             name="endDate"
             placeholder="End Date"
             inputEducation={inputEducation}

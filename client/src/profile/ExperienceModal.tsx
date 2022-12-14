@@ -32,19 +32,36 @@ const ExperienceModal = (props: Props) => {
 
   const onChangeExperience = (
     name: string,
-    event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>
+    event:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLSelectElement>
+      | Date
+      | string
   ) => {
     if (name === 'company') {
       setExperience({
         ...experience,
         company: {
-          name: event.target.value,
+          name: (
+            event as
+              | React.ChangeEvent<HTMLInputElement>
+              | React.ChangeEvent<HTMLSelectElement>
+          ).target.value,
         },
+      });
+    } else if (name === 'startDate' || name === 'endDate') {
+      setExperience({
+        ...experience,
+        [name]: event,
       });
     } else {
       setExperience({
         ...experience,
-        [name]: event.target.value,
+        [name]: (
+          event as
+            | React.ChangeEvent<HTMLInputElement>
+            | React.ChangeEvent<HTMLSelectElement>
+        ).target.value,
       });
     }
   };

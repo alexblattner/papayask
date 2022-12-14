@@ -60,8 +60,13 @@ interface EditProfileContextReturn {
   onChangeEducation: (name: string, value: string | University | Date) => void;
   onChangeExperience: (
     name: string,
-    event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>
+    event:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLSelectElement>
+      | Date
+      | string
   ) => void;
+  onChangeExperienceDate: (name: string, date: Date | string | null) => void;
   onChangeCountry: (country: string) => void;
   onChangeExperienceCountry: (country: string) => void;
   removeSkill: (index: number) => void;
@@ -123,8 +128,13 @@ export const EditProfileContext = createContext<EditProfileContextReturn>({
   onChangeEducation: (name: string, value: string | University | Date) => {},
   onChangeExperience: (
     name: string,
-    event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>
+    event:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLSelectElement>
+      | Date
+      | string
   ) => {},
+  onChangeExperienceDate: (name: string, date: Date | string | null) => {},
   onChangeCountry: (country: string) => {},
   onChangeExperienceCountry: (country: string) => {},
   removeSkill: (index: number) => {},
@@ -220,19 +230,36 @@ export const EditProfileProvider = ({
 
   const onChangeExperience = (
     name: string,
-    event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>
+    event:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLSelectElement>
+      | Date
+      | string
   ) => {
     if (name === 'company') {
       setInputExperience({
         ...inputExperience,
         company: {
-          name: event.target.value,
+          name: (
+            event as
+              | React.ChangeEvent<HTMLInputElement>
+              | React.ChangeEvent<HTMLSelectElement>
+          ).target.value,
         },
+      });
+    } else if (name === 'startDate' || name === 'endDate') {
+      setInputExperience({
+        ...inputExperience,
+        [name]: event,
       });
     } else {
       setInputExperience({
         ...inputExperience,
-        [name]: event.target.value,
+        [name]: (
+          event as
+            | React.ChangeEvent<HTMLInputElement>
+            | React.ChangeEvent<HTMLSelectElement>
+        ).target.value,
       });
     }
   };
@@ -317,6 +344,12 @@ export const EditProfileProvider = ({
     });
   };
 
+  const onChangeExperienceDate = (name: string, date: Date | string | null) => {
+    setInputExperience({
+      ...inputExperience,
+      [name]: date,
+    });
+  };
   const submit = async () => {
     if (!showWarning && progress < 75) {
       setShowWarning(true);
@@ -426,6 +459,7 @@ export const EditProfileProvider = ({
     onChangeExperience,
     onChangeCountry,
     onChangeExperienceCountry,
+    onChangeExperienceDate,
     inputEducation,
     inputExperience,
     showWarning,

@@ -34,6 +34,8 @@ interface Props {
     value:
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLSelectElement>
+      | Date
+      | string
   ) => void;
   inputExperience: Experience;
   onChangeExperienceCountry: (name: string) => void;
@@ -113,14 +115,14 @@ const ExperienceForm = ({
         <Container flex gap={12} align="center">
           <DateInput
             value={inputExperience.startDate}
-            onChange={(e) => onChangeExperience('startDate', e)}
+            onChange={(date) => onChangeExperience('startDate', date)}
             name="startDate"
             placeholder="Start Date"
             inputExperience={inputExperience}
           />
           <DateInput
             value={inputExperience.endDate}
-            onChange={(e) => onChangeExperience('endDate', e)}
+            onChange={(date) => onChangeExperience('endDate', date)}
             name="endDate"
             placeholder="End Date"
             inputExperience={inputExperience}
