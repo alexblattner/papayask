@@ -13,12 +13,13 @@ const StepFour = () => {
   return (
     <>
       <Text fontSize={32} fontWeight="bold" mb={16}>
-        Geographic Specialization
+        Country of residence and languages
       </Text>
       <CountriesSelect
         value={country ?? ''}
         onChange={setCountry}
         inputName=""
+        placeholder='Country of residence'
         width="300px"
       />
       <LanguagesSelect addLanguage={addLanguage} width="300px" />
