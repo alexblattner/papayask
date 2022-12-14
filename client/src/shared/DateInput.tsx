@@ -54,6 +54,10 @@ const CustomInput = styled.input`
   font-weight: 500;
   margin-bottom: 30px;
 
+  &::placeholder {
+    font-size: 14px;
+  }
+
   &:focus {
     outline: none;
     border: 2px solid ${(props) => props.theme.colors.primary};

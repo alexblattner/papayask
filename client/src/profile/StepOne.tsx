@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import axios, { AxiosProgressEvent } from 'axios';
 
@@ -11,6 +11,7 @@ import { Input } from '../shared/Input';
 import { Text } from '../shared/Text';
 import { TextArea } from '../shared/TextArea';
 import { useEditProfile } from './profileService';
+import SvgIcon from '../shared/SvgIcon';
 
 const HiddenInput = styled.input`
   display: none;
@@ -48,8 +49,28 @@ const Uploader = styled('div')<{ progress: number }>`
   z-index: 99;
 `;
 
+const DeletePictureButton = styled('div')`
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+  background-color: ${({ theme }) => theme.colors.primary};
+  border-radius: 6px;
+  opacity: 0.7;
+  transition: all 0.2s;
+
+  &:hover {
+    opacity: 1;
+  }
+`;
+
 const StepOne = () => {
   const [progress, setProgress] = React.useState<number>(0);
+  const [shoeDelete, setShoeDelete] = React.useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
   const uploadRef = useRef<HTMLDivElement>(null);
@@ -137,6 +158,19 @@ const StepOne = () => {
       });
   };
 
+  const deleteImage = () => {
+    setImage('');
+    setCloudinaryImageId('');
+  };
+
+  useEffect(() => {
+    if (image) {
+      setShoeDelete(true);
+    } else {
+      setShoeDelete(false);
+    }
+  }, [image]);
+
   return (
     <>
       <Text fontSize={32} fontWeight={600} mb={16}>
@@ -170,6 +204,11 @@ const StepOne = () => {
           Upload profile picture
         </Button>
         <ImageContainer ref={imageRef} image={image} progress={progress}>
+          {shoeDelete && (
+            <DeletePictureButton onClick={deleteImage}>
+              <SvgIcon src="delete" color="white" />
+            </DeletePictureButton>
+          )}
           {image ? (
             <img src={image} alt="profile" />
           ) : (
