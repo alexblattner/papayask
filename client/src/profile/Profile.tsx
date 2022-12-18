@@ -30,6 +30,21 @@ const ProfileImage = styled.div`
   overflow: hidden;
 `;
 
+const HiddenSpan = styled('span')`
+  opacity: 0;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  transition: all 0.2s ease-in-out;
+`;
+
+const ItemContainer = styled(Container)`
+  cursor: pointer;
+  &:hover ${HiddenSpan} {
+    opacity: 1;
+  }
+`;
+
 const EditPictureButton = styled('div')`
   position: absolute;
   top: 5px;
@@ -39,8 +54,12 @@ const EditPictureButton = styled('div')`
   display: grid;
   place-content: center;
   cursor: pointer;
-  background-color: ${({ theme }) => theme.colors.primary};
   border-radius: 6px;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.secondary};
+  }
 `;
 
 const InfoContainer = styled('div')<{ width?: string }>`
@@ -261,7 +280,7 @@ const Profile = () => {
           </Text>
           {isOwner && (
             <Container onClick={() => openProfileSetupInStep(0)}>
-              <SvgIcon src="pencil_fill" size={16} color="primary" />
+              <SvgIcon src="pencil_fill" size={16} color="black" />
             </Container>
           )}
           {/* bioEdit && (
@@ -298,23 +317,26 @@ const Profile = () => {
                   openExperienceModal(null, 'Add');
                 }}
               >
-                <SvgIcon src="plus" size={16} color="primary" />
+                <SvgIcon src="plus" size={16} color="black" />
               </Container>
             )}
           </Container>
           {profileUser.experience.map((exp, i) => (
-            <Container flex align="center" mb={12} key={i} position="relative">
+            <ItemContainer
+              flex
+              align="center"
+              mb={12}
+              key={i}
+              position="relative"
+            >
               {isOwner && (
-                <Container
-                  position="absolute"
-                  top="5px"
-                  right="5px"
+                <HiddenSpan
                   onClick={() => {
                     openExperienceModal(exp as Experience, 'Edit');
                   }}
                 >
-                  <SvgIcon src="pencil_fill" size={16} color="primary" />
-                </Container>
+                  <SvgIcon src="pencil_fill" size={16} color="black" />
+                </HiddenSpan>
               )}
               <Container flex align="center" justify="center" width="100px">
                 <SvgIcon src="work" size={50} />
@@ -331,7 +353,7 @@ const Profile = () => {
                   {formatDateNamed(exp.endDate)}
                 </Text>
               </Container>
-            </Container>
+            </ItemContainer>
           ))}
         </InfoContainer>
         <InfoContainer width={width > 1144 ? '49%' : '100%'}>
@@ -347,21 +369,24 @@ const Profile = () => {
             </Text>
             {isOwner && (
               <Container onClick={() => openEducationModal(null, 'Add')}>
-                <SvgIcon src="plus" size={16} color="primary" />
+                <SvgIcon src="plus" size={16} color="black" />
               </Container>
             )}
           </Container>
           {profileUser.education.map((edu, i) => (
-            <Container flex align="center" mb={12} key={i} position="relative">
+            <ItemContainer
+              flex
+              align="center"
+              mb={12}
+              key={i}
+              position="relative"
+            >
               {isOwner && (
-                <Container
-                  position="absolute"
-                  top="5px"
-                  right="5px"
+                <HiddenSpan
                   onClick={() => openEducationModal(edu as Education, 'Edit')}
                 >
-                  <SvgIcon src="pencil_fill" size={16} color="primary" />
-                </Container>
+                  <SvgIcon src="pencil_fill" size={16} color="black" />
+                </HiddenSpan>
               )}
               <Container flex align="center" justify="center" width="100px">
                 <SvgIcon src="study" size={50} />
@@ -378,7 +403,7 @@ const Profile = () => {
                   {formatDateNamed(edu.endDate)}
                 </Text>
               </Container>
-            </Container>
+            </ItemContainer>
           ))}
         </InfoContainer>
       </Container>
@@ -393,7 +418,7 @@ const Profile = () => {
                 setShowSkillsModal(true);
               }}
             >
-              <SvgIcon src="pencil_fill" size={16} color="primary" />
+              <SvgIcon src="pencil_fill" size={16} color="black" />
             </Container>
           )}
         </Container>
@@ -410,7 +435,7 @@ const Profile = () => {
           </Text>
           {isOwner && (
             <Container onClick={() => setShowLanguagesModal(true)}>
-              <SvgIcon src="pencil_fill" size={16} color="primary" />{' '}
+              <SvgIcon src="pencil_fill" size={16} color="black" />{' '}
             </Container>
           )}
         </Container>

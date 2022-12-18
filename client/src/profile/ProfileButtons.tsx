@@ -35,7 +35,7 @@ const ProfileButtons = (props: Props) => {
         </Button>
       )*/}
           <Button
-            variant="outline"
+            variant="text"
             onClick={openProfileSetup}
             width={width < 600 ? '150px' : 'auto'}
           >

@@ -6,7 +6,6 @@ import { Input } from '../shared/Input';
 import { Text } from '../shared/Text';
 import SkillBlock from './SkillBlock';
 import useWidth from '../Hooks/useWidth';
-import SvgIcon from '../shared/SvgIcon';
 import { useEffect, useState } from 'react';
 
 interface Props {
