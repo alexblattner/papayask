@@ -20,6 +20,7 @@ import ExperienceModal from './ExperienceModal';
 import SkillsModal from './SkillsModal';
 import LanguagesModal from './LanguagesModal';
 import ProfileButtons from './ProfileButtons';
+import SkillBadge from './SkillBadge';
 
 const ProfileImage = styled.div`
   position: relative;
@@ -422,9 +423,9 @@ const Profile = () => {
             </Container>
           )}
         </Container>
-        <Container flex flexWrap gap={16}>
+        <Container flex flexWrap align="flex-start" gap={16}>
           {profileUser.skills.map((skill, i) => (
-            <Badge key={i} text={skill.name}></Badge>
+            <SkillBadge key={i} skill={skill}></SkillBadge>
           ))}
         </Container>
       </InfoContainer>
