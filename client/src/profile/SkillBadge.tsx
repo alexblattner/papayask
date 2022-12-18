@@ -54,7 +54,7 @@ const SkillBadge = ({ skill }: Props) => {
         )}
         {skill.experiences.map((experience) => (
           <>
-            <Text color="black" fontSize={16} fontWeight={'bold'} mb={12}>
+            <Text color="black" fontSize={16} fontWeight={'bold'}>
               {experience.experience.company.name}
             </Text>
             <Container flex align="center" mb={12} gap={4}>
