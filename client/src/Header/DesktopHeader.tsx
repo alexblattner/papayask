@@ -29,7 +29,7 @@ const SellerButton = styled('div')`
   padding: 4px 8px;
 `;
 
-const StyledLink = styled(Link)`
+const StyledLink = styled('div')`
   color: white;
   text-decoration: none;
   font-weight: bold;
@@ -78,12 +78,15 @@ const DesktopHeader = (props: Props) => {
               </Button>
             )}
             {user.isSetUp ? (
-              <StyledLink to={`/profile/${user._id}`}>
+              <StyledLink onClick={()=>setDropDownVisible(!dropDownVisible)}>
                 <SellerButton>
                   <Text fontSize={18} fontWeight="bold" color="white">
                     Advisor
                   </Text>
                   <SvgIcon src="user" color="white" />
+                  {dropDownVisible?<div id='profile-dropdown'>
+                  <button onClick={signout}><SvgIcon src="exit" size={18} color='white'/>LOG OUT</button>
+                </div>:null}
                 </SellerButton>
               </StyledLink>
             ) : (
