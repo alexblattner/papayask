@@ -42,7 +42,7 @@ const ProfilePicture = (props: Props) => {
     } else {
       const img = cld.image(`${process.env.REACT_APP_ENV!}/${props.src}`);
       img
-        .resize(fill(props.size || 100, props.size || 100))
+        .resize(fill(props.size || 100, props.size || 100).gravity('faces'))
         .roundCorners(byRadius(props.radius || 0));
       setImage(img);
     }
