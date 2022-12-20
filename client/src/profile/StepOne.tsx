@@ -19,8 +19,8 @@ const HiddenInput = styled.input`
 
 const ImageContainer = styled('div')<{ image: string; progress: number }>`
   position: relative;
-  width: 300px;
-  height: 300px;
+  width: 250px;
+  height: 250px;
   background-color: ${(props) =>
     props.image ? `` : props.theme.colors.secondary};
   border-radius: 30px;
@@ -58,13 +58,12 @@ const DeletePictureButton = styled('div')`
   display: grid;
   place-content: center;
   cursor: pointer;
-  background-color: ${({ theme }) => theme.colors.primary};
   border-radius: 6px;
-  opacity: 0.7;
   transition: all 0.2s;
 
   &:hover {
     opacity: 1;
+    background-color: ${({ theme }) => theme.colors.primary};
   }
 `;
 
@@ -172,35 +171,18 @@ const StepOne = () => {
   }, [image]);
 
   return (
-    <>
-      <Text fontSize={32} fontWeight={600} mb={16}>
-        Headline
-      </Text>
-      <Input
-        type="text"
-        value={title}
-        placeholder="Enter a link and press enter"
-        onChange={(e) => setTitle(e.target.value)}
-        name="headline"
-        width="300px"
-      />
-      <Text fontSize={32} fontWeight={600} mb={16}>
-        Tell your clients about yourself
-      </Text>
-      <TextArea value={bio} onChange={(e) => setBio(e.target.value)} />
-      <HiddenInput
-        type="file"
-        ref={fileInputRef}
-        onChange={(e) => onFileChosen(e)}
-      />
-      <Container
-        flex
-        dir={width > 768 ? 'row' : 'column'}
-        align="flex-start"
-        gap={48}
-        mb={48}
-      >
-        <Button variant="primary" onClick={() => fileInputRef.current?.click()}>
+    <Container flex gap={32} dir={width > 800 ? 'row' : 'column'}>
+      <Container flex dir="column" gap={12}>
+        <HiddenInput
+          type="file"
+          ref={fileInputRef}
+          onChange={(e) => onFileChosen(e)}
+        />
+        <Button
+          variant="primary"
+          onClick={() => fileInputRef.current?.click()}
+          width="250px"
+        >
           Upload profile picture
         </Button>
         <ImageContainer ref={imageRef} image={image} progress={progress}>
@@ -217,7 +199,24 @@ const StepOne = () => {
           <Uploader ref={uploadRef} progress={progress}></Uploader>
         </ImageContainer>
       </Container>
-    </>
+      <Container width="100%">
+        <Text fontSize={32} fontWeight={600} mb={16}>
+          Headline
+        </Text>
+        <Input
+          type="text"
+          value={title}
+          placeholder="Enter a link and press enter"
+          onChange={(e) => setTitle(e.target.value)}
+          name="headline"
+          width="300px"
+        />
+        <Text fontSize={32} fontWeight={600} mb={16}>
+          Tell your clients about yourself
+        </Text>
+        <TextArea value={bio} onChange={(e) => setBio(e.target.value)} />
+      </Container>
+    </Container>
   );
 };
 

@@ -9,16 +9,18 @@ import { Experience } from './profileService';
 
 const StyledSelect = styled.select`
   margin-bottom: 30px;
-  border: ${({ theme }) => `1px solid ${theme.colors.primary_L2}`};
+  border: ${({ theme }) => `2px solid ${theme.colors.secondary}`};
   border-radius: 8px;
   padding: 3px 12px;
   width: 60%;
   -webkit-appearance: none;
   appearance: none;
   background-color: white;
+  width: 100%;
 
   :focus {
     outline: none;
+    border: ${({ theme }) => `2px solid ${theme.colors.primary}`};
   }
   ::-ms-expand {
     display: none;
@@ -76,36 +78,34 @@ const ExperienceForm = ({
         <Input
           type="text"
           value={inputExperience.name}
-          placeholder="Position"
+          label="Position"
           name="name"
           onChange={(e) => onChangeExperience('name', e)}
         />
         <Input
           type="text"
           value={inputExperience.company.name}
-          placeholder="Company"
+          label="Company"
           name="company"
           onChange={(e) => onChangeExperience('company', e)}
         />
         <Container flex gap={12} align="center">
-          <StyledSelect
-            value={inputExperience.type}
-            onChange={(e) => onChangeExperience('type', e)}
-          >
-            <StyleOption
-              value=""
-              disabled
-              selected={inputExperience.type === ''}
+          <Container flex dir="column" width="100%">
+            <Text fontWeight={'bold'} color="#8e8e8e" mb={6}>
+              Experience type
+            </Text>
+            <StyledSelect
+              value={inputExperience.type}
+              onChange={(e) => onChangeExperience('type', e)}
             >
-              Experience Type
-            </StyleOption>
-            {typesOptions.map((type) => (
-              <option key={type} value={type}>
-                {type}
-              </option>
-            ))}
-          </StyledSelect>
-
+              <StyleOption value="" disabled></StyleOption>
+              {typesOptions.map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </StyledSelect>
+          </Container>
           <CountriesSelect
             value={inputExperience.geographic_specialization}
             onChange={onChangeExperienceCountry}
@@ -117,14 +117,14 @@ const ExperienceForm = ({
             value={inputExperience.startDate}
             onChange={(date) => onChangeExperience('startDate', date)}
             name="startDate"
-            placeholder="Start Date"
+            label="Start"
             inputExperience={inputExperience}
           />
           <DateInput
             value={inputExperience.endDate}
             onChange={(date) => onChangeExperience('endDate', date)}
             name="endDate"
-            placeholder="End Date"
+            label="Finish"
             inputExperience={inputExperience}
           />
         </Container>

@@ -43,7 +43,7 @@ const EducationForm = ({
 
   return (
     <>
-      <Text fontSize={32} fontWeight={600} mb={16}>
+      <Text fontSize={32} fontWeight={600} mb={16} color = 'primary'>
         {type === 'Initial' ? '' : type} Education
       </Text>
       <Container flex dir="column">
@@ -51,14 +51,14 @@ const EducationForm = ({
           <Input
             type="text"
             value={inputEducation.name}
-            placeholder="field of study"
+            label="field of study"
             name="name"
             width="70%"
             onChange={(e) => onChangeEducation('name', e.target.value)}
           />
           <Input
             type="text"
-            placeholder="Level"
+            label="Level"
             name="level"
             width="30%"
             value={inputEducation.level}
@@ -82,14 +82,14 @@ const EducationForm = ({
             value={inputEducation.startDate}
             onChange={(date) => onChangeEducation('startDate', date)}
             name="startDate"
-            placeholder="Start Date"
+            label="Start Date"
             inputEducation={inputEducation}
           />
           <DateInput
             value={inputEducation.endDate}
             onChange={(date) => onChangeEducation('endDate', date)}
             name="endDate"
-            placeholder="End Date"
+            label="End Date"
             inputEducation={inputEducation}
           />
         </Container>
