@@ -1,9 +1,15 @@
 import styled from 'styled-components';
+import { Text } from './Text';
+
+const InputContainer = styled.div<InputProps>`
+  width: ${(props) => props.width || '100%'};
+`;
 
 const StyledInput = styled.input<InputProps>`
-  width: ${(props) => props.width || '100%'};
+  width: 100%;
   height: 15px;
-  border: 1px solid ${(props) => props.theme.colors.primary_L2};
+  border: 2px solid
+    ${(props) => (props.color ? props.color : props.theme.colors.secondary)};
   border-radius: 8px;
   padding: 16px;
   font-size: 16px;
@@ -30,9 +36,16 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   type: string;
   width?: string;
   mb?: string;
-  placeholder: string;
+  color?: string;
+  placeholder?: string;
+  label?: string;
 }
 
 export const Input = (props: InputProps) => {
-  return <StyledInput {...props} />;
+  return (
+    <InputContainer {...props}>
+      <Text fontWeight={'bold'} color= '#8e8e8e' mb={6}>{props.label}</Text>
+      <StyledInput {...props} />
+    </InputContainer>
+  );
 };

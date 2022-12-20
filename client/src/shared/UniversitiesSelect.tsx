@@ -40,7 +40,7 @@ const UniversitiesSelect = (props: Props) => {
       <Input
         type="text"
         value={value}
-        placeholder="University"
+        label="University"
         name="university-name"
         onChange={(e) => onChange('university-name', e.target.value)}
         onFocus={() => setFocused(true)}

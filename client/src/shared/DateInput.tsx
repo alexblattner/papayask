@@ -4,55 +4,18 @@ import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-datepicker';
 
 import { Education, Experience } from '../profile/profileService';
-
-const StyledInput = styled('input')`
-  all: unset;
-  height: 33px;
-  font-weight: 500;
-  width: 80%;
-  padding-left: 15px;
-  font-size: 12px;
-`;
-
-const Wrapper = styled.div<{ value: string; placeholder: string }>`
-  height: 35px;
-  width: 50%;
-  border: 1px solid ${(props) => props.theme.colors.primary_L2};
-  border-radius: 8px;
-  position: relative;
-  background-color: transparent;
-  margin-bottom: 30px;
-  padding-top: 4px;
-
-  &::before {
-    content: ${(props) => (!props.value ? 'attr(placeholder)' : 'none')};
-    position: absolute;
-    left: 15px;
-    width: calc(100% - 60px);
-    color: #aaa;
-    background-color: white;
-    transition: all 0.2s;
-    pointer-events: none;
-  }
-
-  &:focus {
-    outline: none;
-    border: 2px solid ${(props) => props.theme.colors.primary};
-
-    &::before {
-      content: none;
-    }
-  }
-`;
+import { Text } from './Text';
+import { Container } from './Container';
 
 const CustomInput = styled.input`
   height: 15px;
-  border: 1px solid ${(props) => props.theme.colors.primary_L2};
+  border: 2px solid ${(props) => props.theme.colors.secondary};
   border-radius: 8px;
   padding: 16px;
   font-size: 16px;
   font-weight: 500;
   margin-bottom: 30px;
+  width: 100%;
 
   &::placeholder {
     font-size: 14px;
@@ -69,9 +32,10 @@ interface InputProps {
   value: Date | null | string;
   onChange: (date: string | Date) => void;
   error?: string;
-  placeholder: string;
+  placeholder?: string;
   inputEducation?: Education;
   inputExperience?: Experience;
+  label?: string;
 }
 
 const formatedDate = (date: Date | null | string): string => {
@@ -144,19 +108,24 @@ export const DateInput = (props: InputProps) => {
   }, [props.value]);
 
   return (
-    <DatePicker
-      selected={date}
-      onChange={(date) => changeDate(date)}
-      customInput={<CustomInput />}
-      minDate={new Date(minDate())}
-      maxDate={new Date(maxDate())}
-      placeholderText={`${props.placeholder} (dd/mm/yyyy)`}
-      adjustDateOnChange={true}
-      dateFormat="dd/MM/yyyy"
-      scrollableYearDropdown
-      showYearDropdown
-      yearDropdownItemNumber={100}
-      autoComplete="off"
-    />
+    <Container width='100%'>
+      <Text fontWeight={'bold'} color="#8e8e8e" mb={6}>
+        {props.label}
+      </Text>
+      <DatePicker
+        selected={date}
+        onChange={(date) => changeDate(date)}
+        customInput={<CustomInput />}
+        minDate={new Date(minDate())}
+        maxDate={new Date(maxDate())}
+        placeholderText={`(dd/mm/yyyy)`}
+        adjustDateOnChange={true}
+        dateFormat="dd/MM/yyyy"
+        scrollableYearDropdown
+        showYearDropdown
+        yearDropdownItemNumber={100}
+        autoComplete="off"
+      />
+    </Container>
   );
 };

@@ -71,6 +71,13 @@ const InfoContainer = styled('div')<{ width?: string }>`
   width: ${({ width }) => (width ? width : '')};
 `;
 
+const StatusDot = styled('div')`
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background-color: #55b255;
+`;
+
 const Profile = () => {
   const [isOwner, setIsOwner] = React.useState<boolean>(false);
   const [bioEdit, setBioEdit] = React.useState<boolean>(false);
@@ -258,6 +265,17 @@ const Profile = () => {
           </Container>
 
           <Container>
+            <Container flex gap={8} align="center">
+              <StatusDot />
+              <Text
+                fontSize={26}
+                fontWeight={'bold'}
+                color="#55B255"
+                lineHeight={0.5}
+              >
+                Available
+              </Text>
+            </Container>
             <Container flex align="center" gap={12}>
               <Text fontSize={width > 1145 ? 46 : 40} fontWeight={700}>
                 {profileUser.name}

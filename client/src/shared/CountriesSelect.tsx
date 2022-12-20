@@ -55,11 +55,11 @@ const CountriesSelect = (props: Props) => {
   }, [value, focused]);
 
   return (
-    <Container position="relative">
+    <Container position="relative" width='100%'>
       <Input
         type="text"
         value={value}
-        placeholder={props.placeholder?props.placeholder:"Country"}
+        label='Country'
         name={inputName}
         width={props.width || '100%'}
         onChange={(e) => onChange(e.target.value)}
