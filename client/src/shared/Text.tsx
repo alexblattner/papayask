@@ -7,6 +7,7 @@ interface TextProps extends React.HTMLAttributes<HTMLParagraphElement> {
   mb?: number;
   ml?: number;
   align?: string;
+  lineHeight?: number;
 }
 
 const StyledText = styled('p')<TextProps>`
@@ -22,6 +23,8 @@ const StyledText = styled('p')<TextProps>`
       : props.color === 'primary'
       ? props.theme.colors.primary
       : props.color};
+  line-height: ${(props) =>
+    props.lineHeight !== undefined ? props.lineHeight : 1.2};
 `;
 
 export const Text = (props: TextProps) => {

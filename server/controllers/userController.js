@@ -8,7 +8,6 @@ const User = require('../models/user');
 const experienceController = require('./experienceController');
 const educationController = require('./educationController');
 const skillController = require('./skillController');
-const universityController = require('./universityController');
 
 function escapeRegex(text) {
   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
@@ -207,6 +206,8 @@ exports.update = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
+
+    console.log(req.body);
 
     const {
       bio,
