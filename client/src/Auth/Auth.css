@@ -1,14 +1,28 @@
 .register-modal{
-    width: 400px !important;
+    width: 417.25px !important;padding: 0 !important;
 }
 .connection h2 {
-    margin: 28px;font-weight: 900;
-    font-size: 61px;
-    padding: 0;
-    text-align: center;
+	margin: 30px;
+	font-size: 43px;
+	padding: 0;
+	text-align: center;
+	font-family: "Greycliff CF Bold";
 }
 .connection .thirdparty {
-    width:90%;margin-left:5%;margin-right:5%;
+    width:353px;margin:6px 32px;padding:12px 44px;
+    font-size: 20px;height: 48px;line-height: 0;
+    font-family: "Greycliff CF DemiBold";
+}
+.connection .thirdparty div{
+    margin-top: -2px;text-align: left;
+}
+.connection .thirdparty svg{
+	margin: 5px;margin-right: 18px;
+	margin-top: 1px;
+}
+.connection .thirdparty img{
+	margin: 5px;width: 24px;height: 24px;
+	margin-top: 1px;margin-right: 18px;
 }
 .connection button{
     border-style: none;
@@ -23,23 +37,28 @@
 #facebook {
     background-color:rgba(7, 136, 255, 1);
 }
+#facebook:hover {
+    background-color:#004D9D;
+}
 #google {
     background-color:white;
-    color:var(--secondary);border: 1px solid var(--tertiary);
+    color:var(--neutral);border: 1.5px solid var(--neutral);
+}
+#google:hover {
+    background-color:var(--neutral-l2);color: var(--neutral-d1);
 }
 .connection .divider{
-    width:94%;
-    font-size: 18px;
-    font-weight: 700;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    text-align: center;margin-left: 3%;margin-right: 2.5%;
-    color: var(--secondary);display: flex;justify-content: center;align-items: center;
+    width:353px;
+    font-size: 17px;
+    font-family: "Greycliff CF DemiBold";
+    margin:32px;
+    text-align: center;
+    color: var(--neutral-l1);display: flex;justify-content: center;align-items: center;
 }
 .connection .divider .line{
     width: 100%;
     height: 1px;margin-left: 2.5%;margin-right: 2.5%;
-    background-color: var(--tertiary);display: inline-block;
+    background-color: var(--neutral-l1);display: inline-block;
 }
 .connection form{
     width: 90%;
@@ -49,25 +68,45 @@
     align-items: center;
 }
 .connection form input{
-    width: 100%;
-    height: 40px;
+    width: 353px;
+    height: 57px;
     border-radius: 8px;
-    border: 1px solid var(--secondary);
-    padding-left: 10px;
-    padding-right: 10px;
+    border: 2px solid var(--neutral);
     font-size: 18px;
     font-weight: 600;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    margin:8px 32.6px;padding: 18px 12px;
+}
+.connection form input.error{
+    border: 2px solid var(--danger);
 }
 .connection form input::placeholder{
     color: var(--secondary);opacity: 1;
 }
-
+.connection #error{
+    width: 95%;
+    color: var(--danger);
+    font-family: "Greycliff CF DemiBold";
+    font-size: 16px;
+}
+.connection #error svg{
+    margin-right: 10px;
+    margin-top: -2px;
+}
+#name-inputs {
+	width: 353px;
+	display: flex;
+	margin: 8px 32.6px;
+}
+#name-inputs input {
+    width: 48%; margin:0; margin-left:4%;
+}
 .connection form input[type="submit"]{
     background-color: var(--primary);
     color: white;
-    border: none;margin: 30px;
+    border: none;margin: 32px;
+}
+.connection form input[type="submit"]:hover{
+    background-color: var(--primary-d1);
 }
 .connection span{
     color: var(--primary);
@@ -87,4 +126,61 @@
     margin-top: 20px;
     margin-bottom: 20px;
     text-align: center;
+}
+.merged-input {
+	display: flex;
+	border: 1px solid var(--secondary);
+	height: 42px;
+	overflow: hidden;margin-left: 6px;
+	border-radius: 6px; width: 353px;
+}
+.merged-input input {
+    border-style: none !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    height: 42px !important;
+    
+}
+.merged-input input::placeholder{
+    color: var(--secondary);opacity: 1;font-size: 18.75px; font-style: italic;
+}
+.merged-input button{
+    border: none;
+    background-color: var(--primary);
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    padding-left: 10px;width: 42px;
+    padding-right: 10px;
+    height: 42px; line-height: 0;
+    border-radius: 0 6px 6px 0;margin: 0;
+}
+.connection #go-back {
+	text-align: center;
+	display: inline-block;
+	margin-bottom: 30px;
+	margin-top: 18px;
+	font-size: 14px;
+	cursor: pointer;
+	border-bottom: 1.5px solid;
+	padding: 0px 0px 6px;
+}
+.connection #go-back svg {
+    margin-right: 6px;
+}
+    
+.connection #go-back:hover {
+    font-weight: bold;
+}
+.connection #go-back:hover > svg {
+    margin-right: 8px;
+}
+.connection #after-reset{
+    width: 100%;
+    text-align: center;
+    font-size: 17px;
 }

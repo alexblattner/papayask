@@ -10,7 +10,8 @@ exports.create = async (skill, userId) => {
       name: experiences[i].experience.name,
       startDate: experiences[i].experience.startDate,
       endDate: experiences[i].experience.endDate,
-    }).exec();
+    });
+
     experienceList.push({
       years: experiences[i].years,
       experience: exp._id,
@@ -22,7 +23,8 @@ exports.create = async (skill, userId) => {
       name: educations[i].education.name,
       startDate: educations[i].education.startDate,
       endDate: educations[i].education.endDate,
-    }).exec();
+    });
+
     educationList.push({
       years: educations[i].years,
       education: edu._id,

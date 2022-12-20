@@ -23,11 +23,11 @@ const util = require("util");
 const unlinkFile = util.promisify(fs.unlink);
 let { eventsHandler } = require("./utils/eventsHandler");
 console.log(
-  "mongodb+srv://SnipCritics:" +
+  "mongodb+srv://papayask:" +
     process.env.MONGODB_PASSWORD +
     "@cluster" +
-    (process.env.NODE_ENV == "production" ? 0 : 2) +
-    ".rfgl2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+    (process.env.NODE_ENV == "production" ? 0 : 1) +
+    ".m1q2dzz.mongodb.net/?retryWrites=true&w=majority"
 );
 const {
   uploadFile,
@@ -81,17 +81,16 @@ const domain =
   process.env.NODE_ENV == "development"
     ? "localhost:3000"
     : process.env.NODE_ENV == "production"
-    ? "snipcritics.com"
+    ? "papayask.com"
     : "scbackend.com";
 mongoose.connect(
   "mongodb+srv://papayask:" +
     process.env.MONGODB_PASSWORD +
     "@cluster" +
-    (process.env.NODE_ENV == "production" ? 0 : 1) +
-    ".m1q2dzz.mongodb.net/?retryWrites=true&w=majority",
+    (process.env.NODE_ENV == "production" ? "0.movlb" : "1.m1q2dzz") +
+    ".mongodb.net/?retryWrites=true&w=majority",
   { useNewUrlParser: true, useUnifiedTopology: true }
 );
-
 // on the request to root (localhost:3000/)
 const db = mongoose.connection;
 db.once("open", () => {
@@ -125,70 +124,66 @@ app.get("/university/:search", async (req, res, next) => {
   res.send(universities);
 });
 //universities setup
-// app.get("/t",(req,res,next)=>{
-//   fs.readFile('t.txt', function(err, data) {
-//     if (err) throw err;
-//     const lines=data.toString().split("\r");
-//     let universities = [];
-//     let current=0
-//     let lastRank=0
-//     for (let i = 0; i < lines.length; i++) {
-//       const line = lines[i];
-//       const tabs = line.split("\t");
+app.get("/t", (req, res, next) => {
+  fs.readFile("t.txt", function (err, data) {
+    if (err) throw err;
+    const lines = data.toString().split("\r");
+    let universities = [];
+    let current = 0;
+    let lastRank = 0;
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      const tabs = line.split("\t");
 
-//       if(i%3==0){
-//         universities.push({
-//           name: tabs[1]
-//         })
-//         current=universities.length-1
-//       }else if(i%3==1){
-//         universities[current].country=line.replace("\n","")
-//       }else{
-
-//         if(isNaN(parseFloat(tabs[1]))){
-//           if(lastRank==0)
-//             lastRank=universities.length
-//           universities[current].score=0
-//         }else{
-//           if(isNaN(parseFloat(tabs[0])))
-//             tabs.shift()
-//           let score = parseFloat(tabs[0])
-//           score += parseFloat(tabs[1])
-//           score += parseFloat(tabs[2])
-//           score += parseFloat(tabs[3])
-//           score += parseFloat(tabs[4])
-//           score += parseFloat(tabs[5])
-//           score/=6
-//           universities[current].score=score
-//         }
-//       }
-//     }
-//     universities.sort((a,b)=>{
-//       return b.score-a.score
-//     })
-//     let rank=1
-//     for (let i = 0; i < universities.length; i++) {
-//       if(universities[i].score==0){
-//         universities[i].rank=lastRank
-//       }else{
-//         if(i>0&&universities[i].score==universities[i-1].score){
-//           universities[i].rank=universities[i-1].rank
-//         }else{
-//           universities[i].rank=rank
-//         }
-//       }
-//       rank++
-//     }
-//     const University = require("./models/university");
-//     University.insertMany(universities,(err,docs)=>{
-//       if(err){
-//         console.log(err)
-//       }
-//     })
-//     res.send(universities);
-
-//   });
-// })
+      if (i % 3 == 0) {
+        universities.push({
+          name: tabs[1],
+        });
+        current = universities.length - 1;
+      } else if (i % 3 == 1) {
+        universities[current].country = line.replace("\n", "");
+      } else {
+        if (isNaN(parseFloat(tabs[1]))) {
+          if (lastRank == 0) lastRank = universities.length;
+          universities[current].score = 0;
+        } else {
+          if (isNaN(parseFloat(tabs[0]))) tabs.shift();
+          let score = parseFloat(tabs[0]);
+          score += parseFloat(tabs[1]);
+          score += parseFloat(tabs[2]);
+          score += parseFloat(tabs[3]);
+          score += parseFloat(tabs[4]);
+          score += parseFloat(tabs[5]);
+          score /= 6;
+          universities[current].score = score;
+        }
+      }
+    }
+    universities.sort((a, b) => {
+      return b.score - a.score;
+    });
+    let rank = 1;
+    for (let i = 0; i < universities.length; i++) {
+      if (universities[i].score == 0) {
+        universities[i].rank = lastRank;
+      } else {
+        if (i > 0 && universities[i].score == universities[i - 1].score) {
+          universities[i].rank = universities[i - 1].rank;
+        } else {
+          universities[i].rank = rank;
+        }
+      }
+      rank++;
+    }
+    const University = require("./models/university");
+    University.insertMany(universities, (err, docs) => {
+      if (err) {
+        console.log(err);
+      }
+    });
+    res.send(universities);
+  });
+});
 
 // const eventsHandler = (req, res, next) => {
 //   const headers = {
@@ -217,13 +212,14 @@ app.get("/university/:search", async (req, res, next) => {
 
 app.get("/realtime-notifications/:id", eventsHandler);
 
-app.post("/user", middleware.decodeToken, userController.createOrLogin);
+app.post("/user", userController.createOrLogin);
 app.post("/note", middleware.decodeToken, noteController.create);
 app.patch("/user/:userId", middleware.decodeToken, userController.update);
 app.get("/user/:id", userController.getById);
 app.get("/questions", middleware.decodeToken, questionController.getAll);
 app.get("/question/:id", middleware.decodeToken, questionController.getById);
 app.post("/question", middleware.decodeToken, questionController.create);
+app.post("/question/finish", middleware.decodeToken, questionController.finish);
 app.post("/pay", middleware.decodeToken, questionController.pay);
 app.post(
   "/question/update-status/:id",
@@ -255,6 +251,11 @@ app.post("/cloudinary-signature", async (req, res, next) => {
     signature,
   });
 });
+app.post(
+  "/confirmation-application",
+  middleware.decodeToken,
+  userController.apply
+);
 app.post("/user/:userId/register-token", userController.registerToken);
 app.get("/search", userController.search);
 app.post("/search", userController.search);

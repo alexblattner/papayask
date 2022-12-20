@@ -2,11 +2,10 @@ import { useEffect, useState, createContext } from "react";
 import { auth } from "../firebase-auth";
 import api, { setTokenForAPI } from "../utils/api";
 import { UserProps } from "../models/User";
-import { QuestionProps } from "../models/Question";
 
 interface AuthContextReturn {
   user: UserProps | null | undefined;
-  updateUser: (utoken: any, body: any) => void;
+  updateUser: (body: any) => Promise<void>;
   token: string | null | undefined;
   setUser: React.Dispatch<React.SetStateAction<UserProps | null | undefined>>;
   getUser: () => void;
@@ -14,7 +13,7 @@ interface AuthContextReturn {
 
 export const AuthContext = createContext<AuthContextReturn>({
   user: null,
-  updateUser: () => {},
+  updateUser: async () => {},
   token: null,
   setUser: () => {},
   getUser: () => {},
@@ -24,8 +23,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<UserProps | null | undefined>(undefined);
   const [token, setToken] = useState<string | null | undefined>(undefined);
   useEffect(() => {
-    if (user) {
-      auth.currentUser?.getIdToken().then((token) => {
+    if (user && auth.currentUser) {
+      auth.currentUser.getIdToken(true).then((token) => {
         setToken(token);
       });
     } else if (user === null) {
@@ -33,18 +32,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [user]);
 
-  const getUserQuestions = async (utoken: string) => {
-    const res = await api.get("/questions", {
-      headers: {
-        Authorization: `Bearer ${utoken}`,
-      },
-    });
-    return res.data;
-  };
-
   const register = async (token: any, body: any) => {
     // we use promise all setteled beacuse of the first register
-    const [userData, questionsData] = await Promise.allSettled([
+    const [userData] = await Promise.allSettled([
       api({
         method: "post",
         url: "/user",
@@ -53,31 +43,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         },
         data: body,
       }),
-      getUserQuestions(token),
     ]);
     if (userData.status == "rejected") return;
     setUser({
       id: userData.value.data._id,
       ...userData.value.data,
-      questions:
-        questionsData.status == "fulfilled"
-          ? questionsData.value.data
-          : undefined,
-      newQuestionsCount:
-        questionsData.status == "fulfilled"
-          ? newQuestionsCount(questionsData.value.received)
-          : 0,
     });
   };
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
-        console.log(user);
+        let name = user.displayName
+          ? user.displayName
+          : window.localStorage.getItem("firstName") +
+            " " +
+            window.localStorage.getItem("lastName");
+
         const token = await user.getIdToken();
-        // console.log(123456, user, "token", token);
         register(token, {
           email: user.email,
-          displayName: user.displayName,
+          displayName: name,
           uid: user.uid,
         });
       } else {
@@ -87,46 +72,34 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return unsubscribe;
   }, []);
 
-  const newQuestionsCount = (questions: QuestionProps[]) => {
-    return questions.filter((question) => question.status.action === "pending")
-      .length;
-  };
-
   const getUser = async () => {
     if (!token) {
       return;
     }
-    const [updatedUser, questions] = await Promise.all([
+    const [updatedUser] = await Promise.all([
       api({
         method: "get",
-        url: `/user/${user?.id}`,
+        url: `/user/${user?._id}`,
       }),
-      getUserQuestions(token),
     ]);
     setUser({
       id: updatedUser.data._id,
       ...updatedUser.data,
-      questions,
-      newQuestionsCount: newQuestionsCount(questions.received),
     });
   };
 
-  const updateUser = async (token: string, body: any) => {
+  const updateUser = async (body: any) => {
+    console.log(body);
+
     try {
       const res = await api({
         method: "patch",
-        url: `/user/${user?.id}`,
-        headers: {
-          Authorization: "Bearer " + token,
-        },
+        url: `/user/${user?._id}`,
         data: body,
       });
-      const questions = await getUserQuestions(token);
       setUser({
         id: res.data.user._id,
         ...res.data.user,
-        questions,
-        newQuestionsCount: newQuestionsCount(questions.received),
       });
     } catch (error) {
       console.log(error);

@@ -1,6 +1,20 @@
-@import url("https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@100;200;300;400;500;600;700;800;900&display=swap");
+@font-face{
+  font-family:'Greycliff CF';
+  src: local('GreycliffCF'), local('GreycliffCF'),
+  url('./fonts/Greycliff\ CF\ v2.6\ Webfont/GreycliffCF-Regular.woff') format('woff')
+}
+@font-face{
+  font-family:'Greycliff CF Bold';
+  src: local('GreycliffCF-Bold'), local('GreycliffCF Bold'),
+  url('./fonts/Greycliff\ CF\ v2.6\ Webfont/GreycliffCF-Bold.woff') format('woff')
+}
+@font-face{
+  font-family:'Greycliff CF DemiBold';
+  src: local('GreycliffCF-DemiBold'), local('GreycliffCF DemiBold'),
+  url('./fonts/Greycliff\ CF\ v2.6\ Webfont/GreycliffCF-DemiBold.woff') format('woff')
+}
 body {
-  font-family: "Red Hat Display" !important;
+  font-family: "Greycliff CF" !important;
 }
 h2 {
   font-weight: 400;
@@ -75,19 +89,19 @@ h2 {
   font-weight: 600;
 }
 :root {
-  --primary-l2: rgba(248, 203, 201, 1);
-  --primary-l1: rgba(240, 151, 147, 1);
-  --primary: rgba(194, 42, 35, 1);
-  --primary-d1: rgba(155, 66, 62, 1);
-  --primary-d2: rgba(78, 33, 31, 1);
-  --primary-numbers-l2: 248, 203, 201;
-  --primary-numbers-l1: 240, 151, 147;
-  --primary-numbers: 194, 42, 35;
-  --primary-numbers-d1: 155, 66, 62;
-  --primary-numbers-d2: 78, 33, 31;
+  --primary-l2: rgba(243, 205, 191, 1);
+  --primary-l1: rgba(231, 155, 127, 1);
+  --primary: rgba(225, 132, 64, 1);
+  --primary-d1: rgba(220, 105, 63, 1);
+  --primary-d2: rgba(72, 30, 0, 1);
+  --primary-numbers-l2: 242, 200, 170;
+  --primary-numbers-l1: 228, 146, 85;
+  --primary-numbers: 215, 91, 0;
+  --primary-numbers-d1: 143, 61, 0;
+  --primary-numbers-d2: 72, 30, 0;
   --secondary-l2: rgba(238, 238, 238, 1);
   --secondary-l1: rgba(222, 222, 222, 1);
-  --secondary: rgba(205, 205, 205, 1);
+  --secondary: #62646a;
   --secondary-d1: rgba(137, 137, 137, 1);
   --secondary-d2: rgba(68, 68, 68, 1);
   --secondary-numbers-l2: 238, 238, 238;
@@ -95,8 +109,14 @@ h2 {
   --secondary-numbers: 205, 205, 205;
   --secondary-numbers-d1: 137, 137, 137;
   --secondary-numbers-d2: 68, 68, 68;
+  --neutral-l2: #D4D4D4;
+  --neutral-l1: #B1B1B1;
+  --neutral: #8E8E8E;
+  --neutral-d1: #6C6C6C;
+  --neutral-d2: #494949;
   --tertiary: #dedede;
   --background: #fff;
+  --danger:rgba(215, 0, 0, 1);
 }
 
 .app-container {

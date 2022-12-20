@@ -5,12 +5,14 @@ import { Input } from './Input';
 import { Text } from './Text';
 import countries from '../data/countries';
 import { Suggestions, Suggestion } from './Suggestions';
+import { placeholder } from '@cloudinary/html';
 
 interface Props {
   value: string;
   onChange: (country: string) => void;
   inputName: string;
-  size?: 'small' | 'large';
+  width?: string;
+  placeholder?: string;
   options?: string[];
   adder?: (value: string) => void;
 }
@@ -32,7 +34,7 @@ const CountriesSelect = (props: Props) => {
         filteredCountries.forEach((country) => {
           finalSuggestions.push(country.name);
         });
-      
+
         const startsWithSuggestions = finalSuggestions.filter((suggestion) =>
           suggestion.toLowerCase().startsWith(value.toLowerCase())
         );
@@ -57,9 +59,9 @@ const CountriesSelect = (props: Props) => {
       <Input
         type="text"
         value={value}
-        placeholder="Country"
+        placeholder={props.placeholder?props.placeholder:"Country"}
         name={inputName}
-        width={props.size === 'small' ? '188px' : undefined}
+        width={props.width || '100%'}
         onChange={(e) => onChange(e.target.value)}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}

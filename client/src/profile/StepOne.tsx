@@ -1,14 +1,17 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import axios, { AxiosProgressEvent } from 'axios';
 
 import api from '../utils/api';
+import useWidth from '../Hooks/useWidth';
 import compressImage from '../utils/compressImage';
 import { Button } from '../shared/Button';
 import { Container } from '../shared/Container';
 import { Input } from '../shared/Input';
 import { Text } from '../shared/Text';
 import { TextArea } from '../shared/TextArea';
+import { useEditProfile } from './profileService';
+import SvgIcon from '../shared/SvgIcon';
 
 const HiddenInput = styled.input`
   display: none;
@@ -46,22 +49,42 @@ const Uploader = styled('div')<{ progress: number }>`
   z-index: 99;
 `;
 
-interface Props {
-  title: string;
-  bio: string;
-  image: string;
-  setImage: React.Dispatch<React.SetStateAction<string>>;
-  setTitle: React.Dispatch<React.SetStateAction<string>>;
-  setBio: React.Dispatch<React.SetStateAction<string>>;
-  setCloudinaryImageId: React.Dispatch<React.SetStateAction<string>>;
-}
+const DeletePictureButton = styled('div')`
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+  background-color: ${({ theme }) => theme.colors.primary};
+  border-radius: 6px;
+  opacity: 0.7;
+  transition: all 0.2s;
 
-const StepOne = (props: Props) => {
+  &:hover {
+    opacity: 1;
+  }
+`;
+
+const StepOne = () => {
   const [progress, setProgress] = React.useState<number>(0);
-  const { title, bio, setTitle, setBio } = props;
+  const [shoeDelete, setShoeDelete] = React.useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
   const uploadRef = useRef<HTMLDivElement>(null);
+
+  const { width } = useWidth();
+  const {
+    title,
+    bio,
+    image,
+    setTitle,
+    setBio,
+    setImage,
+    setCloudinaryImageId,
+  } = useEditProfile();
 
   const getCloudinarySignature = async () => {
     const res = await api.post('cloudinary-signature');
@@ -74,7 +97,7 @@ const StepOne = (props: Props) => {
     reader.readAsDataURL(file);
     reader.onload = async () => {
       const image = reader.result as string;
-      props.setImage(image);
+      setImage(image);
     };
   };
 
@@ -127,12 +150,26 @@ const StepOne = (props: Props) => {
       )
       .then((res) => {
         const imgId = res.data.public_id.replace(`${preset}/`, '');
-        props.setCloudinaryImageId(imgId);
+
+        setCloudinaryImageId(imgId);
       })
       .catch((err) => {
         console.log(err.response.data.error);
       });
   };
+
+  const deleteImage = () => {
+    setImage('');
+    setCloudinaryImageId('');
+  };
+
+  useEffect(() => {
+    if (image) {
+      setShoeDelete(true);
+    } else {
+      setShoeDelete(false);
+    }
+  }, [image]);
 
   return (
     <>
@@ -145,25 +182,38 @@ const StepOne = (props: Props) => {
         placeholder="Enter a link and press enter"
         onChange={(e) => setTitle(e.target.value)}
         name="headline"
+        width="300px"
       />
       <Text fontSize={32} fontWeight={600} mb={16}>
         Tell your clients about yourself
       </Text>
-      <TextArea
-        value={bio}
-        onChange={(e) => setBio(e.target.value)}
-      />
+      <TextArea value={bio} onChange={(e) => setBio(e.target.value)} />
       <HiddenInput
         type="file"
         ref={fileInputRef}
         onChange={(e) => onFileChosen(e)}
       />
-      <Container flex align="flex-start" gap={48}>
+      <Container
+        flex
+        dir={width > 768 ? 'row' : 'column'}
+        align="flex-start"
+        gap={48}
+        mb={48}
+      >
         <Button variant="primary" onClick={() => fileInputRef.current?.click()}>
           Upload profile picture
         </Button>
-        <ImageContainer ref={imageRef} image={props.image} progress={progress}>
-          {props.image && <img src={props.image} alt="profile" />}
+        <ImageContainer ref={imageRef} image={image} progress={progress}>
+          {shoeDelete && (
+            <DeletePictureButton onClick={deleteImage}>
+              <SvgIcon src="delete" color="white" />
+            </DeletePictureButton>
+          )}
+          {image ? (
+            <img src={image} alt="profile" />
+          ) : (
+            <img src={`assets/default.png`} alt="default" />
+          )}
           <Uploader ref={uploadRef} progress={progress}></Uploader>
         </ImageContainer>
       </Container>

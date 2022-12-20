@@ -1,5 +1,3 @@
-import { QuestionProps } from './Question';
-
 export interface RequestSettings {
   concurrent: number;
   cost: number;
@@ -64,7 +62,7 @@ export interface UserSkill {
 }
 
 export interface UserProps {
-  id: string;
+  _id: string;
   confirmed: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -88,9 +86,4 @@ export interface UserProps {
   verified: boolean;
   request_settings: RequestSettings;
   questionsInstructions?: string;
-  questions?: {
-    received: QuestionProps[];
-    sent: QuestionProps[];
-  };
-  newQuestionsCount: number;
 }

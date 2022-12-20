@@ -13,9 +13,9 @@ exports.create = async (education, userId) => {
     uniId = newUniversity._id;
   }
   const body = {
+    ...education,
     university: uniId,
     user: userId,
-    ...education,
     endDate: education.endDate,
   };
   try {
@@ -35,5 +35,33 @@ exports.search = async (searchText) => {
     return searchResults;
   } catch (e) {
     return [];
+  }
+};
+exports.update = async (education, userId) => {
+  const { university } = education;
+
+  let uniId;
+
+  if (university._id) {
+    uniId = university._id;
+  } else {
+    const newUniversity = await universityController.create(university);
+    uniId = newUniversity._id;
+  }
+  const body = {
+    ...education,
+    university: uniId,
+    user: userId,
+    endDate: education.endDate,
+  };
+  try {
+    const newEducation = await Education.findByIdAndUpdate(
+      education._id,
+      body,
+      { new: true }
+    );
+    return newEducation;
+  } catch (e) {
+    console.log(e);
   }
 };

@@ -12,7 +12,7 @@ export const Suggestions = styled('div')<{ show: boolean }>`
   transition: all 0.2s ease-in-out;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   border-radius: 4px;
-  overflow: scroll;
+  overflow: auto;
 `;
 
 export const Suggestion = styled('div')`
