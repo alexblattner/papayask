@@ -23,6 +23,10 @@ h2 {
 #landing .block:first-child {
   /* background-color: rgba(var(--primary-numbers), 0.4); */
 }
+.focus-search:focus {
+  border: 1px solid green;
+  width: 100%;
+}
 #landing .block .left {
   width: 50%;
   height: 100%;
@@ -95,7 +99,7 @@ h2 {
   --background: #fff;
 }
 
-.app-container  {
+.app-container {
   padding-top: 100px;
   position: relative;
 }

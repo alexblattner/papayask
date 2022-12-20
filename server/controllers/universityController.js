@@ -8,9 +8,7 @@ exports.create = async (university) => {
 
 exports.search = async (searchText) => {
   try {
-    const searchResults = await University.find({
-      $match: { name: searchText },
-    });
+    const searchResults = await University.find({ name: searchText });
     return searchResults;
   } catch (e) {
     return [];

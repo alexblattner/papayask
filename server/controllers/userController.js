@@ -374,7 +374,16 @@ exports.update = async (req, res) => {
 };
 
 exports.search = async (req, res, next) => {
-  const toallob = {}; //starting object for education, skill and experience to filter undesired data
+  const toallob = {
+    $and: [
+      {
+        verified: true,
+      },
+      // {
+      //   "request_settings.concurrent": { $exists: true },
+      // },
+    ],
+  }; //starting object for education, skill and experience to filter undesired data
   const { search, budget, personal, education, experience } = req.query;
 
   if (req.query.personal) {
@@ -388,20 +397,16 @@ exports.search = async (req, res, next) => {
     }
   }
   let searchFilter = {};
-  const basicFilter = {
-    $and: [
-      { verified: true },
-      {
-        $and: [
-          {
-            // request_settings: { $exists: true },
-            "request_settings.concurrent": { $exists: true },
-            // "request_settings.concurrent": { $ne: 0 },
-          },
-        ],
-      },
-    ],
-  };
+  // const basicFilter = {
+  //   $and: [
+  //     {
+  //       verified: true,
+  //     },
+  //     {
+  //       "request_settings.concurrent": { $exists: true },
+  //     },
+  //   ],
+  // };
   if (search) {
     const regex = new RegExp(escapeRegex(search), "gi");
     searchFilter = {
@@ -510,12 +515,12 @@ exports.search = async (req, res, next) => {
       },
     },
     { $match: searchFilter },
-    { $match: basicFilter },
-    { $match: budgetFilter },
-    { $match: experienceFilter },
-    { $match: educationFilter },
+    // { $match: basicFilter },
+    // { $match: budgetFilter },
+    // { $match: experienceFilter },
+    // { $match: educationFilter },
   ]).exec();
-  console.log(users);
+  console.log("users", users);
   return res.send(users);
 };
 
@@ -525,15 +530,14 @@ exports.searchAutomationResults = async (req, res) => {
   console.log("search", search);
   try {
     const educationSearchResults = await educationController.search(regex);
-    // const skillsSearchResults = await skillController.search(regex);
-    // const experienceSearchResults = await experienceController.search(regex);
-    let results = educationSearchResults.map((result) =>
-      result.name.toLowerCase()
-    );
-    // .concat(skillsSearchResults.map((result) => result.name.toLowerCase()))
-    // .concat(
-    // experienceSearchResults.map((result) => result.name.toLowerCase())
-    // );
+    const skillsSearchResults = await skillController.search(regex);
+    const experienceSearchResults = await experienceController.search(regex);
+    let results = educationSearchResults
+      .map((result) => result.name.toLowerCase())
+      .concat(skillsSearchResults.map((result) => result.name.toLowerCase()))
+      .concat(
+        experienceSearchResults.map((result) => result.name.toLowerCase())
+      );
     const uniqueStrings = new Set(results);
     const filteredResults = Array.from(uniqueStrings);
     res.send(filteredResults);

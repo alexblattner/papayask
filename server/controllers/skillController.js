@@ -80,7 +80,7 @@ exports.update = async (skill) => {
 
 exports.search = async (searchText) => {
   try {
-    const searchResults = await Skill.find({ $match: { name: searchText } });
+    const searchResults = await Skill.find({ name: searchText });
     return searchResults;
   } catch (e) {
     return [];
