@@ -8,6 +8,7 @@ const questionController = require('./controllers/questionController');
 const skillController = require('./controllers/skillController');
 const noteController = require('./controllers/noteController');
 const userController = require('./controllers/userController');
+const companyController = require('./controllers/companyController');
 const schedule = require('node-schedule');
 const middleware = require('./middleware/Middleware');
 const cloudinary = require('./utils/cloudinary');
@@ -272,6 +273,7 @@ app.post('/search', userController.search);
 //   }
 //   return res.sendStatus(407);
 // });
+app.get('/companies/:name', companyController.search);
 
 // Change the 404 message modifing the middleware
 app.use(function (req, res, next) {
