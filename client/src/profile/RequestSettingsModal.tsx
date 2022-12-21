@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
-import { AuthContext } from '../Auth/ContextProvider';
-import { RequestSettings } from '../models/User';
-import { Button } from '../shared/Button';
-import { Container } from '../shared/Container';
-import { Input } from '../shared/Input';
-import Modal from '../shared/Modal';
-import { Text } from '../shared/Text';
-import { TextArea } from '../shared/TextArea';
+import { AuthContext } from "../Auth/ContextProvider";
+import { RequestSettings } from "../models/User";
+import { Button } from "../shared/Button";
+import { Container } from "../shared/Container";
+import { Input } from "../shared/Input";
+import Modal from "../shared/Modal";
+import { Text } from "../shared/Text";
+import { TextArea } from "../shared/TextArea";
 
 interface Props {
   setShowRequestSettingsModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -16,27 +16,27 @@ interface Props {
 const RequestSettingsModal = (props: Props) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [questionsInstructions, setQuestionsInstructions] =
-    useState<string>('');
+    useState<string>("");
   const [requestSettings, setRequestSettings] = useState<RequestSettings>({
     concurrent: 0,
     time_limit: {
       days: 0,
       hours: 0,
     },
-    cost: 0,
+    cost: 1,
   });
   const { user, token, updateUser } = React.useContext(AuthContext);
 
   const onChangeSettings = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
-    if (name.includes('time_limit')) {
-      const name = e.target.name.split('-')[1];
+    if (name.includes("time_limit")) {
+      const name = e.target.name.split("-")[1];
       setRequestSettings({
         ...requestSettings,
         time_limit: {
           ...requestSettings.time_limit,
-          [name]: parseInt(value) || '',
+          [name]: parseInt(value) || "",
         },
       });
       return;
@@ -64,18 +64,18 @@ const RequestSettingsModal = (props: Props) => {
   useEffect(() => {
     if (user) {
       setRequestSettings(user.request_settings);
-      setQuestionsInstructions(user.questionsInstructions || '');
+      setQuestionsInstructions(user.questionsInstructions || "");
     }
   }, [user]);
   return (
     <Modal setShowModal={props.setShowRequestSettingsModal}>
-      <Text fontSize={36} fontWeight={'bold'} align="center" mb={32}>
+      <Text fontSize={36} fontWeight={"bold"} align="center" mb={32}>
         Questios Settings
       </Text>
       <Container flex flexWrap gap={18} mb={32} align="center">
         <Text fontSize={18}>How many requests can you handle at once?</Text>
         <Input
-          value={requestSettings.concurrent}
+          value={requestSettings ? requestSettings.concurrent : 1}
           onChange={(e) => onChangeSettings(e)}
           name="concurrent"
           placeholder="Concurrent"
@@ -88,7 +88,7 @@ const RequestSettingsModal = (props: Props) => {
         <Text fontSize={18}>How much do you charge for a question?</Text>
         <Container flex align="center" gap={4}>
           <Input
-            value={requestSettings.cost}
+            value={requestSettings ? requestSettings.cost : 1}
             onChange={(e) => onChangeSettings(e)}
             name="cost"
             placeholder="Cost"
@@ -96,7 +96,7 @@ const RequestSettingsModal = (props: Props) => {
             width="80px"
             mb="0px"
           />
-          <Text fontWeight={'bold'} fontSize={18}>
+          <Text fontWeight={"bold"} fontSize={18}>
             $
           </Text>
         </Container>
@@ -104,7 +104,7 @@ const RequestSettingsModal = (props: Props) => {
       <Container flex flexWrap gap={18} mb={32}>
         <Text fontSize={18}>How long do you take to answer a question?</Text>
         <Input
-          value={requestSettings.time_limit.days}
+          value={requestSettings ? requestSettings.time_limit.days : 1}
           onChange={(e) => onChangeSettings(e)}
           name="time_limit-days"
           placeholder="Days"
@@ -113,7 +113,7 @@ const RequestSettingsModal = (props: Props) => {
           mb="0px"
         />
         <Input
-          value={requestSettings.time_limit.hours}
+          value={requestSettings ? requestSettings.time_limit.hours : 1}
           onChange={(e) => onChangeSettings(e)}
           name="time_limit-hours"
           placeholder="Hours"

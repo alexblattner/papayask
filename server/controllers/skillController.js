@@ -1,6 +1,6 @@
-const Skill = require('../models/skill');
-const Experience = require('../models/experience');
-const Education = require('../models/education');
+const Skill = require("../models/skill");
+const Experience = require("../models/experience");
+const Education = require("../models/education");
 
 exports.create = async (skill, userId) => {
   const { educations, experiences } = skill;
@@ -66,8 +66,14 @@ exports.update = async (skill) => {
   }
   const updateSkill = await Skill.findByIdAndUpdate(
     skill._id,
-    { $set: { ...skill, experiences: experienceList, educations: educationList } },
+    {
+      $set: {
+        ...skill,
+        experiences: experienceList,
+        educations: educationList,
+      },
+    },
     { new: true }
   ).exec();
   return updateSkill;
-}
+};

@@ -1,11 +1,11 @@
-const paypal = require('@paypal/checkout-server-sdk');
-const payout = require('@paypal/payouts-sdk');
+const paypal = require("@paypal/checkout-server-sdk");
+const payout = require("@paypal/payouts-sdk");
 // const schedule = require('node-schedule');
 // const Payout = require('../models/payout');
-const User = require('../models/user');
-const { default: axios } = require('axios');
+const User = require("../models/user");
+const { default: axios } = require("axios");
 const Environment =
-  process.env.NODE_ENV === 'production'
+  process.env.NODE_ENV === "production"
     ? paypal.core.LiveEnvironment
     : paypal.core.SandboxEnvironment;
 const paypalClient = new paypal.core.PayPalHttpClient(
@@ -15,20 +15,22 @@ const paypalClient = new paypal.core.PayPalHttpClient(
   )
 );
 
-exports.createOrder = async (cost,name) => {
+exports.createOrder = async (cost, name) => {
+  console.log("i am here ", cost, name);
   const request = new paypal.orders.OrdersCreateRequest();
-  request.prefer('return=representation');
+  console.log("i am here 3", request);
+  request.prefer("return=representation");
   request.requestBody({
-    intent: 'CAPTURE',
+    intent: "CAPTURE",
     purchase_units: [
       {
         amount: {
-          currency_code: 'USD',
-          value: cost,
+          currency_code: "USD",
+          value: cost == 0 ? 1 : cost,
           breakdown: {
             item_total: {
-              currency_code: 'USD',
-              value: cost,
+              currency_code: "USD",
+              value: cost == 0 ? 1 : cost,
             },
           },
         },
@@ -36,8 +38,8 @@ exports.createOrder = async (cost,name) => {
           {
             name: name,
             unit_amount: {
-              currency_code: 'USD',
-              value: cost,
+              currency_code: "USD",
+              value: cost == 0 ? 1 : cost,
             },
             quantity: 1,
           },
@@ -45,27 +47,29 @@ exports.createOrder = async (cost,name) => {
       },
     ],
     application_context: {
-      return_url: 'http://return.example.com',
-      cancel_url: 'http://cancel.example.com',
+      return_url: "http://return.example.com",
+      cancel_url: "http://cancel.example.com",
     },
   });
   try {
+    // console.log("i am here 3", request);
     const order = await paypalClient.execute(request);
+    // console.log("my order", order);
     return order;
   } catch (e) {
-    console.log(e.message);
+    console.log("my error", e);
     return e.message;
   }
 };
 
-exports.captureOrder =  async function(orderId) {
-    let request = new paypal.orders.OrdersCaptureRequest(orderId);
-    request.requestBody({});
-    // Call API with your client and get a response for your call
-    let response = await paypalClient.execute(request);
-    // If call returns body in response, you can get the deserialized version from the result attribute of the response.
-    return response
-}
+exports.captureOrder = async function (orderId) {
+  let request = new paypal.orders.OrdersCaptureRequest(orderId);
+  request.requestBody({});
+  // Call API with your client and get a response for your call
+  let response = await paypalClient.execute(request);
+  // If call returns body in response, you can get the deserialized version from the result attribute of the response.
+  return response;
+};
 
 // exports.pay=async (topay,user,email)=>{
 //   const rand = (Math.random()*Math.pow(10,10)).toString().substr(0, 10).replace('.','');

@@ -9,8 +9,11 @@ class Middleware {
     const token = req.headers.authorization.split(" ")[1];
     try {
       const decoded = await admin.auth().verifyIdToken(token);
+
       const { uid } = decoded;
+
       let user = await User.findOne({ uid });
+
       // if (!user) {
       //   user = awiat User.create(decoded);
       //   // return res.status(401).json({ error: "Unauthorized" });
@@ -24,6 +27,7 @@ class Middleware {
       }
       return res.status(401).send("Unauthorized");
     } catch (err) {
+      console.log("my error", err);
       return res.status(500).send("Internal Server Error");
     }
   }

@@ -1,15 +1,15 @@
-const { uploadFile, deleteFile, getFileStream } = require('../wasabi');
-const mongoose = require('mongoose');
-const User = require('../models/user');
-const Note = require('../models/note');
-const { login } = require('./userController');
-const Question = require('../models/question');
-const { createOrder, captureOrder } = require('../utils/paypal');
-const Purchase = require('../models/purchase');
-const { sendEventToClient } = require('../utils/eventsHandler');
+const { uploadFile, deleteFile, getFileStream } = require("../wasabi");
+const mongoose = require("mongoose");
+const User = require("../models/user");
+const Note = require("../models/note");
+const { login } = require("./userController");
+const Question = require("../models/question");
+const { createOrder, captureOrder } = require("../utils/paypal");
+const Purchase = require("../models/purchase");
+const { sendEventToClient } = require("../utils/eventsHandler");
 
 function escapeRegex(text) {
-  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 }
 
 exports.deleteOldPost = async (req, res, next) => {
@@ -18,7 +18,7 @@ exports.deleteOldPost = async (req, res, next) => {
       createdAt: { $lt: new Date(Date.now() - 24 * 60 * 60 * 1000) },
     }).exec((error, posts) => {
       posts.map((post) => {
-        if (post.type == 'image') deleteFile(post.content);
+        if (post.type == "image") deleteFile(post.content);
       });
       posts.remove();
     });
@@ -28,36 +28,44 @@ exports.deleteOldPost = async (req, res, next) => {
 exports.getById = async (req, res, next) => {
   const id = req.params.id;
   try {
-    const question = await Question.findById(id).populate({
-      path: 'sender',
-      model: 'User',
-    }).populate({
-      path: 'notes',
-      model: 'Note',
-      populate: {
-        path: "user",
+    const question = await Question.findById(id)
+      .populate({
+        path: "sender",
         model: "User",
-      }
+      })
+      .populate({
+        path: "notes",
+        model: "Note",
+        populate: {
+          path: "user",
+          model: "User",
+        },
       });
-      if(!question){
-        return res.status(404).json({
-          status: "fail",
-          message: "Question not found",
-        });
-      }else if(question.receiver.toString()!==req.user._id.toString()&&question.sender.toString()!==req.user._id.toString()){
-        return res.status(401).json({
-          status: "fail",
-          message: "Unauthorized",
-        });
-      }else{
-        if(question.status.action==='pending'&&question.receiver.toString()==req.user._id.toString()){
-          console.log('here');
-          question.status.action='accepted';
-          question.markModified('status');
-          await question.save();
-        }
-        return res.send(question);
+    if (!question) {
+      return res.status(404).json({
+        status: "fail",
+        message: "Question not found",
+      });
+    } else if (
+      question.receiver.toString() !== req.user._id.toString() &&
+      question.sender.toString() !== req.user._id.toString()
+    ) {
+      return res.status(401).json({
+        status: "fail",
+        message: "Unauthorized",
+      });
+    } else {
+      if (
+        question.status.action === "pending" &&
+        question.receiver.toString() == req.user._id.toString()
+      ) {
+        console.log("here");
+        question.status.action = "accepted";
+        question.markModified("status");
+        await question.save();
       }
+      return res.send(question);
+    }
   } catch (error) {
     console.log(error);
   }
@@ -74,8 +82,8 @@ exports.create = async (req, res, next) => {
     await question.save();
 
     question = await Question.findById(question._id).populate({
-      path: 'sender',
-      model: 'User',
+      path: "sender",
+      model: "User",
     });
 
     sendEventToClient(receiver, question);
@@ -92,12 +100,12 @@ exports.getAll = async (req, res, next) => {
       $or: [{ sender: req.user._id }, { receiver: req.user._id }],
     })
       .populate({
-        path: 'sender',
-        model: 'User',
+        path: "sender",
+        model: "User",
       })
       .populate({
-        path: 'receiver',
-        model: 'User',
+        path: "receiver",
+        model: "User",
       })
       .exec();
 
@@ -117,21 +125,25 @@ exports.getAll = async (req, res, next) => {
 
 exports.pay = async (req, res, next) => {
   const { cost, capture } = req.body;
+  try {
+    if (!capture) {
+      const order = await createOrder(cost, "Papayask");
+      console.log("i am here 2 ", order);
+      await Purchase.create({
+        user: req.user._id,
+        cost,
+        transactionId: order.result.id,
+        purchased: "question",
+      });
+      return res.send(order);
+    }
 
-  if (!capture) {
-    const order = await createOrder(cost, 'Papayask');
-    await Purchase.create({
-      user: req.user._id,
-      cost,
-      transactionId: order.result.id,
-      purchased: 'question',
-    });
-    return res.send(order);
-  }
-
-  const order = await captureOrder(capture);
-  if (order.result.id) {
-    return res.send(order);
+    const order = await captureOrder(capture);
+    if (order.result.id) {
+      return res.send(order);
+    }
+  } catch (e) {
+    console.log(e);
   }
 };
 
@@ -140,13 +152,13 @@ exports.updateStatus = async (req, res, next) => {
   const { action, reason } = req.body;
   try {
     const question = await Question.findById(id).populate({
-      path: 'sender',
-      model: 'User',
+      path: "sender",
+      model: "User",
     });
 
     question.status.action = action;
     question.status.reason = reason;
-    if (action === 'rejected') {
+    if (action === "rejected") {
       question.status.done = true;
     }
     await question.save();
@@ -164,13 +176,13 @@ exports.getBySearch = async (req, res, next) => {
   prevent = prevent.map((id) => mongoose.Types.ObjectId(id));
   req.session.feedTime = new Date();
   const regex = fuzzy
-    ? new RegExp(escapeRegex(req.params.search), 'gi')
+    ? new RegExp(escapeRegex(req.params.search), "gi")
     : req.params.search;
   if (!!req.params.tag) {
-    if (req.params.tag !== 'all') {
+    if (req.params.tag !== "all") {
       const tag = await Tag.findOne({ name: req.params.tag }).exec();
       if (tag) {
-        ob['tags'] = { $elemMatch: { $eq: mongoose.Types.ObjectId(tag._id) } };
+        ob["tags"] = { $elemMatch: { $eq: mongoose.Types.ObjectId(tag._id) } };
       }
     }
   }
@@ -178,20 +190,20 @@ exports.getBySearch = async (req, res, next) => {
   const tagSearch = await Tag.aggregate([
     {
       $match: {
-        name: fuzzy ? regex : { $regex: req.params.search, $options: 'i,m' },
+        name: fuzzy ? regex : { $regex: req.params.search, $options: "i,m" },
       },
     },
     {
       $lookup: {
-        from: 'posts',
-        let: { tagId: '$_id' },
+        from: "posts",
+        let: { tagId: "$_id" },
         pipeline: [
           {
             $match: {
               $and: [
                 {
                   $expr: {
-                    $in: ['$$tagId', '$tags'],
+                    $in: ["$$tagId", "$tags"],
                   },
                 },
                 { _id: { $nin: prevent } },
@@ -199,7 +211,7 @@ exports.getBySearch = async (req, res, next) => {
             },
           },
         ],
-        as: 'posts',
+        as: "posts",
       },
     },
   ]);
@@ -222,7 +234,7 @@ exports.getBySearch = async (req, res, next) => {
       {
         username: fuzzy
           ? regex
-          : { $regex: req.params.search, $options: 'i,m' },
+          : { $regex: req.params.search, $options: "i,m" },
       },
       { expertise: { $in: SearchByTag } },
     ],
@@ -321,70 +333,70 @@ exports.getBySearch = async (req, res, next) => {
     },
     {
       $lookup: {
-        from: 'reviews',
-        let: { reviewIds: '$reviews' },
+        from: "reviews",
+        let: { reviewIds: "$reviews" },
         pipeline: [
           {
             $match: {
               $expr: {
-                $in: ['$_id', '$$reviewIds'],
+                $in: ["$_id", "$$reviewIds"],
               },
             },
           },
           {
             $lookup: {
-              from: 'users',
-              localField: 'user',
-              foreignField: '_id',
-              as: 'user',
+              from: "users",
+              localField: "user",
+              foreignField: "_id",
+              as: "user",
             },
           },
           {
-            $unwind: '$user',
+            $unwind: "$user",
           },
           {
             $project: {
-              'user.password': 0,
-              'user.updatedAt': 0,
-              'user.email': 0,
-              'user.createddAt': 0,
-              'user.confirmed': 0,
-              'user.postsAllowed': 0,
-              'user.reviewsToPost': 0,
+              "user.password": 0,
+              "user.updatedAt": 0,
+              "user.email": 0,
+              "user.createddAt": 0,
+              "user.confirmed": 0,
+              "user.postsAllowed": 0,
+              "user.reviewsToPost": 0,
             },
           },
         ],
-        as: 'reviews',
+        as: "reviews",
       },
     },
     {
       $lookup: {
-        from: 'users',
-        localField: 'user',
-        foreignField: '_id',
-        as: 'user',
+        from: "users",
+        localField: "user",
+        foreignField: "_id",
+        as: "user",
       },
     },
     {
-      $unwind: '$user',
+      $unwind: "$user",
     },
     {
       $project: {
-        'user.password': 0,
-        'user.updatedAt': 0,
-        'user.email': 0,
-        'user.createdAt': 0,
-        'user.confirmed': 0,
-        'user.postsAllowed': 0,
-        'user.reviewsToPost': 0,
+        "user.password": 0,
+        "user.updatedAt": 0,
+        "user.email": 0,
+        "user.createdAt": 0,
+        "user.confirmed": 0,
+        "user.postsAllowed": 0,
+        "user.reviewsToPost": 0,
       },
     },
     {
       $lookup: {
-        from: 'tags',
-        localField: 'tags',
-        foreignField: '_id',
-        as: 'tags',
+        from: "tags",
+        localField: "tags",
+        foreignField: "_id",
+        as: "tags",
       },
     },
     ...s, //Destructuring sort object to aggregate function
@@ -398,30 +410,33 @@ exports.getBySearch = async (req, res, next) => {
       return next();
     });
 };
-exports.finish=async(req,res,next)=>{
-  const {questionId}=req.body;
-  const question=await Question.findById(questionId);
-  if(!question){
+exports.finish = async (req, res, next) => {
+  const { questionId } = req.body;
+  const question = await Question.findById(questionId);
+  if (!question) {
     return res.status(404).json({
       status: "fail",
       message: "Question not found",
     });
-  }else{
-    const notes=await Note.find({question:question._id, user:question.receiver});
-    if(notes.length>0){
-      question.status.done=true;
-      question.markModified('status');
+  } else {
+    const notes = await Note.find({
+      question: question._id,
+      user: question.receiver,
+    });
+    if (notes.length > 0) {
+      question.status.done = true;
+      question.markModified("status");
       await question.save();
       return res.send("done");
-    }else{
+    } else {
       return res.status(400);
     }
   }
-}
+};
 exports.deleteAll = (req, res, next) => {
   Post.deleteMany()
     .then(() => {
-      req.data = 'gone';
+      req.data = "gone";
       next();
     })
     .catch((e) => {

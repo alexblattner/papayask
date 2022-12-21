@@ -1,17 +1,17 @@
-import React, { useRef } from 'react';
-import styled from 'styled-components';
-import { PayPalButtons } from '@paypal/react-paypal-js';
+import React, { useRef } from "react";
+import styled from "styled-components";
+import { PayPalButtons } from "@paypal/react-paypal-js";
 
-import { UserProps } from '../models/User';
-import { Text } from '../shared/Text';
-import { TextArea } from '../shared/TextArea';
-import Alert from '../shared/Alert';
-import formatCurrency from '../utils/formatCurrency';
-import { AuthContext } from '../Auth/ContextProvider';
-import useQuestionsService from './questionsService';
-import api from '../utils/api';
-import { Container } from '../shared/Container';
-import Modal from '../shared/Modal';
+import { UserProps } from "../models/User";
+import { Text } from "../shared/Text";
+import { TextArea } from "../shared/TextArea";
+import Alert from "../shared/Alert";
+import formatCurrency from "../utils/formatCurrency";
+import { AuthContext } from "../Auth/ContextProvider";
+import useQuestionsService from "./questionsService";
+import api from "../utils/api";
+import { Container } from "../shared/Container";
+import Modal from "../shared/Modal";
 
 const BoldSpan = styled.span`
   font-weight: bold;
@@ -29,11 +29,11 @@ interface Props {
 
 const Creator = (props: Props) => {
   const [loading, setLoading] = React.useState<boolean>(false);
-  const [message, setMessage] = React.useState<string>('');
+  const [message, setMessage] = React.useState<string>("");
   const [alertType, setAlertType] = React.useState<
-    'success' | 'error' | 'info'
-  >('info');
-  const [alertMessage, setAlertMessage] = React.useState<string>('');
+    "success" | "error" | "info"
+  >("info");
+  const [alertMessage, setAlertMessage] = React.useState<string>("");
   const [showAlert, setShowAlert] = React.useState<boolean>(false);
 
   const { token } = React.useContext(AuthContext);
@@ -41,15 +41,15 @@ const Creator = (props: Props) => {
   const { sendQuestion } = useQuestionsService();
 
   const responseTime = (days: number, hours: number) => {
-    let responseTime = '';
+    let responseTime = "";
     if (days > 0) {
-      responseTime = `${days} day${days > 1 ? 's' : ''}`;
+      responseTime = `${days} day${days > 1 ? "s" : ""}`;
     }
     if (hours > 0) {
       if (days > 0) {
-        responseTime += ' and ';
+        responseTime += " and ";
       }
-      responseTime = `${responseTime} ${hours} hour${hours > 1 ? 's' : ''}`;
+      responseTime = `${responseTime} ${hours} hour${hours > 1 ? "s" : ""}`;
     }
     return responseTime;
   };
@@ -60,8 +60,8 @@ const Creator = (props: Props) => {
     }
 
     try {
-      setAlertType('info');
-      setAlertMessage('Sending Your Question...');
+      setAlertType("info");
+      setAlertMessage("Sending Your Question...");
       setShowAlert(true);
       const res = await sendQuestion(
         props.user._id,
@@ -70,8 +70,8 @@ const Creator = (props: Props) => {
       if (res.status === 200) {
         setTimeout(() => {
           setLoading(false);
-          setAlertType('success');
-          setAlertMessage('Request sent successfully');
+          setAlertType("success");
+          setAlertMessage("Request sent successfully");
         }, 1000);
         setTimeout(() => {
           props.setShowQuestionModal(false);
@@ -79,8 +79,8 @@ const Creator = (props: Props) => {
       }
     } catch (error) {
       setLoading(false);
-      setAlertType('error');
-      setAlertMessage('Something went wrong');
+      setAlertType("error");
+      setAlertMessage("Something went wrong");
       console.log(error);
     }
   };
@@ -90,13 +90,16 @@ const Creator = (props: Props) => {
     if (!token) {
       return;
     }
-    let finalInfo = { cost: props.user.request_settings.cost };
+    let finalInfo = {
+      cost: props.user.request_settings ? props.user.request_settings.cost : 1,
+    };
     try {
-      const res = await api.post('/pay', finalInfo, {
+      const res = await api.post("/pay", finalInfo, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      console.log(868686, res.data.result.id);
 
-      return res.data.result._id;
+      return res.data.result.id;
     } catch (error) {
       setLoading(false);
       console.log(error);
@@ -104,12 +107,13 @@ const Creator = (props: Props) => {
   };
 
   const onApprove = async (data: any, actions: any) => {
+    console.log(8686, data.orderID);
     let info = {
-      cost: props.user.request_settings.cost,
+      cost: props.user.request_settings ? props.user.request_settings.cost : 1,
       capture: data.orderID,
     };
     try {
-      const res = await api.post('/pay', info);
+      const res = await api.post("/pay", info);
       if (res.status === 200) {
         sendRequest();
       }
@@ -123,12 +127,14 @@ const Creator = (props: Props) => {
     <Modal setShowModal={props.setShowQuestionModal}>
       <>
         <Text fontSize={32} fontWeight="bold" align="center">
-          Ask {props.user.name.split(' ')[0]} a Question
+          Ask {props.user.name.split(" ")[0]} a Question
         </Text>
         <Text fontSize={18} align="center">
-          This will cost you{' '}
+          This will cost you{" "}
           <BoldSpan>
-            {formatCurrency(props.user.request_settings.cost)}
+            {formatCurrency(
+              props.user.request_settings ? props.user.request_settings.cost : 1
+            )}
           </BoldSpan>
         </Text>
         <Text
@@ -136,16 +142,20 @@ const Creator = (props: Props) => {
           mb={props.user.questionsInstructions ? 0 : 32}
           align="center"
         >
-          {props.user.name.split(' ')[0]} will respond within{' '}
+          {props.user.name.split(" ")[0]} will respond within{" "}
           {responseTime(
-            props.user.request_settings.time_limit.days,
-            props.user.request_settings.time_limit.hours
+            props.user.request_settings
+              ? props.user.request_settings.time_limit.days
+              : 1,
+            props.user.request_settings
+              ? props.user.request_settings.time_limit.hours
+              : 1
           )}
         </Text>
         {props.user.questionsInstructions && (
           <Container width="100%">
             <Text fontSize={18} fontWeight={700}>
-              {props.user.name.split(' ')[0]}'s instruction for questions:
+              {props.user.name.split(" ")[0]}'s instruction for questions:
             </Text>
           </Container>
         )}
@@ -165,9 +175,8 @@ const Creator = (props: Props) => {
           onChange={(e) => setMessage(e.target.value)}
           ref={messageRef}
         />
-
         <PayPalButtons
-          disabled={loading || message === ''}
+          disabled={loading || message === ""}
           fundingSource={undefined}
           createOrder={createOrder}
           onApprove={onApprove}

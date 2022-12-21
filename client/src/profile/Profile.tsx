@@ -1,21 +1,21 @@
-import React, { useEffect } from 'react';
-import styled from 'styled-components';
+import React, { useEffect } from "react";
+import styled from "styled-components";
 
-import { AuthContext } from '../Auth/ContextProvider';
-import { Button } from '../shared/Button';
-import { Container } from '../shared/Container';
-import { Text } from '../shared/Text';
-import ProfileSetup from './ProfileSetup';
-import Creator from '../Question/Creator';
-import { UserProps } from '../models/User';
-import api from '../utils/api';
-import ProfilePicture from '../shared/ProfilePicture';
-import SvgIcon from '../shared/SvgIcon';
-import RequestSettingsModal from './RequestSettingsModal';
-import { formatDateNamed } from '../utils/formatDate';
-import Badge from '../shared/Badge';
-import flags from '../data/flags';
-import useWidth from '../Hooks/useWidth';
+import { AuthContext } from "../Auth/ContextProvider";
+import { Button } from "../shared/Button";
+import { Container } from "../shared/Container";
+import { Text } from "../shared/Text";
+import ProfileSetup from "./ProfileSetup";
+import Creator from "../Question/Creator";
+import { UserProps } from "../models/User";
+import api from "../utils/api";
+import ProfilePicture from "../shared/ProfilePicture";
+import SvgIcon from "../shared/SvgIcon";
+import RequestSettingsModal from "./RequestSettingsModal";
+import { formatDateNamed } from "../utils/formatDate";
+import Badge from "../shared/Badge";
+import flags from "../data/flags";
+import useWidth from "../Hooks/useWidth";
 
 const ProfileImage = styled.div`
   position: absolute;
@@ -28,7 +28,7 @@ const ProfileImage = styled.div`
   overflow: hidden;
 `;
 
-const EditPictureButton = styled('div')`
+const EditPictureButton = styled("div")`
   position: absolute;
   top: 0;
   right: 0;
@@ -47,26 +47,26 @@ const Profile = () => {
     React.useState<boolean>(false);
   const [profileUser, setProfileUser] = React.useState<UserProps | null>(null);
   const [editType, setEditType] = React.useState<
-    'initial' | 'edit-all' | 'edit-one'
-  >('edit-all');
+    "initial" | "edit-all" | "edit-one"
+  >("edit-all");
   const [initialSetupStep, setInitialSetupStep] = React.useState<number | null>(
     null
   );
   const [showProfileSetup, setShowProfileSetup] =
     React.useState<boolean>(false);
   const [showSettings, setShowSettings] = React.useState<boolean>(false);
-  const [profileFlag, setProfileFlag] = React.useState<string>('');
+  const [profileFlag, setProfileFlag] = React.useState<string>("");
 
   const { user } = React.useContext(AuthContext);
   const { width } = useWidth();
 
   const openProfileSetup = () => {
-    setEditType('edit-all');
+    setEditType("edit-all");
     setShowProfileSetup(true);
   };
 
   const openProfileSetupInStep = (step: number) => {
-    setEditType('edit-one');
+    setEditType("edit-one");
     setInitialSetupStep(step);
     setShowProfileSetup(true);
   };
@@ -89,7 +89,7 @@ const Profile = () => {
   }, [profileUser]);
 
   useEffect(() => {
-    const id = window.location.pathname.split('/')[2];
+    const id = window.location.pathname.split("/")[2];
 
     if (id) {
       if (id === user?._id) {
@@ -108,12 +108,14 @@ const Profile = () => {
     }
   }, [profileUser]);
 
+  console.log("me", user);
+
   if (!profileUser) return null;
   return (
     <Container
       width="70%"
-      mx={'auto'}
-      overflow={showProfileSetup ? 'hidden' : 'scroll'}
+      mx={"auto"}
+      overflow={showProfileSetup ? "hidden" : "scroll"}
       position="relative"
     >
       {showSettings && (
@@ -215,7 +217,7 @@ const Profile = () => {
         </Text>
         <Container flex flexWrap justify="space-between" mt={24} gap={36}>
           <Container
-            width={width > 750 ? '45%' : '100%'}
+            width={width > 750 ? "45%" : "100%"}
             flex
             dir="column"
             gap={12}
@@ -226,11 +228,11 @@ const Profile = () => {
               gap={16}
               onClick={() => openProfileSetupInStep(0)}
             >
-              {' '}
+              {" "}
               {isOwner && <SvgIcon src="pencil_fill" size={25} />}
-              {'  '}
+              {"  "}
               <Text fontSize={32} fontWeight={600}>
-                {' '}
+                {" "}
                 Bio:
               </Text>
             </Container>
@@ -244,9 +246,9 @@ const Profile = () => {
               gap={16}
               onClick={() => openProfileSetupInStep(2)}
             >
-              {' '}
+              {" "}
               {isOwner && <SvgIcon src="pencil_fill" size={25} />}
-              {'  '}
+              {"  "}
               <Text fontSize={32} fontWeight={600}>
                 Skills
               </Text>
@@ -262,9 +264,9 @@ const Profile = () => {
               gap={16}
               onClick={() => openProfileSetupInStep(3)}
             >
-              {' '}
+              {" "}
               {isOwner && <SvgIcon src="pencil_fill" size={25} />}
-              {'  '}
+              {"  "}
               <Text fontSize={32} fontWeight={600}>
                 Languages
               </Text>
@@ -279,7 +281,7 @@ const Profile = () => {
             flex
             dir="column"
             gap={24}
-            width={width > 750 ? '45%' : '100%'}
+            width={width > 750 ? "45%" : "100%"}
           >
             {profileUser.experience?.length > 0 && (
               <div>
@@ -290,7 +292,7 @@ const Profile = () => {
                   mb={16}
                   onClick={() => openProfileSetupInStep(1)}
                 >
-                  {isOwner && <SvgIcon src="pencil_fill" size={25} />}{' '}
+                  {isOwner && <SvgIcon src="pencil_fill" size={25} />}{" "}
                   <Text fontSize={32} fontWeight={600}>
                     Experience
                   </Text>
@@ -316,7 +318,7 @@ const Profile = () => {
                       </Text>
                       <Text fontSize={18}>{exp.company.name}</Text>
                       <Text>
-                        {formatDateNamed(exp.startDate)} -{' '}
+                        {formatDateNamed(exp.startDate)} -{" "}
                         {formatDateNamed(exp.endDate)}
                       </Text>
                     </Container>
@@ -333,7 +335,7 @@ const Profile = () => {
                   mb={16}
                   onClick={() => openProfileSetupInStep(1)}
                 >
-                  {isOwner && <SvgIcon src="pencil_fill" size={25} />}{' '}
+                  {isOwner && <SvgIcon src="pencil_fill" size={25} />}{" "}
                   <Text fontSize={32} fontWeight={600}>
                     Education
                   </Text>
@@ -359,7 +361,7 @@ const Profile = () => {
                       </Text>
                       <Text fontSize={18}>{edu.university.name}</Text>
                       <Text>
-                        {formatDateNamed(edu.startDate)} -{' '}
+                        {formatDateNamed(edu.startDate)} -{" "}
                         {formatDateNamed(edu.endDate)}
                       </Text>
                     </Container>

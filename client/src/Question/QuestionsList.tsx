@@ -1,71 +1,77 @@
-import React, { useEffect } from 'react';
-import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect } from "react";
+import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
-import { Container } from '../shared/Container';
-import { AuthContext } from '../Auth/ContextProvider';
-import { Text } from '../shared/Text';
-import { QuestionProps } from '../models/Question';
-import ProfilePicture from '../shared/ProfilePicture';
-import { Button } from '../shared/Button';
-import RejectModal from './RejectModal';
-import SvgIcon from '../shared/SvgIcon';
+import { Container } from "../shared/Container";
+import { AuthContext } from "../Auth/ContextProvider";
+import { Text } from "../shared/Text";
+import { QuestionProps } from "../models/Question";
+import ProfilePicture from "../shared/ProfilePicture";
+import { Button } from "../shared/Button";
+import RejectModal from "./RejectModal";
+import SvgIcon from "../shared/SvgIcon";
+import { Col } from "react-bootstrap";
+import Checkbox from "../shared/Checkbox";
 
-type TabType = 'sent' | 'recieved';
+type TabType = "sent" | "recieved";
 
 const TabSwithcer = styled.div`
   display: flex;
-  background-color: ${(props) => props.theme.colors.secondary_L2};
-  position: relative;
+  flex-direction: column;
+  /* position: relative; */
   transition: all 0.3s ease-in-out;
-  border-radius: 5px;
+  /* border-radius: 5px; */
   overflow: hidden;
+  margin: 8px;
   margin-bottom: 16px;
 `;
 
-const TabIndicator = styled.div<{ currentTab: TabType }>`
+const TabIndicator = styled.div<{ currentTab: boolean }>`
   position: absolute;
-  height: 3px;
-  width: 50%;
+  height: 1.2px;
+  width: 100%;
   background-color: ${(props) => props.theme.colors.primary};
   transition: all 0.3s ease-in-out;
   left: 0;
   bottom: 0;
-  transform: translateX(
-    ${(props) => (props.currentTab === 'recieved' ? '0' : '100%')}
-  );
+  transform: translateX(${(props) => (props.currentTab ? "0" : "100%")});
 `;
 
-const Tab = styled.div`
+const Tab = styled.div<{ currentTab: boolean }>`
   width: 120px;
   padding-block: 6px;
+  margin-block: 4px;
   cursor: pointer;
-
+  position: relative;
+  background-color: ${(props) =>
+    props.currentTab ? props.theme.colors.primary_L2 : ""};
   &:hover {
-    background-color: ${(props) => props.theme.colors.primary_L2};
+    background-color: ${(props) => props.theme.colors.primary_L1};
     transition: all 0.3s ease-in-out;
   }
 `;
 
-const AnimatedContainer = styled('div')<{ currentTab: TabType }>`
+const AnimatedContainer = styled("div")<{ currentTab: TabType }>`
   width: 50%;
   @media (max-width: 890px) {
     width: 100%;
   }
 `;
 
-const QuestionItem = styled('div')`
+const QuestionItem = styled("div")`
   width: 100%;
   max-height: 80px;
   display: flex;
-  border-radius: 8px;
+  /* border-radius: 8px; */
   overflow: hidden;
   margin-bottom: 12px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   color: #000;
+  gap: 16px;
   text-decoration: none;
-  padding-right: 10px;
+  padding: 10px;
+  border-bottom: ${(props) => props.theme.colors.primary} 1.4px solid;
 
   &:hover {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
@@ -74,12 +80,12 @@ const QuestionItem = styled('div')`
   }
 `;
 
-const TruncatedText = styled('p')`
+const TruncatedText = styled("p")`
   overflow: hidden;
-  text-overflow: ellipsis;
+  /* text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
+  -webkit-box-orient: vertical; */
   margin: 0;
 `;
 
@@ -91,17 +97,17 @@ const Actions = styled.div`
 `;
 
 const QuestionsList = () => {
-  const [currentTab, setCurrentTab] = React.useState<TabType>('recieved');
+  const [currentTab, setCurrentTab] = React.useState<TabType>("sent");
   const [questions, setQuestions] = React.useState<QuestionProps[]>([]);
   const [selectedQuestionId, setSelectedQuestionId] =
-    React.useState<string>('');
+    React.useState<string>("");
   const [showRejectionModal, setShowRejectionModal] =
     React.useState<boolean>(false);
   const { user } = React.useContext(AuthContext);
   const navigate = useNavigate();
 
   const onClick = (question: QuestionProps) => {
-    if (currentTab === 'sent' || question.status.action !== 'pending') {
+    if (currentTab === "sent" || question.status.action !== "pending") {
       navigate(`/question/${question._id}`);
     }
   };
@@ -109,7 +115,7 @@ const QuestionsList = () => {
   useEffect(() => {
     if (user) {
       const questions =
-        currentTab === 'recieved'
+        currentTab === "recieved"
           ? user.questions?.received
           : user.questions?.sent;
       setQuestions(questions?.reverse() || []);
@@ -117,93 +123,112 @@ const QuestionsList = () => {
   }, [user, currentTab]);
 
   return (
-    <Container width="90%" mx={'auto'} flex dir="column" align="center">
-      {showRejectionModal && (
-        <RejectModal
-          setShowRejectModal={setShowRejectionModal}
-          questionId={selectedQuestionId}
-        />
-      )}
+    <Container width="100%" mx={"auto"} flex dir="row" align="center">
       <TabSwithcer>
-        <Tab onClick={() => setCurrentTab('recieved')}>
+        <Tab
+          currentTab={currentTab === "recieved"}
+          onClick={() => setCurrentTab("recieved")}
+        >
           <Text
             align="center"
-            fontWeight={currentTab === 'recieved' ? 'bold' : 400}
+            fontWeight={currentTab === "recieved" ? "bold" : 400}
           >
-            Recieved
+            <img height={"16px"} src="/assets/images/inbox.svg" /> Recieved
           </Text>
+          <TabIndicator currentTab={currentTab === "recieved"} />
         </Tab>
-        <Tab onClick={() => setCurrentTab('sent')}>
+
+        <Tab
+          currentTab={currentTab === "sent"}
+          onClick={() => setCurrentTab("sent")}
+        >
           <Text
             align="center"
-            fontWeight={currentTab === 'sent' ? 'bold' : 400}
+            fontWeight={currentTab === "sent" ? "bold" : 400}
           >
-            Sent
+            <img height={"16px"} src="/assets/images/send_arrow.svg" /> Sent
           </Text>
+          <TabIndicator currentTab={currentTab === "sent"} />
         </Tab>
-        <TabIndicator currentTab={currentTab} />
       </TabSwithcer>
-      <AnimatedContainer currentTab={currentTab}>
-        {questions.map((question, i) => (
-          <QuestionItem key={question._id} onClick={() => onClick(question)}>
-            <ProfilePicture
-              src={
-                currentTab === 'recieved'
-                  ? question.sender.picture
-                  : question.receiver.picture
-              }
-              size={80}
-            />
-            <Container px={12} py={16}>
-              <Text fontWeight={'bold'}>
-                {currentTab === 'recieved'
+
+      <Col>
+        {showRejectionModal && (
+          <RejectModal
+            setShowRejectModal={setShowRejectionModal}
+            questionId={selectedQuestionId}
+          />
+        )}
+        <AnimatedContainer currentTab={currentTab}>
+          {questions.map((question, i) => (
+            <QuestionItem
+              key={question._id}
+              //  onClick={() => onClick(question)}
+            >
+              <Checkbox checked={false} />
+              {/* <input type="checkbox" /> */}
+              {/* <ProfilePicture
+                src={
+                  currentTab === "recieved"
+                    ? question.sender.picture
+                    : question.receiver.picture
+                }
+                size={80}
+              /> */}
+
+              <Text fontWeight={"bold"}>
+                {currentTab === "recieved"
                   ? question.sender.name
-                  : question.receiver.name}
+                  : `to: ${question.receiver.name}`}
               </Text>
-              <TruncatedText>{question.description}</TruncatedText>
-            </Container>
-            {currentTab === 'recieved' &&
-              question.status.action === 'pending' && (
-                <Actions>
-                  <Button
-                    variant="secondary"
-                    onClick={() => {
-                      navigate(`/question/${question._id}`);
-                    }}
-                  >
-                    <SvgIcon src="check" size={15} />
-                  </Button>
-                  <Button
-                    variant="secondary"
-                    onClick={() => {
-                      setSelectedQuestionId(question._id);
-                      setShowRejectionModal(true);
-                    }}
-                  >
-                    <SvgIcon src="close" size={15} />
-                  </Button>
-                </Actions>
-              )}
-            {currentTab === 'recieved' &&
-              question.status.action === 'rejected' && (
-                <Actions>
-                  <Container flex gap={12}>
-                    <Text color="red">Declined</Text>
-                  </Container>
-                </Actions>
-              )}
-            {currentTab === 'recieved' &&
-              question.status.action === 'accepted' &&
-              question.status.done && (
-                <Actions>
-                  <Container flex gap={12}>
-                    <Text color="green">Done</Text>
-                  </Container>
-                </Actions>
-              )}
-          </QuestionItem>
-        ))}
-      </AnimatedContainer>
+              {/* <Text>{question.}</Text> */}
+
+              <Text>{question.description}</Text>
+
+              {currentTab === "recieved" &&
+                question.status.action === "pending" && (
+                  <Actions>
+                    <Button
+                      variant="secondary"
+                      onClick={() => {
+                        navigate(`/question/${question._id}`);
+                      }}
+                    >
+                      <SvgIcon src="check" size={15} />
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      onClick={() => {
+                        setSelectedQuestionId(question._id);
+                        setShowRejectionModal(true);
+                      }}
+                    >
+                      <SvgIcon src="close" size={15} />
+                    </Button>
+                  </Actions>
+                )}
+              {currentTab === "recieved" &&
+                question.status.action === "rejected" && (
+                  <Actions>
+                    <Container flex gap={12}>
+                      <Text color="red">Declined</Text>
+                    </Container>
+                  </Actions>
+                )}
+              {currentTab === "recieved" &&
+                question.status.action === "accepted" &&
+                question.status.done && (
+                  <Actions>
+                    <Container flex gap={12}>
+                      <Text color="green">Done</Text>
+                    </Container>
+                  </Actions>
+                )}
+              <Text>{question.createdAt}</Text>
+            </QuestionItem>
+          ))}
+        </AnimatedContainer>
+      </Col>
     </Container>
   );
 };
