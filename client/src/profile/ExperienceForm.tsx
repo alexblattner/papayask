@@ -64,7 +64,6 @@ const ExperienceForm = ({
     if(accessToken!='') return
 
     const getAccessToken = async () => {
-      alert(3333)
       const response = await axios.post(
         'https://www.linkedin.com/oauth/v2/accessToken',
         {

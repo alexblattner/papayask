@@ -290,7 +290,7 @@ const Profile = () => {
               </Text>
             </Container>
             <Container flex align="center" gap={12}>
-              <Text fontSize={width > 1145 ? 46 : 40} fontWeight={700}>
+              <Text fontSize={width > 1145 ? 46 : 40} fontWeight={700}lineHeight = {1.5}>
                 {profileUser.name}
               </Text>
               <Text fontSize={width > 1145 ? 46 : 40}>{profileFlag}</Text>
@@ -349,7 +349,7 @@ const Profile = () => {
                   openExperienceModal(null, 'Add');
                 }}
               >
-                <SvgIcon src="plus" size={16} color="black" />
+                <SvgIcon src="pencil_fill" size={16} color="black" />
               </Container>
             )}
           </Container>
@@ -401,7 +401,7 @@ const Profile = () => {
             </Text>
             {isOwner && (
               <Container onClick={() => openEducationModal(null, 'Add')}>
-                <SvgIcon src="plus" size={16} color="black" />
+                <SvgIcon src="pencil_fill" size={16} color="black" />
               </Container>
             )}
           </Container>

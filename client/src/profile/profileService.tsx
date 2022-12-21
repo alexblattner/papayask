@@ -383,9 +383,10 @@ export const EditProfileProvider = ({
       setCountry(user.country);
 
       if (user.picture) {
-        setImage(
-          `https://res.cloudinary.com/snipcritics/image/upload/v1668941778/${process.env.REACT_APP_ENV}/${user.picture}.jpg`
-        );
+        // setImage(
+        //   `https://res.cloudinary.com/snipcritics/image/upload/v1668941778/${process.env.REACT_APP_ENV}/${user.picture}.jpg`
+        // );
+        setImage(`cloudinary-${user.picture}`);
         setCloudinaryImageId(user.picture);
       }
     }
