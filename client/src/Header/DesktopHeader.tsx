@@ -11,6 +11,7 @@ import { Text } from '../shared/Text';
 import { Button } from '../shared/Button';
 import useWidth from '../Hooks/useWidth';
 import "./Header.css";
+import { platform } from 'os';
 const HeaderContainer = styled.div`
   position: fixed;
   display: flex;
@@ -33,6 +34,7 @@ const StyledLink = styled('div')`
   color: white;
   text-decoration: none;
   font-weight: bold;
+  cursor: pointer;
 `;
 
 interface Props {
