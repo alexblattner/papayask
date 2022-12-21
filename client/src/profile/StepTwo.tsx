@@ -40,20 +40,38 @@ const StepTwo = () => {
             <Container
               key={i}
               width="100%"
-              border="1px solid #f8cbc9"
+              border="2px solid var(--secondary-l1)"
+              background="var(--secondary-l2)"
               position="relative"
               borderRadius="8px"
               px={16}
               py={16}
               mb={16}
+              flex
+              align="center"
+              gap={8}
             >
-              <Text fontSize={18} fontWeight="bold">
-                {edu.name}
-              </Text>
-              <Text fontSize={16}>{edu.university.name}</Text>
-              <Text fontSize={14}>
-                {formatDate(edu.startDate)} - {formatDate(edu.endDate)}
-              </Text>
+              <Container
+                border="2px solid var(--secondary-l1)"
+                borderRadius="8px"
+                background="white"
+                width="88px"
+                height="88px"
+                flex
+                align="center"
+                justify="center"
+              >
+                <SvgIcon src="study" size={52} />
+              </Container>
+              <Container>
+                <Text fontSize={18} fontWeight="bold">
+                  {edu.name}
+                </Text>
+                <Text fontSize={16}>{edu.university.name}</Text>
+                <Text fontSize={14}>
+                  {formatDate(edu.startDate)} - {formatDate(edu.endDate)}
+                </Text>
+              </Container>
               <Container
                 position="absolute"
                 top={'10px'}
@@ -80,20 +98,38 @@ const StepTwo = () => {
               <Container
                 key={i}
                 width="100%"
-                border="1px solid #f8cbc9"
+                border="2px solid var(--secondary-l1)"
+                background="var(--secondary-l2)"
                 borderRadius="8px"
                 position="relative"
                 px={16}
                 py={16}
                 mb={16}
+                flex
+                align="center"
+                gap={8}
               >
-                <Text fontSize={18} fontWeight="bold">
-                  {exp.name}
-                </Text>
-                <Text fontSize={16}>{exp.company.name}</Text>
-                <Text fontSize={14}>
-                  {formatDate(exp.startDate)} - {formatDate(exp.endDate)}
-                </Text>
+                <Container
+                  border="2px solid var(--secondary-l1)"
+                  borderRadius="8px"
+                  background="white"
+                  width="88px"
+                  height="88px"
+                  flex
+                  align="center"
+                  justify="center"
+                >
+                  <SvgIcon src="work" size={52} />
+                </Container>
+                <Container>
+                  <Text fontSize={20} fontWeight="bold">
+                    {exp.company.name}
+                  </Text>
+                  <Text fontSize={18}>{exp.name}</Text>
+                  <Text fontSize={16}>
+                    {formatDate(exp.startDate)} - {formatDate(exp.endDate)}
+                  </Text>
+                </Container>
                 <Container
                   onClick={() => removeExperience(i)}
                   position="absolute"

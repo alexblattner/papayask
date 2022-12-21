@@ -54,6 +54,7 @@ export interface RelatedEducation {
 }
 
 export interface UserSkill {
+  _id?: string;
   name: string;
   educations: RelatedEducation[];
   experiences: RelatedExperience[];

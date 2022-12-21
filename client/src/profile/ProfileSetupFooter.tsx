@@ -4,6 +4,7 @@ import { Button } from '../shared/Button';
 import { Container } from '../shared/Container';
 import useWidth from '../Hooks/useWidth';
 import { useEditProfile } from './profileService';
+import { Text } from '../shared/Text';
 
 interface Props {
   step: number;
@@ -13,8 +14,6 @@ interface Props {
   setShowProfileSetup: React.Dispatch<React.SetStateAction<boolean>>;
   type: 'initial' | 'edit-all' | 'edit-one';
 }
-
-
 
 const ProfileSetupFooter = ({
   step,
@@ -55,13 +54,16 @@ const ProfileSetupFooter = ({
       gap={10}
       width={width > 768 ? '75%' : '90%'}
       mt={'auto'}
+      justify="flex-end"
     >
       <Button variant="outline" onClick={() => setShowProfileSetup(false)}>
         Close
       </Button>
       {type !== 'edit-one' && (
-        <Button variant="primary" disabled={step === 0} onClick={prevStep}>
-          Back
+        <Button variant="text" disabled={step === 0} onClick={prevStep}>
+          <Text color={step === 0 ? 'var(--secondary)' : 'var(--primary)'} fontWeight ='bold'>
+            Back
+          </Text>
         </Button>
       )}
       {step !== 3 && type !== 'edit-one' && (
@@ -69,7 +71,7 @@ const ProfileSetupFooter = ({
           Next
         </Button>
       )}
-     
+
       {(step === 3 || type === 'edit-one') && (
         <Button
           variant="primary"
@@ -79,7 +81,6 @@ const ProfileSetupFooter = ({
           {isLoading ? 'Please Wait...' : 'Submit'}
         </Button>
       )}
-     
     </Container>
   );
 };

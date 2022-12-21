@@ -40,7 +40,10 @@ const StyledButton = styled('button')<ButtonProps>`
 
   &:disabled {
     cursor: not-allowed;
-    background-color: ${(props) => props.theme.colors.secondary};
+    background-color: ${(props) =>
+      props.variant === 'text'
+        ? 'transparent'
+        : props.theme.colors.secondary_L1};
   }
 `;
 

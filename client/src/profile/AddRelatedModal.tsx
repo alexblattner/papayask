@@ -23,9 +23,6 @@ interface Props {
   ) => void;
   educationIndexSelected: number[];
   experienceIndexSelected: number[];
-  getInputYears: (index: number) => string | null;
-  getYearsNumber: (index: number, experience: UserExperience) => number;
-  setYears: (index: number, value: string) => void;
 }
 
 const ListItem = styled('div')`
@@ -58,9 +55,6 @@ const AddRelatedModal = (props: Props) => {
     selectExperience,
     educationIndexSelected,
     experienceIndexSelected,
-    getInputYears,
-    getYearsNumber,
-    setYears,
     add,
   } = props;
 
@@ -108,20 +102,6 @@ const AddRelatedModal = (props: Props) => {
                     <Text>/</Text>
                     <Text fontSize={16}>{exp.company.name}</Text>
                   </Container>
-                  {experienceIndexSelected.includes(i) && (
-                    <Container flex gap={32} align="center">
-                      <Text fontSize={16}> How many years?</Text>
-                      <Input
-                        name="years"
-                        value={getInputYears(i) || getYearsNumber(i, exp) || ''}
-                        onChange={(e) => setYears(i, e.target.value)}
-                        placeholder=""
-                        type="text"
-                        width="100px"
-                        mb="0px"
-                      />
-                    </Container>
-                  )}
                 </div>
                 <CheckIcon selected={experienceIndexSelected.includes(i)}>
                   <SvgIcon src="check" size={30} />

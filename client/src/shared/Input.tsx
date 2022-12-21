@@ -7,9 +7,9 @@ const InputContainer = styled.div<InputProps>`
 
 const StyledInput = styled.input<InputProps>`
   width: 100%;
-  height: 15px;
+  height: 50px;
   border: 2px solid
-    ${(props) => (props.color ? props.color : props.theme.colors.secondary)};
+    ${(props) => (props.color ? props.color : props.theme.colors.secondary_L1)};
   border-radius: 8px;
   padding: 16px;
   font-size: 16px;

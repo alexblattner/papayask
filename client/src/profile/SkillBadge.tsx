@@ -14,7 +14,6 @@ const StyledBadge = styled('div')`
   color: ${(props) => props.theme.colors.primary_D2};
   cursor: pointer;
   font-weight: bold;
-  width: 300px;
 `;
 
 const Arrow = styled('div')<{ expanded: boolean }>`
@@ -42,9 +41,11 @@ const SkillBadge = ({ skill }: Props) => {
         <Text color="#92462A" fontSize={16} fontWeight={'bold'}>
           {skill.name}
         </Text>
-        <Arrow expanded={expanded}>
-          <SvgIcon src="arrow" color="#92462A" size={12} />
-        </Arrow>
+        {skill.educations.length || skill.experiences.length ? (
+          <Arrow expanded={expanded}>
+            <SvgIcon src="arrow" color="#92462A" size={12} />
+          </Arrow>
+        ) : null}
       </Container>
       <BadgeContent expanded={expanded}>
         {skill.experiences.length > 0 && (
@@ -53,7 +54,7 @@ const SkillBadge = ({ skill }: Props) => {
           </Text>
         )}
         {skill.experiences.map((experience) => (
-          <>
+          <Container key={experience.experience.name}>
             <Text color="black" fontSize={16} fontWeight={'bold'}>
               {experience.experience.company.name}
             </Text>
@@ -69,7 +70,7 @@ const SkillBadge = ({ skill }: Props) => {
                 {experience.years} Years
               </Text>
             </Container>
-          </>
+          </Container>
         ))}
         {skill.educations.length > 0 && (
           <Text color="var(--primary)" fontSize={18} fontWeight={'bold'}>
@@ -77,7 +78,7 @@ const SkillBadge = ({ skill }: Props) => {
           </Text>
         )}
         {skill.educations.map((education) => (
-          <>
+          <Container key={education.education.name}>
             <Text color="black" fontSize={16} fontWeight={'bold'}>
               {education.education.university.name}
             </Text>
@@ -93,7 +94,7 @@ const SkillBadge = ({ skill }: Props) => {
                 {education.years} Years
               </Text>
             </Container>
-          </>
+          </Container>
         ))}
       </BadgeContent>
     </StyledBadge>
