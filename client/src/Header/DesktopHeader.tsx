@@ -216,7 +216,6 @@ const DesktopHeader = (props: Props) => {
       {user ? (
         <>
           <Container flex align="center" gap={16} ml="auto">
-            {}
             {!user.isSetUp && (
               <Button
                 variant="outline"
