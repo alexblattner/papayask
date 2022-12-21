@@ -9,12 +9,13 @@ import {
   UserSkill,
 } from '../models/User';
 import { Container } from '../shared/Container';
-import Icon from '../shared/Icon';
 import { Text } from '../shared/Text';
 import styled from 'styled-components';
 import { Button } from '../shared/Button';
 import { Input } from '../shared/Input';
 import formatDate from '../utils/formatDate';
+import useWidth from '../Hooks/useWidth';
+import SvgIcon from '../shared/SvgIcon';
 
 const ListItem = styled('div')`
   cursor: pointer;
@@ -281,7 +282,7 @@ const SkillRow = ({
                       </Text>
                     </div>
                     <CheckIcon selected={educationIndexSelected.includes(i)}>
-                      <Icon src="check" width={30} height={30} />
+                      <SvgIcon src="check" size={30} />
                     </CheckIcon>
                   </ListItem>
                 ))}
@@ -317,7 +318,7 @@ const SkillRow = ({
                       )}
                     </div>
                     <CheckIcon selected={experienceIndexSelected.includes(i)}>
-                      <Icon src="check" width={30} height={30} />
+                      <SvgIcon src="check" size={30} />
                     </CheckIcon>
                   </ListItem>
                 ))}
@@ -325,7 +326,7 @@ const SkillRow = ({
             )}
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={closeModal}>
+            <Button variant="outline" onClick={closeModal}>
               Cancel
             </Button>
             <Button variant="primary" onClick={add}>
@@ -334,26 +335,20 @@ const SkillRow = ({
           </Modal.Footer>
         </Modal>
       }
-      <Container
-        flex
-        align="center"
-        py={16}
-        borderBottom="1px solid #f8cbc9"
-        key={skill.name}
-      >
+      <Container flex py={16} borderBottom="1px solid #f8cbc9" key={skill.name}>
         <Container
-          width="200px"
+          width="20%"
           flex
           align="center"
           gap={16}
           borderRight="1px solid #f8cbc9"
         >
           <Container onClick={() => removeSkill(index)}>
-            <Icon src="Delete" /> {skill.name}
+            <SvgIcon src="delete" /> {skill.name}
           </Container>
         </Container>
         <Container
-          width="calc(50% - 112px)"
+          width="40%"
           px={16}
           flex
           align="center"
@@ -377,36 +372,37 @@ const SkillRow = ({
             onClick={() => setShowRelatedEducation(true)}
           >
             {' '}
-            <Icon src="plus" width={15} height={15} />
+            <SvgIcon src="plus" size={15} />
           </Container>
         </Container>
         <Container
-          width="calc(50% - 112px)"
+          width="40%"
           pl={16}
-          flex
           align="center"
           gap={16}
+          flexWrap
+          position="relative"
         >
           {relatedExperience.map((exp, i) => (
-            <div key={i}>
-              <Container flex>
-                <Text fontSize={18} fontWeight={'bold'}>
-                  {exp.experience.company.name}
-                </Text>
-                <Text fontSize={18}>/</Text>
-                <Text fontSize={14}>{exp.experience.name}</Text>
-              </Container>
-
+            <Container flex gap={4} align="center" key={i}>
+              <Text fontSize={18} fontWeight={'bold'}>
+                {exp.experience.company.name}
+              </Text>
+              <Text fontSize={24} fontWeight="bold">
+                ·
+              </Text>
               <Text>{exp.years} Years</Text>
-            </div>
+            </Container>
           ))}
           <Container
             width="25px"
-            ml={'auto'}
             onClick={() => setShowRelatedExperience(true)}
+            position="absolute"
+            right={'0'}
+            top={'calc(50% - 12.5px)'}
           >
             {' '}
-            <Icon src="plus" width={15} height={15} />
+            <SvgIcon src="plus" size={15} />
           </Container>
         </Container>
       </Container>

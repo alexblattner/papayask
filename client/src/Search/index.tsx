@@ -2,11 +2,10 @@ import React, { useContext, useState, useEffect, useMemo } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import "./search.css";
 import { UserProps, University, UserEducation } from "../models/User";
-import Education from "./Education";
-import Experience from "./Experience";
-import YearsOfExperience from "./YearsOfExperience";
+// import Education from "./Education";
+// import YearsOfExperience from "./YearsOfExperience";
 import MinMax from "./MinMax";
-import Location from "./Location";
+// import Location from "./Location";
 import Budget from "./Budget";
 import Result from "./Result";
 import api from "../utils/api";
@@ -271,7 +270,7 @@ const Search = () => {
   return (
     <div>
       <div id="top">
-        <YearsOfExperience
+        {/* <YearsOfExperience
           values={yearsOfExperience}
           setValues={setYearsOfExperience}
           range={yearsOfExperienceRange}
@@ -289,7 +288,7 @@ const Search = () => {
           values={location}
           languages={allLanguages}
           setValues={setLocation}
-        />
+        /> */}
         <Budget setValues={setBudget} range={budget} />
       </div>
       <div id="results">

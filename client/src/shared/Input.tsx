@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 const StyledInput = styled.input<InputProps>`
-  width: ${(props) => props.width || '400px'};
+  width: ${(props) => props.width || '100%'};
   height: 15px;
   border: 1px solid ${(props) => props.theme.colors.primary_L2};
   border-radius: 8px;
@@ -23,13 +23,9 @@ const StyledInput = styled.input<InputProps>`
   }
 `;
 
-interface InputProps {
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   name: string;
   value: string | number;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onKeyPress?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
-  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
-  onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
   error?: string;
   type: string;
   width?: string;

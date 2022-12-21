@@ -3,13 +3,14 @@ import React, { useEffect } from 'react';
 import { Container } from './Container';
 import { Input } from './Input';
 import { Text } from './Text';
-import languages, { Language } from '../data/languages';
+import languages from '../data/languages';
 import { Suggestions, Suggestion } from './Suggestions';
 
 interface Props {
   addLanguage: (language: string) => void;
   allLanguages?: string[];
-  onBlur?: (value:string) => void;
+  onBlur?: (value: string) => void;
+  width?: string;
 }
 
 const LanguagesSelect = (props: Props) => {
@@ -20,16 +21,14 @@ const LanguagesSelect = (props: Props) => {
 
   const pickLanguage = (language: string) => {
     addLanguage(language);
-    if(!props.allLanguages)
-    setValue('');
-    else
-    setValue(language);
+    if (!props.allLanguages) setValue('');
+    else setValue(language);
     setSuggestions([]);
   };
 
   useEffect(() => {
     if (value.length > 0 && focused) {
-      if(props.allLanguages){
+      if (props.allLanguages) {
         setSuggestions(props.allLanguages);
       } else {
         const filteredlanguages = languages.filter((language) =>
@@ -55,12 +54,12 @@ const LanguagesSelect = (props: Props) => {
         value={value}
         placeholder="Languages"
         name=""
+        width={props.width}
         onChange={(e) => setValue(e.target.value)}
         onFocus={() => setFocused(true)}
         onBlur={() => {
-          setFocused(false)
-          if(props.onBlur)
-          props.onBlur(value);
+          setFocused(false);
+          if (props.onBlur) props.onBlur(value);
         }}
       />
 

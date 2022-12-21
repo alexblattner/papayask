@@ -158,6 +158,17 @@ exports.getById = async (req, res, next) => {
     return new Error(err);
   }
 };
+exports.edit= async (req, res, next) => {
+  const note= await Note.findById(req.body.id).exec();
+  if (note && note.user.toString() == req.user._id.toString()) {
+    await note.update({ content: req.body.content });
+    return res.send(note);
+  } else {
+    return res.sendStatus(403);
+  }
+};
+
+
 exports.create= async (req, res, next) => {
   const question = await Question.findById(req.body.questionId).exec();
   if (question && question.receiver.toString() == req.user._id.toString()) {

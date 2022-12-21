@@ -21,7 +21,7 @@ const UniversitiesSelect = (props: Props) => {
 
   useEffect(() => {
     if (value !== '' && focused) {
-      if(props.universities) {
+      if (props.universities) {
         setUniversities(props.universities);
       } else {
         api.get(`/university/${value}`).then((res) => {

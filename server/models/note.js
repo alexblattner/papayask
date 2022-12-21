@@ -4,6 +4,7 @@ const mongoose = require('mongoose'),
     content: { type: String, required: true },
     user:{ type: Schema.Types.ObjectId, ref: "User"},
     coordinates: { type: Schema.Types.Mixed },
+    replyTo: { type: Schema.Types.ObjectId, ref: "Note" },
     question: { type: Schema.Types.ObjectId, ref: "Question", required: true },
   }, {
     timestamps: true

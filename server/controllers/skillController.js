@@ -10,7 +10,8 @@ exports.create = async (skill, userId) => {
       name: experiences[i].experience.name,
       startDate: experiences[i].experience.startDate,
       endDate: experiences[i].experience.endDate,
-    }).exec();
+    });
+
     experienceList.push({
       years: experiences[i].years,
       experience: exp._id,
@@ -22,7 +23,8 @@ exports.create = async (skill, userId) => {
       name: educations[i].education.name,
       startDate: educations[i].education.startDate,
       endDate: educations[i].education.endDate,
-    }).exec();
+    });
+
     educationList.push({
       years: educations[i].years,
       education: edu._id,
@@ -80,7 +82,7 @@ exports.update = async (skill) => {
 
 exports.search = async (searchText) => {
   try {
-    const searchResults = await Skill.find({ name: searchText });
+    const searchResults = await Skill.find({ $match: { name: searchText } });
     return searchResults;
   } catch (e) {
     return [];

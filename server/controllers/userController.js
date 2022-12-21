@@ -5,11 +5,9 @@ const { OAuth2Client } = require("google-auth-library");
 const client = new OAuth2Client(process.env.GOOGLE_APP_ID);
 
 const User = require("../models/user");
-
 const experienceController = require("./experienceController");
 const educationController = require("./educationController");
 const skillController = require("./skillController");
-const fileController = require("./fileController");
 
 function escapeRegex(text) {
   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
@@ -166,38 +164,7 @@ exports.createOrLogin = async (req, res, next) => {
         newUserOb.picture = req.body.photoURL;
       }
       const user = new User(newUserOb);
-      const createdUser = await user
-        .save()
-        .populate({
-          path: "experience",
-          populate: { path: "company", model: "Company" },
-        })
-        .populate({
-          path: "education",
-          populate: { path: "university", model: "University" },
-        })
-        .populate({
-          path: "skills",
-          model: "Skill",
-          populate: [
-            {
-              path: "experiences.experience",
-              model: "Experience",
-              populate: {
-                path: "company",
-                model: "Company",
-              },
-            },
-            {
-              path: "educations.education",
-              model: "Education",
-              populate: {
-                path: "university",
-                model: "University",
-              },
-            },
-          ],
-        });
+      const createdUser = await user.save();
 
       return res.send(createdUser);
     } else {
@@ -240,6 +207,8 @@ exports.update = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
+    console.log(req.body);
+
     const {
       bio,
       experience,
@@ -259,7 +228,8 @@ exports.update = async (req, res) => {
     if (experience) {
       for (let i = 0; i < experience.length; i++) {
         if (experience[i]._id) {
-          experienceIds.push(experience[i]._id);
+          const id = await experienceController.update(experience[i], user._id);
+          experienceIds.push(id);
         } else {
           try {
             const newExperience = await experienceController.create(
@@ -279,7 +249,8 @@ exports.update = async (req, res) => {
     if (education) {
       for (let i = 0; i < education.length; i++) {
         if (education[i]._id) {
-          educationIds.push(education[i]._id);
+          const id = await educationController.update(education[i], user._id);
+          educationIds.push(id);
         } else {
           try {
             const newEducation = await educationController.create(
@@ -314,9 +285,9 @@ exports.update = async (req, res) => {
 
     const body = {
       bio,
-      experience: experienceIds,
-      education: educationIds,
-      skills: skillIds,
+      experience: experience ? experienceIds : undefined,
+      education: education ? educationIds : undefined,
+      skills: skills ? skillIds : undefined,
       title,
       isSetUp,
       languages,
@@ -374,16 +345,7 @@ exports.update = async (req, res) => {
 };
 
 exports.search = async (req, res, next) => {
-  const toallob = {
-    $and: [
-      {
-        verified: true,
-      },
-      // {
-      //   "request_settings.concurrent": { $exists: true },
-      // },
-    ],
-  }; //starting object for education, skill and experience to filter undesired data
+  const toallob = {}; //starting object for education, skill and experience to filter undesired data
   const { search, budget, personal, education, experience } = req.query;
 
   if (req.query.personal) {
@@ -397,16 +359,20 @@ exports.search = async (req, res, next) => {
     }
   }
   let searchFilter = {};
-  // const basicFilter = {
-  //   $and: [
-  //     {
-  //       verified: true,
-  //     },
-  //     {
-  //       "request_settings.concurrent": { $exists: true },
-  //     },
-  //   ],
-  // };
+  const basicFilter = {
+    $and: [
+      { verified: true },
+      {
+        $and: [
+          {
+            // request_settings: { $exists: true },
+            "request_settings.concurrent": { $exists: true },
+            // "request_settings.concurrent": { $ne: 0 },
+          },
+        ],
+      },
+    ],
+  };
   if (search) {
     const regex = new RegExp(escapeRegex(search), "gi");
     searchFilter = {
@@ -515,12 +481,12 @@ exports.search = async (req, res, next) => {
       },
     },
     { $match: searchFilter },
-    // { $match: basicFilter },
-    // { $match: budgetFilter },
-    // { $match: experienceFilter },
-    // { $match: educationFilter },
+    { $match: basicFilter },
+    { $match: budgetFilter },
+    { $match: experienceFilter },
+    { $match: educationFilter },
   ]).exec();
-  console.log("users", users);
+  console.log(users);
   return res.send(users);
 };
 
@@ -530,18 +496,57 @@ exports.searchAutomationResults = async (req, res) => {
   console.log("search", search);
   try {
     const educationSearchResults = await educationController.search(regex);
-    const skillsSearchResults = await skillController.search(regex);
-    const experienceSearchResults = await experienceController.search(regex);
-    let results = educationSearchResults
-      .map((result) => result.name.toLowerCase())
-      .concat(skillsSearchResults.map((result) => result.name.toLowerCase()))
-      .concat(
-        experienceSearchResults.map((result) => result.name.toLowerCase())
-      );
+    // const skillsSearchResults = await skillController.search(regex);
+    // const experienceSearchResults = await experienceController.search(regex);
+    let results = educationSearchResults.map((result) =>
+      result.name.toLowerCase()
+    );
+    // .concat(skillsSearchResults.map((result) => result.name.toLowerCase()))
+    // .concat(
+    // experienceSearchResults.map((result) => result.name.toLowerCase())
+    // );
     const uniqueStrings = new Set(results);
     const filteredResults = Array.from(uniqueStrings);
     res.send(filteredResults);
   } catch (e) {
     res.send([]);
+  }
+};
+exports.apply = async (req, res, next) => {
+  if (user) {
+    let completion = 0;
+    if (user.title) {
+      completion += 5;
+    }
+    if (user.bio) {
+      completion += 15;
+    }
+    if (user.picture) {
+      completion += 15;
+    }
+    for (let i = 0; i < user.skills.length; i++) {
+      if (
+        user.skills[i].experiences.length > 0 ||
+        user.skills[i].educations.length > 0
+      ) {
+        completion += 10;
+      } else {
+        completion += 5;
+      }
+    }
+    for (let i = 0; i < user.experience.length; i++) {
+      completion += 5;
+    }
+    for (let i = 0; i < user.education.length; i++) {
+      completion += 5;
+    }
+    if (completion > 65) {
+      user.isSetUp = true;
+    } else {
+      user.isSetUp = false;
+    }
+    user.save();
+  } else {
+    return res.status(401).json({ message: "Unauthorized" });
   }
 };

@@ -1,28 +1,38 @@
 import styled from 'styled-components';
-import { Education, Experience } from '../profile/ProfileSetup';
+import { useEffect, useState } from 'react';
+import 'react-datepicker/dist/react-datepicker.css';
+import DatePicker from 'react-datepicker';
+
+import { Education, Experience } from '../profile/profileService';
 
 const StyledInput = styled('input')`
-  width: 193px;
-  height: 15px;
+  all: unset;
+  height: 33px;
+  font-weight: 500;
+  width: 80%;
+  padding-left: 15px;
+  font-size: 12px;
+`;
+
+const Wrapper = styled.div<{ value: string; placeholder: string }>`
+  height: 35px;
+  width: 50%;
   border: 1px solid ${(props) => props.theme.colors.primary_L2};
   border-radius: 8px;
-  padding: 16px;
-  font-size: 16px;
-  font-weight: 500;
-  margin-bottom: 30px;
-  background-color: transparent;
   position: relative;
+  background-color: transparent;
+  margin-bottom: 30px;
+  padding-top: 4px;
 
   &::before {
     content: ${(props) => (!props.value ? 'attr(placeholder)' : 'none')};
     position: absolute;
-    height: 100%;
     left: 15px;
-    width: calc(100% - 50px);
-    padding-top: 4px;
+    width: calc(100% - 60px);
     color: #aaa;
     background-color: white;
     transition: all 0.2s;
+    pointer-events: none;
   }
 
   &:focus {
@@ -35,10 +45,29 @@ const StyledInput = styled('input')`
   }
 `;
 
+const CustomInput = styled.input`
+  height: 15px;
+  border: 1px solid ${(props) => props.theme.colors.primary_L2};
+  border-radius: 8px;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 30px;
+
+  &::placeholder {
+    font-size: 14px;
+  }
+
+  &:focus {
+    outline: none;
+    border: 2px solid ${(props) => props.theme.colors.primary};
+  }
+`;
+
 interface InputProps {
   name: string;
   value: Date | null | string;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (date: string | Date) => void;
   error?: string;
   placeholder: string;
   inputEducation?: Education;
@@ -54,16 +83,25 @@ const formatedDate = (date: Date | null | string): string => {
     const dateArr = date.split('-');
     year = dateArr[0];
     month = dateArr[1];
-    day = dateArr[2];
+    day = dateArr[2].slice(0, 2);
   } else {
     year = date.getFullYear();
     month = date.getMonth() + 1;
     day = date.getDate();
   }
+
   return `${year}-${month}-${day}`;
 };
 
 export const DateInput = (props: InputProps) => {
+  const [date, setDate] = useState<Date | null>(null);
+
+  const changeDate = (date: Date | null) => {
+    if (date) {
+      props.onChange(date);
+    }
+  };
+
   const minDate = () => {
     let date = '1977-01-01';
     if (props.name.includes('end')) {
@@ -98,16 +136,27 @@ export const DateInput = (props: InputProps) => {
 
     return date;
   };
+
+  useEffect(() => {
+    if (props.value) {
+      setDate(new Date(formatedDate(props.value)));
+    }
+  }, [props.value]);
+
   return (
-    <StyledInput
-      {...props}
-      value={formatedDate(props.value)}
-      type="date"
-      max={maxDate()}
-      min={minDate()}
-      onChange={(e) => {
-        props.onChange(e);
-      }}
+    <DatePicker
+      selected={date}
+      onChange={(date) => changeDate(date)}
+      customInput={<CustomInput />}
+      minDate={new Date(minDate())}
+      maxDate={new Date(maxDate())}
+      placeholderText={`${props.placeholder} (dd/mm/yyyy)`}
+      adjustDateOnChange={true}
+      dateFormat="dd/MM/yyyy"
+      scrollableYearDropdown
+      showYearDropdown
+      yearDropdownItemNumber={100}
+      autoComplete="off"
     />
   );
 };

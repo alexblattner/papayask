@@ -1,7 +1,7 @@
 import { forwardRef } from 'react';
 import styled from 'styled-components';
 
-interface TextAreaProps {
+interface TextAreaProps extends React.HTMLAttributes<HTMLTextAreaElement> {
   value: string;
   onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }

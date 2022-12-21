@@ -1,8 +1,9 @@
 import React from 'react';
 
-import { AuthContext } from '../Auth/ContextProvider';
 import { Button } from '../shared/Button';
 import { Container } from '../shared/Container';
+import useWidth from '../Hooks/useWidth';
+import { useEditProfile } from './profileService';
 
 interface Props {
   step: number;
@@ -10,22 +11,30 @@ interface Props {
   stepsDone: number[];
   setStepsDone: React.Dispatch<React.SetStateAction<number[]>>;
   setShowProfileSetup: React.Dispatch<React.SetStateAction<boolean>>;
-  submit: () => void;
-  token: string;
   type: 'initial' | 'edit-all' | 'edit-one';
 }
+
+
 
 const ProfileSetupFooter = ({
   step,
   setStep,
-  submit,
-  token,
   stepsDone,
   setStepsDone,
   setShowProfileSetup,
   type,
 }: Props) => {
-  const { updateUser } = React.useContext(AuthContext);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const { width } = useWidth();
+  const { submit } = useEditProfile();
+
+  const submitProfile = async () => {
+    setIsLoading(true);
+    await submit();
+    setIsLoading(false);
+    setShowProfileSetup(false);
+  };
+
   const nextStep = () => {
     if (step < 3) {
       setStep(step + 1);
@@ -39,17 +48,16 @@ const ProfileSetupFooter = ({
     }
   };
 
-  const skip = () => {
-    if (type === 'initial') {
-      updateUser(token, { isSetUp: true });
-    }
-    setShowProfileSetup(false);
-  };
-
   return (
-    <Container flex align="center" gap={16} width="75%" mt={'auto'}>
-      <Button variant="secondary" onClick={skip}>
-        {type === 'initial' ? 'Skip' : 'Cancel'}
+    <Container
+      flex
+      align="center"
+      gap={10}
+      width={width > 768 ? '75%' : '90%'}
+      mt={'auto'}
+    >
+      <Button variant="outline" onClick={() => setShowProfileSetup(false)}>
+        Close
       </Button>
       {type !== 'edit-one' && (
         <Button variant="primary" disabled={step === 0} onClick={prevStep}>
@@ -61,11 +69,17 @@ const ProfileSetupFooter = ({
           Next
         </Button>
       )}
+     
       {(step === 3 || type === 'edit-one') && (
-        <Button variant="primary" onClick={submit}>
-          Submit
+        <Button
+          variant="primary"
+          onClick={() => submitProfile()}
+          disabled={isLoading}
+        >
+          {isLoading ? 'Please Wait...' : 'Submit'}
         </Button>
       )}
+     
     </Container>
   );
 };
