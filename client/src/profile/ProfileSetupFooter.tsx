@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 
 import { Button } from '../shared/Button';
 import { Container } from '../shared/Container';
@@ -7,6 +7,9 @@ import { useEditProfile } from './profileService';
 import { Text } from '../shared/Text';
 import SvgIcon from '../shared/SvgIcon';
 import styled from 'styled-components';
+import { ToastsContext } from '../toast/ToastContext';
+import { ToastProps } from '../toast/Toast';
+import CircularLoader from '../shared/CircularLoader';
 
 interface Props {
   step: number;
@@ -90,10 +93,11 @@ const ProfileSetupFooter = ({
   setShowProfileSetup,
   type,
 }: Props) => {
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [isSaving, setIsSaving] = React.useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isSaving, setIsSaving] = useState<boolean>(false);
   const { width } = useWidth();
   const { submit, progress } = useEditProfile();
+  const { showToast } = useContext(ToastsContext);
 
   const submitProfile = async (type: 'save' | 'submit') => {
     if (isLoading || isSaving) return;
@@ -103,9 +107,18 @@ const ProfileSetupFooter = ({
       setIsLoading(true);
     }
     await submit();
-    setIsLoading(false);
-    setIsSaving(false);
+    if (type === 'save') {
+      setIsSaving(false);
+      const toast: ToastProps = {
+        id: Date.now().toString(),
+        type: 'success',
+        message: 'Profile saved successfully',
+        show: true,
+      };
+      showToast(toast, 3);
+    }
     if (type === 'submit') {
+      setIsLoading(false);
       setShowProfileSetup(false);
     }
   };
@@ -150,7 +163,7 @@ const ProfileSetupFooter = ({
         </Container>
         <SaveButton onClick={() => submitProfile('save')} isLoading={isSaving}>
           {isSaving ? 'Saving..' : 'Save my progress'}{' '}
-          <SvgIcon src="check" size={12} />
+          {!isSaving ? <SvgIcon src="check" size={12} /> : <CircularLoader />}
         </SaveButton>
       </Container>
       <Container ml={'auto'} flex gap={12} align="center">

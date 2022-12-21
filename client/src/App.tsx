@@ -1,8 +1,10 @@
-import { useContext,useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { ThemeProvider } from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 import { PayPalScriptProvider } from '@paypal/react-paypal-js';
+import { analytics } from './firebase-auth';
+import { logEvent } from 'firebase/analytics';
 
 import './App.css';
 import { AuthContext } from './Auth/ContextProvider';
@@ -11,15 +13,26 @@ import Profile from './profile/Profile';
 import Main from './main/Main';
 import { theme } from './styledCompunentConfig/theme';
 import { EditProfileProvider } from './profile/profileService';
-import { analytics } from './firebase-auth';
-import { getAnalytics, logEvent } from "firebase/analytics";
+import { ToastsContext } from './toast/ToastContext';
+import Toast from './toast/Toast';
+
+const ToastsContainer = styled.div`
+  position: fixed;
+  bottom: 0;
+  right: 50%;
+  transform: translateX(50%);
+  z-index: 1000;
+`;
+
 function App() {
   const user = useContext(AuthContext);
+  const { toasts } = useContext(ToastsContext);
+
   useEffect(() => {
     logEvent(analytics, 'select_item', {
       content_type: 'image',
       content_id: 'P12453',
-      items: [{ name: 'Kittens' }]
+      items: [{ name: 'Kittens' }],
     });
   }, []);
   return (
@@ -45,6 +58,11 @@ function App() {
                     <Route path="*" element={<Main />} />
                   )}
                 </Routes>
+                <ToastsContainer>
+                  {toasts.map((toast) => (
+                    <Toast key={toast.id} toast={toast} />
+                  ))}
+                </ToastsContainer>
               </div>
             </Router>
           </ThemeProvider>
