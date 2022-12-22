@@ -21,6 +21,7 @@ const EducationModal = (props: Props) => {
       name: '',
       country: '',
       rank: 1800,
+      logo: '',
     },
     name: '',
     level: '',

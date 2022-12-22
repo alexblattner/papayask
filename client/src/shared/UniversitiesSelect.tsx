@@ -5,6 +5,7 @@ import { Container } from './Container';
 import { Input } from './Input';
 import { Text } from './Text';
 import api from '../utils/api';
+import axios from 'axios';
 import { Suggestions, Suggestion } from './Suggestions';
 
 interface Props {
@@ -34,7 +35,27 @@ const UniversitiesSelect = (props: Props) => {
       }, 200);
     }
   }, [value, focused]);
-
+  async function getUniversityLogo(universityName: string): Promise<string> {
+    // Replace spaces in the university name with underscores for the API request
+    const encodedName = universityName.replace(/ /g, '_');
+  
+    try {
+      // Make a request to the Wikipedia API to retrieve the university's logo
+      const response = await axios.get(`https://en.wikipedia.org/w/api.php?format=json&action=query&prop=pageimages&titles=${encodedName}&pithumbsize=200`);
+  
+      // Get the page ID for the university
+      const pageId = Object.keys(response.data.query.pages)[0];
+  
+      // Get the URL for the logo
+      const logoUrl: string = response.data.query.pages[pageId].thumbnail.source;
+  
+      // Return the logo URL
+      return logoUrl;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
   return (
     <Container position="relative">
       <Input
@@ -51,7 +72,10 @@ const UniversitiesSelect = (props: Props) => {
         {universities.map((university, index) => (
           <Suggestion
             key={index}
-            onClick={() => {
+            onClick={async() => {
+              if (university.logo === '') {
+                university.logo = await getUniversityLogo(university.name);
+              }
               onChange('university-name', university);
               if (props.adder) {
                 props.adder(university);

@@ -1,6 +1,7 @@
 import { useState, useContext, useEffect, createContext } from 'react';
 
 import { AuthContext } from '../Auth/ContextProvider';
+import api from '../utils/api';
 import {
   Company,
   University,
@@ -95,6 +96,7 @@ export const EditProfileContext = createContext<EditProfileContextReturn>({
       name: '',
       country: '',
       rank: 1800,
+      logo: '',
     },
     name: '',
     level: '',
@@ -158,6 +160,7 @@ export const EditProfileProvider = ({
       _id: '',
       country: '',
       rank: 1800,
+      logo: '',
     },
     level: '',
     name: '',
@@ -252,19 +255,32 @@ export const EditProfileProvider = ({
       });
     }
   };
-
-  const addEducation = (inputEducation: Education) => {
+  async function getUniversityLogo(universityName: string): Promise<string> {
+    // Replace spaces in the university name with underscores for the API request
+    const encodedName = universityName.replace(/ /g, '_');
+  
+    try {
+      // Make a request to the Wikipedia API to retrieve the university's logo
+      const response = await api.get(`/university_logo/${encodedName}`);
+      console.log(response.data);
+      // Get the URL for the logo
+      const logoUrl: string = response.data;
+  
+      // Return the logo URL
+      return logoUrl;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+  const addEducation = async(inputEducation: Education) => {
     if (!inputEducation.startDate) {
       return;
     }
-
+    let tempUniversity = inputEducation.university;
+    tempUniversity.logo = await getUniversityLogo(inputEducation.university.name);
     const newEducation: UserEducation = {
-      university: {
-        name: inputEducation.university.name,
-        _id: inputEducation.university._id,
-        country: inputEducation.university.country,
-        rank: inputEducation.university.rank,
-      },
+      university: tempUniversity,
       level: inputEducation.level,
       name: inputEducation.name,
       startDate: inputEducation.startDate,
@@ -272,7 +288,7 @@ export const EditProfileProvider = ({
     };
     setEducation([...education, newEducation]);
     setInputEducation({
-      university: { name: '', _id: '', country: '', rank: 1800 },
+      university: { name: '', _id: '', country: '', rank: 1800, logo: '' },
       name: '',
       level: '',
       startDate: null,

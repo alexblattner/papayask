@@ -8,6 +8,7 @@ export interface RequestSettings {
 }
 
 export interface University {
+  logo: string | undefined;
   _id?: string;
   name: string;
   country: string;

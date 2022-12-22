@@ -8,6 +8,7 @@ const axios=require('axios');
 const qs = require('qs');
 const questionController = require('./controllers/questionController');
 const skillController = require('./controllers/skillController');
+const universityController = require('./controllers/universityController');
 const noteController = require('./controllers/noteController');
 const userController = require('./controllers/userController');
 const companyController = require('./controllers/companyController');
@@ -275,7 +276,7 @@ app.post('/search', userController.search);
 //   return res.sendStatus(407);
 // });
 app.get('/companies/:name', companyController.search);
-
+app.get('/university_logo/:name', universityController.getLogo);
 // Change the 404 message modifing the middleware
 app.use(function (req, res, next) {
   res.status(404).send("Sorry, that route doesn't exist. Have a nice day :)");

@@ -61,7 +61,7 @@ const StepTwo = () => {
                 align="center"
                 justify="center"
               >
-                <SvgIcon src="study" size={52} />
+                {edu.university.logo&&edu.university.logo!=''?<img src={edu.university.logo}/>:<SvgIcon src="study" size={52} />}
               </Container>
               <Container>
                 <Text fontSize={18} fontWeight="bold">
