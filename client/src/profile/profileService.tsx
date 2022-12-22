@@ -69,6 +69,7 @@ interface EditProfileContextReturn {
   onChangeExperienceDate: (name: string, date: Date | string | null) => void;
   onChangeCountry: (country: string) => void;
   onChangeExperienceCountry: (country: string) => void;
+  onChangeExperienceCompany: (company: Company | string) => void;
   removeSkill: (index: number) => void;
 }
 
@@ -133,6 +134,7 @@ export const EditProfileContext = createContext<EditProfileContextReturn>({
   onChangeExperienceDate: (name: string, date: Date | string | null) => {},
   onChangeCountry: (country: string) => {},
   onChangeExperienceCountry: (country: string) => {},
+  onChangeExperienceCompany: (company: Company | string) => {},
   removeSkill: (index: number) => {},
 });
 
@@ -228,18 +230,7 @@ export const EditProfileProvider = ({
       | Date
       | string
   ) => {
-    if (name === 'company') {
-      setInputExperience({
-        ...inputExperience,
-        company: {
-          name: (
-            event as
-              | React.ChangeEvent<HTMLInputElement>
-              | React.ChangeEvent<HTMLSelectElement>
-          ).target.value,
-        },
-      });
-    } else if (name === 'startDate' || name === 'endDate') {
+    if (name === 'startDate' || name === 'endDate') {
       setInputExperience({
         ...inputExperience,
         [name]: event,
@@ -258,14 +249,14 @@ export const EditProfileProvider = ({
   async function getUniversityLogo(universityName: string): Promise<string> {
     // Replace spaces in the university name with underscores for the API request
     const encodedName = universityName.replace(/ /g, '_');
-  
+
     try {
       // Make a request to the Wikipedia API to retrieve the university's logo
       const response = await api.get(`/university_logo/${encodedName}`);
       console.log(response.data);
       // Get the URL for the logo
       const logoUrl: string = response.data;
-  
+
       // Return the logo URL
       return logoUrl;
     } catch (error) {
@@ -273,12 +264,14 @@ export const EditProfileProvider = ({
       throw error;
     }
   }
-  const addEducation = async(inputEducation: Education) => {
+  const addEducation = async (inputEducation: Education) => {
     if (!inputEducation.startDate) {
       return;
     }
     let tempUniversity = inputEducation.university;
-    tempUniversity.logo = await getUniversityLogo(inputEducation.university.name);
+    tempUniversity.logo = await getUniversityLogo(
+      inputEducation.university.name
+    );
     const newEducation: UserEducation = {
       university: tempUniversity,
       level: inputEducation.level,
@@ -347,6 +340,24 @@ export const EditProfileProvider = ({
       ...inputExperience,
       geographic_specialization: country,
     });
+  };
+
+  const onChangeExperienceCompany = (company: Company | string) => {
+    console.log(company);
+
+    if (company instanceof Object) {
+      setInputExperience({
+        ...inputExperience,
+        company,
+      });
+    } else {
+      setInputExperience({
+        ...inputExperience,
+        company: {
+          name: company,
+        },
+      });
+    }
   };
 
   const onChangeExperienceDate = (name: string, date: Date | string | null) => {
@@ -458,6 +469,7 @@ export const EditProfileProvider = ({
     onChangeExperience,
     onChangeCountry,
     onChangeExperienceCountry,
+    onChangeExperienceCompany,
     onChangeExperienceDate,
     inputEducation,
     inputExperience,

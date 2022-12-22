@@ -8,6 +8,8 @@ import { Input } from '../shared/Input';
 import { Text } from '../shared/Text';
 import { Experience } from './profileService';
 import axios from 'axios';
+import { Company } from '../models/User';
+import CompanySelect from '../shared/CompanySelect';
 const StyledSelect = styled.select`
   margin-bottom: 30px;
   border: ${({ theme }) => `2px solid ${theme.colors.secondary_L1}`};
@@ -42,6 +44,7 @@ interface Props {
   ) => void;
   inputExperience: Experience;
   onChangeExperienceCountry: (name: string) => void;
+  onChangeExperienceCompany: (company: Company | string) => void;
   type: 'Initial' | 'Edit' | 'Add';
   closeForm?: () => void;
   submitExperience?: () => void;
@@ -53,6 +56,7 @@ const ExperienceForm = ({
   inputExperience,
   onChangeExperience,
   onChangeExperienceCountry,
+  onChangeExperienceCompany,
   type,
   closeForm,
   isLoading,
@@ -84,15 +88,7 @@ const ExperienceForm = ({
           name="name"
           onChange={(e) => onChangeExperience('name', e)}
         />
-        <Input
-          type="text"
-          value={inputExperience.company.name}
-          label="Company"
-          name="company"
-          onChange={(e) => {
-            onChangeExperience('company', e)
-          }}
-        />
+       <CompanySelect value={inputExperience.company.name} onChange = {onChangeExperienceCompany}/>
         <Container flex gap={12} align="center">
           <Container flex dir="column" width="100%">
             <Text fontWeight={'bold'} color="#8e8e8e" mb={6}>

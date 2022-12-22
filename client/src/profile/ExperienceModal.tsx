@@ -4,7 +4,7 @@ import ExperienceForm from './ExperienceForm';
 import { Experience } from './profileService';
 import { useEditProfile } from './profileService';
 import { AuthContext } from '../Auth/ContextProvider';
-import { UserExperience, UserProps } from '../models/User';
+import { Company, UserExperience, UserProps } from '../models/User';
 
 interface Props {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -30,6 +30,22 @@ const ExperienceModal = (props: Props) => {
   const { addExperience } = useEditProfile();
   const { updateUser } = useContext(AuthContext);
 
+  const onChangeExperienceCompany = (company: Company | string) => {
+    if (company instanceof Object) {
+      setExperience({
+        ...experience,
+        company,
+      });
+    } else {
+      setExperience({
+        ...experience,
+        company: {
+          name: company,
+        },
+      });
+    }
+  };
+
   const onChangeExperience = (
     name: string,
     event:
@@ -38,18 +54,7 @@ const ExperienceModal = (props: Props) => {
       | Date
       | string
   ) => {
-    if (name === 'company') {
-      setExperience({
-        ...experience,
-        company: {
-          name: (
-            event as
-              | React.ChangeEvent<HTMLInputElement>
-              | React.ChangeEvent<HTMLSelectElement>
-          ).target.value,
-        },
-      });
-    } else if (name === 'startDate' || name === 'endDate') {
+    if (name === 'startDate' || name === 'endDate') {
       setExperience({
         ...experience,
         [name]: event,
@@ -102,6 +107,7 @@ const ExperienceModal = (props: Props) => {
           addExperience(experience);
         }}
         onChangeExperienceCountry={onChangeExperienceCountry}
+        onChangeExperienceCompany={onChangeExperienceCompany}
         type={props.type}
         closeForm={() => props.setShowModal(false)}
         submitExperience={submitExperience}
