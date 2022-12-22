@@ -4,6 +4,8 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const session = require('cookie-session');
+const axios=require('axios');
+const qs = require('qs');
 const questionController = require('./controllers/questionController');
 const skillController = require('./controllers/skillController');
 const noteController = require('./controllers/noteController');
@@ -216,7 +218,6 @@ app.get("/t",(req,res,next)=>{
 // };
 
 app.get('/realtime-notifications/:id', eventsHandler);
-
 app.post('/user', userController.createOrLogin);
 app.post('/note', middleware.decodeToken, noteController.create);
 app.patch('/user/:userId', middleware.decodeToken, userController.update);

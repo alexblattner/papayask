@@ -59,31 +59,6 @@ const ExperienceForm = ({
   submitExperience,
 }: Props) => {
   const typesOptions = ['Employee', 'Owner', 'FreeLancer'];
-  const [accessToken,setAccessToken]=useState('')
-  useEffect(() => {
-    if(accessToken!='') return
-
-    const getAccessToken = async () => {
-      alert(3333)
-      const response = await axios.post(
-        'https://www.linkedin.com/oauth/v2/accessToken',
-        {
-          grant_type: 'client_credentials',
-          client_id: process.env.REACT_APP_LINKEDIN_KEY,
-          client_secret: process.env.REACT_APP_LINKEDIN_SECRET,
-        },
-        {
-          headers: {
-            'Access-Control-Allow-Origin': '*',
-          }
-        }
-      );
-      console.log(22222,response);
-      setAccessToken(response.data.access_token)
-      
-    };
-    getAccessToken();
-  }, []);
 
   const addExperienceDisabled = () => {
     return (
@@ -95,23 +70,6 @@ const ExperienceForm = ({
       !inputExperience.geographic_specialization
     );
   };
-  const displayCompany = async (e:any) => {
-    let val=e.target.value 
-    const response = await axios.get(
-      'https://api.linkedin.com/v2/search',
-      {
-        params: {
-          q: val,
-          type: 'companies',
-          sortBy: 'relevance',
-        },
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
-    console.log(7777788888,response)
-  }
 
   return (
     <>
@@ -133,8 +91,6 @@ const ExperienceForm = ({
           name="company"
           onChange={(e) => {
             onChangeExperience('company', e)
-            alert(222)
-            displayCompany(e)
           }}
         />
         <Container flex gap={12} align="center">

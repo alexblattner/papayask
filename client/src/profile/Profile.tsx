@@ -184,7 +184,7 @@ const Profile = () => {
       }
     }
   }, [profileUser]);
-
+  
   if (!profileUser) return null;
 
   return (
