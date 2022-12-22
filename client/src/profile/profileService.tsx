@@ -29,6 +29,8 @@ export interface Experience {
 interface EditProfileContextReturn {
   title: string;
   setTitle: React.Dispatch<React.SetStateAction<string>>;
+  setEditProfileShown: React.Dispatch<React.SetStateAction<boolean>>;
+  editProfileShown: boolean;
   image: string;
   setImage: React.Dispatch<React.SetStateAction<string>>;
   bio: string;
@@ -41,9 +43,6 @@ interface EditProfileContextReturn {
   setCountry: React.Dispatch<React.SetStateAction<string>>;
   setCloudinaryImageId: React.Dispatch<React.SetStateAction<string>>;
   progress: number;
-  showWarning: boolean;
-  inputSkill: UserSkill;
-  setInputSkill: React.Dispatch<React.SetStateAction<UserSkill>>;
   education: UserEducation[];
   setEducation: React.Dispatch<React.SetStateAction<UserEducation[]>>;
   inputEducation: Education;
@@ -75,6 +74,8 @@ interface EditProfileContextReturn {
 export const EditProfileContext = createContext<EditProfileContextReturn>({
   title: '',
   setTitle: () => {},
+  setEditProfileShown: () => {},
+  editProfileShown: false,
   image: '',
   setImage: () => {},
   bio: '',
@@ -87,13 +88,6 @@ export const EditProfileContext = createContext<EditProfileContextReturn>({
   setCountry: () => {},
   setCloudinaryImageId: () => {},
   progress: 0,
-  showWarning: false,
-  inputSkill: {
-    name: '',
-    educations: [],
-    experiences: [],
-  },
-  setInputSkill: () => {},
   education: [],
   setEducation: () => {},
   inputEducation: {
@@ -156,13 +150,8 @@ export const EditProfileProvider = ({
   const [country, setCountry] = useState<string>('');
   const [cloudinaryImageId, setCloudinaryImageId] = useState<string>('');
   const [progress, setProgress] = useState<number>(0);
-  const [showWarning, setShowWarning] = useState<boolean>(false);
-  const [inputSkill, setInputSkill] = useState<UserSkill>({
-    name: '',
-    educations: [],
-    experiences: [],
-  });
   const [education, setEducation] = useState<UserEducation[]>([]);
+  const [editProfileShown, setEditProfileShown] = useState<boolean>(false);
   const [inputEducation, setInputEducation] = useState<Education>({
     university: {
       name: '',
@@ -351,10 +340,6 @@ export const EditProfileProvider = ({
     });
   };
   const submit = async () => {
-    if (!showWarning && progress < 75) {
-      setShowWarning(true);
-    }
-
     try {
       await updateUser({
         isSetUp: progress > 75 ? true : false,
@@ -383,9 +368,6 @@ export const EditProfileProvider = ({
       setCountry(user.country);
 
       if (user.picture) {
-        // setImage(
-        //   `https://res.cloudinary.com/snipcritics/image/upload/v1668941778/${process.env.REACT_APP_ENV}/${user.picture}.jpg`
-        // );
         setImage(`cloudinary-${user.picture}`);
         setCloudinaryImageId(user.picture);
       }
@@ -463,9 +445,8 @@ export const EditProfileProvider = ({
     onChangeExperienceDate,
     inputEducation,
     inputExperience,
-    showWarning,
-    inputSkill,
-    setInputSkill,
+    setEditProfileShown,
+    editProfileShown,
     removeSkill,
     setCloudinaryImageId,
   };

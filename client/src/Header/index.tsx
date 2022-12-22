@@ -10,6 +10,7 @@ import ProfileSetup from '../profile/ProfileSetup';
 import useWidth from '../Hooks/useWidth';
 import DesktopHeader from './DesktopHeader';
 import MobileHeader from './MobileHeader';
+import BecomeAdvisorModal from './BecomeAdvisorModal';
 
 const StyledHeader = styled.header`
   width: 100%;
@@ -29,18 +30,15 @@ const ToastsContainer = styled.div`
   transform: translateX(50%);
 `;
 
-
 function Header() {
   const { user } = useContext(AuthContext);
   const [showSignUp, setShowSignUp] = useState<boolean>(false);
   const [showLogIn, setShowLogIn] = useState<boolean>(false);
   const [searchInput, setSearchInput] = useState<string>('');
   const [showDrawer, setShowDrawer] = useState<boolean>(false);
-  const [showProfileSetup, setShowProfileSetup] =
-    React.useState<boolean>(false);
-  const logout = () => {
-    auth.signOut();
-  };
+  const [showBecomeAdvisorModal, setShowBecomeAdvisorModal] =
+    useState<boolean>(false);
+  const [showProfileSetup, setShowProfileSetup] = useState<boolean>(false);
 
   const handleSearch = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
@@ -61,15 +59,22 @@ function Header() {
               initialStep={0}
             />
           )}
+          {showBecomeAdvisorModal && (
+            <BecomeAdvisorModal
+              setShowBecomeAdvisorModal={setShowBecomeAdvisorModal}
+              setShowProfileSetup={setShowProfileSetup}
+
+            />
+          )}
           <StyledHeader>
             {width > 890 ? (
               <DesktopHeader
                 handleSearch={handleSearch}
                 searchInput={searchInput}
                 setSearchInput={setSearchInput}
-                setShowProfileSetup={setShowProfileSetup}
                 setShowSignUp={setShowSignUp}
                 setShowLogIn={setShowLogIn}
+                setShowBecomeAdvisorModal={setShowBecomeAdvisorModal}
               />
             ) : (
               <MobileHeader
