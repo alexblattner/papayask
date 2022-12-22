@@ -10,6 +10,7 @@ import StepThree from './StepThree';
 import StepFour from './StepFour';
 import SetupWarning from './SetupWarning';
 import useWidth from '../Hooks/useWidth';
+import { EditProfileContext } from './profileService';
 
 const SetupModal = styled('div')<{ pageLoaded: boolean }>`
   position: fixed;
@@ -41,6 +42,7 @@ const ProfileSetup = ({
   const [showWarning, setShowWarning] = useState<boolean>(false);
 
   const { width } = useWidth();
+  const { setEditProfileShown } = React.useContext(EditProfileContext);
 
   useEffect(() => {
     if (initialStep) {
@@ -56,6 +58,11 @@ const ProfileSetup = ({
 
   useEffect(() => {
     setPageLoaded(true);
+    setEditProfileShown(true);
+
+    return () => {
+      setEditProfileShown(false);
+    };
   }, []);
 
   return (

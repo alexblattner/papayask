@@ -8,8 +8,8 @@ import { Text } from './Text';
 import { Container } from './Container';
 
 const CustomInput = styled.input`
-  height: 15px;
-  border: 2px solid ${(props) => props.theme.colors.secondary};
+  height: 50px;
+  border: 2px solid ${(props) => props.theme.colors.secondary_L1};
   border-radius: 8px;
   padding: 16px;
   font-size: 16px;
@@ -18,7 +18,7 @@ const CustomInput = styled.input`
   width: 100%;
 
   &::placeholder {
-    font-size: 14px;
+    font-size: 18px;
   }
 
   &:focus {
@@ -118,7 +118,7 @@ export const DateInput = (props: InputProps) => {
         customInput={<CustomInput />}
         minDate={new Date(minDate())}
         maxDate={new Date(maxDate())}
-        placeholderText={`(dd/mm/yyyy)`}
+        placeholderText={`dd/mm/yyyy`}
         adjustDateOnChange={true}
         dateFormat="dd/MM/yyyy"
         scrollableYearDropdown

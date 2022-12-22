@@ -2,9 +2,9 @@ import styled from 'styled-components';
 
 interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode | React.ReactNode[];
-  onClick?: () => void;
   width?: string;
   height?: string;
+  background?: string;
   flex?: boolean;
   dir?: 'row' | 'column';
   flexWrap?: boolean;
@@ -45,6 +45,7 @@ interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
 const StyledContainer = styled('div')<ContainerProps>`
   width: ${(props) => (props.width ? props.width : '')};
   height: ${(props) => (props.height ? props.height : '')};
+  background: ${(props) => (props.background ? props.background : '')};
   position: ${(props) => (props.position ? props.position : '')};
   top: ${(props) => (props.top ? props.top : '')};
   right: ${(props) => (props.right ? props.right : '')};
@@ -92,10 +93,6 @@ const StyledContainer = styled('div')<ContainerProps>`
   max-width: ${(props) => (props.maxW ? props.maxW : '')};
   min-width: ${(props) => (props.minW ? props.minW : '')};
   overflow: ${(props) => (props.overflow ? props.overflow : '')};
-  cursor: ${(props) => (props.onClick ? 'pointer' : '')};
-  &:hover {
-    background-color: ${(props) => (props.onClick ? '#f5f5f5' : '')};
-  }
 `;
 
 export const Container = (props: ContainerProps) => {

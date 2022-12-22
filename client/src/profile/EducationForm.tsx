@@ -43,7 +43,7 @@ const EducationForm = ({
 
   return (
     <>
-      <Text fontSize={32} fontWeight={600} mb={16} color = 'primary'>
+      <Text fontSize={32} fontWeight={'bold'} mb={16} color = 'primary'>
         {type === 'Initial' ? '' : type} Education
       </Text>
       <Container flex dir="column">

@@ -64,11 +64,18 @@ const EditPictureButton = styled('div')`
 `;
 
 const InfoContainer = styled('div')<{ width?: string }>`
-  border: 2px solid ${({ theme }) => theme.colors.secondary};
+  border: 2px solid ${({ theme }) => theme.colors.secondary_L1};
   border-radius: 12px;
   padding: 16px;
   margin: 16px 0;
   width: ${({ width }) => (width ? width : '')};
+`;
+
+const SkillsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  grid-gap: 12px;
+  align-items: flex-start;
 `;
 
 const StatusDot = styled('div')`
@@ -77,6 +84,12 @@ const StatusDot = styled('div')`
   border-radius: 50%;
   background-color: #55b255;
 `;
+
+const Grid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(49%, 1fr));
+  grid-gap: 16px;
+`
 
 const Profile = () => {
   const [isOwner, setIsOwner] = React.useState<boolean>(false);
@@ -277,7 +290,7 @@ const Profile = () => {
               </Text>
             </Container>
             <Container flex align="center" gap={12}>
-              <Text fontSize={width > 1145 ? 46 : 40} fontWeight={700}>
+              <Text fontSize={width > 1145 ? 46 : 40} fontWeight={700}lineHeight = {1.5}>
                 {profileUser.name}
               </Text>
               <Text fontSize={width > 1145 ? 46 : 40}>{profileFlag}</Text>
@@ -318,8 +331,8 @@ const Profile = () => {
           {profileUser.bio}
         </Text>
       </InfoContainer>
-      <Container flex flexWrap gap={16}>
-        <InfoContainer width={width > 1144 ? '49%' : '100%'}>
+      <Grid >
+        <InfoContainer >
           <Container
             flex
             align="center"
@@ -336,7 +349,7 @@ const Profile = () => {
                   openExperienceModal(null, 'Add');
                 }}
               >
-                <SvgIcon src="plus" size={16} color="black" />
+                <SvgIcon src="pencil_fill" size={16} color="black" />
               </Container>
             )}
           </Container>
@@ -375,7 +388,7 @@ const Profile = () => {
             </ItemContainer>
           ))}
         </InfoContainer>
-        <InfoContainer width={width > 1144 ? '49%' : '100%'}>
+        <InfoContainer >
           <Container
             flex
             align="center"
@@ -388,7 +401,7 @@ const Profile = () => {
             </Text>
             {isOwner && (
               <Container onClick={() => openEducationModal(null, 'Add')}>
-                <SvgIcon src="plus" size={16} color="black" />
+                <SvgIcon src="pencil_fill" size={16} color="black" />
               </Container>
             )}
           </Container>
@@ -425,7 +438,7 @@ const Profile = () => {
             </ItemContainer>
           ))}
         </InfoContainer>
-      </Container>
+      </Grid>
       <InfoContainer width="100%">
         <Container flex align="center" justify="space-between" gap={16} mb={12}>
           <Text fontSize={width > 1145 ? 18 : 16} fontWeight="bold">
@@ -441,11 +454,11 @@ const Profile = () => {
             </Container>
           )}
         </Container>
-        <Container flex flexWrap align="flex-start" gap={16}>
+        <SkillsGrid>
           {profileUser.skills.map((skill, i) => (
             <SkillBadge key={i} skill={skill}></SkillBadge>
           ))}
-        </Container>
+        </SkillsGrid>
       </InfoContainer>
       <InfoContainer width="100%">
         <Container flex align="center" justify="space-between" gap={16} mb={12}>

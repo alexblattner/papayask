@@ -3,8 +3,6 @@ import SkillsForm from './SkillsForm';
 
 const StepThree = () => {
   const {
-    inputSkill,
-    setInputSkill,
     setSkills,
     skills,
     education,
@@ -13,8 +11,7 @@ const StepThree = () => {
   } = useEditProfile();
   return (
     <SkillsForm
-      inputSkill={inputSkill}
-      setInputSkill={setInputSkill}
+   
       setSkills={setSkills}
       skills={skills}
       education={education}

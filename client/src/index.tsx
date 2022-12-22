@@ -1,17 +1,22 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import { AuthProvider } from "./Auth/ContextProvider";
+import { AuthProvider } from './Auth/ContextProvider';
+import { ToastProvider } from './toast/ToastContext';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import './firebase-auth'
+import './firebase-auth';
 import 'bootstrap/dist/css/bootstrap.min.css';
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <AuthProvider><App/></AuthProvider>
+    <AuthProvider>
+      <ToastProvider>
+        <App />
+      </ToastProvider>
+    </AuthProvider>
   </React.StrictMode>
 );
 

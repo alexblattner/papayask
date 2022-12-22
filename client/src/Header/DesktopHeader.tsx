@@ -1,17 +1,17 @@
-import React,{useState} from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { FormControl, Form } from 'react-bootstrap';
-import {auth} from '../firebase-auth';
+import { auth } from '../firebase-auth';
+
 import { ReactComponent as FullLogo } from '../full_logo.svg';
 import SvgIcon from '../shared/SvgIcon';
 import { AuthContext } from '../Auth/ContextProvider';
 import { Container } from '../shared/Container';
 import { Text } from '../shared/Text';
 import { Button } from '../shared/Button';
-import useWidth from '../Hooks/useWidth';
-import "./Header.css";
-import { platform } from 'os';
+import { EditProfileContext } from '../profile/profileService';
+import './Header.css';
+
 const HeaderContainer = styled.div`
   position: fixed;
   display: flex;
@@ -41,23 +41,17 @@ interface Props {
   handleSearch: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   searchInput: string;
   setSearchInput: React.Dispatch<React.SetStateAction<string>>;
-  setShowProfileSetup: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowBecomeAdvisorModal: React.Dispatch<React.SetStateAction<boolean>>;
   setShowSignUp: React.Dispatch<React.SetStateAction<boolean>>;
   setShowLogIn: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const DesktopHeader = (props: Props) => {
-  const {
-    handleSearch,
-    searchInput,
-    setSearchInput,
-    setShowProfileSetup,
-    setShowSignUp,
-    setShowLogIn,
-  } = props;
+  const { setShowBecomeAdvisorModal, setShowSignUp, setShowLogIn } = props;
   const { user } = React.useContext(AuthContext);
-  const { width } = useWidth();
-  const [dropDownVisible, setDropDownVisible] = useState(false);
+  const [dropDownVisible, setDropDownVisible] = useState<boolean>(false);
+
+  const { editProfileShown } = React.useContext(EditProfileContext);
   const signout = () => {
     auth.signOut();
   };
@@ -71,32 +65,45 @@ const DesktopHeader = (props: Props) => {
       {user ? (
         <>
           <Container flex align="center" gap={16} ml="auto">
-            {!user.isSetUp && (
+            {!user.isSetUp && !editProfileShown && (
               <Button
                 variant="outline"
-                onClick={() => setShowProfileSetup(true)}
+                onClick={() => setShowBecomeAdvisorModal(true)}
               >
                 BECOME AN ADVISOR
               </Button>
             )}
             {user.isSetUp ? (
-              <StyledLink onClick={()=>setDropDownVisible(!dropDownVisible)}>
+              <StyledLink onClick={() => setDropDownVisible(!dropDownVisible)}>
                 <SellerButton>
                   <Text fontSize={18} fontWeight="bold" color="white">
                     Advisor
                   </Text>
                   <SvgIcon src="user" color="white" />
-                  {dropDownVisible?<div id='profile-dropdown'>
-                  <button onClick={signout}><SvgIcon src="exit" size={18} color='white'/>LOG OUT</button>
-                </div>:null}
+                  {dropDownVisible ? (
+                    <div id="profile-dropdown">
+                      <button onClick={signout}>
+                        <SvgIcon src="exit" size={18} color="white" />
+                        LOG OUT
+                      </button>
+                    </div>
+                  ) : null}
                 </SellerButton>
               </StyledLink>
             ) : (
-              <div id='profile-holder' onClick={()=>setDropDownVisible(!dropDownVisible)}>
+              <div
+                id="profile-holder"
+                onClick={() => setDropDownVisible(!dropDownVisible)}
+              >
                 <SvgIcon src="user" color="black" size={30} />
-                {dropDownVisible?<div id='profile-dropdown'>
-                  <button onClick={signout}><SvgIcon src="exit" size={18} color='white'/>LOG OUT</button>
-                </div>:null}
+                {dropDownVisible ? (
+                  <div id="profile-dropdown">
+                    <button onClick={signout}>
+                      <SvgIcon src="exit" size={18} color="white" />
+                      LOG OUT
+                    </button>
+                  </div>
+                ) : null}
               </div>
             )}
           </Container>

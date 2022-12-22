@@ -1,4 +1,4 @@
-import { AdvancedImage } from '@cloudinary/react';
+import { AdvancedImage, placeholder } from '@cloudinary/react';
 import { CloudinaryImage } from '@cloudinary/url-gen';
 import { fill } from '@cloudinary/url-gen/actions/resize';
 import { byRadius } from '@cloudinary/url-gen/actions/roundCorners';
@@ -58,7 +58,7 @@ const ProfilePicture = (props: Props) => {
     </StyledImage>
   ) : (
     <StyledImage radius={props.radius} size={props.size}>
-      <AdvancedImage cldImg={image} />
+      <AdvancedImage cldImg={image} plugins={[placeholder({ mode: 'blur' })]} />
     </StyledImage>
   );
 };

@@ -10,14 +10,14 @@ import { Experience } from './profileService';
 import axios from 'axios';
 const StyledSelect = styled.select`
   margin-bottom: 30px;
-  border: ${({ theme }) => `2px solid ${theme.colors.secondary}`};
+  border: ${({ theme }) => `2px solid ${theme.colors.secondary_L1}`};
   border-radius: 8px;
   padding: 3px 12px;
-  width: 60%;
   -webkit-appearance: none;
   appearance: none;
   background-color: white;
   width: 100%;
+  height: 50px;
 
   :focus {
     outline: none;
@@ -73,7 +73,7 @@ const ExperienceForm = ({
 
   return (
     <>
-      <Text fontSize={32} fontWeight={600} mb={16}>
+      <Text fontSize={32} fontWeight={'bold'} mb={16} color= 'var(--primary)'>
         {type === 'Initial' ? '' : type} Experience
       </Text>
       <Container flex dir="column">

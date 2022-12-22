@@ -4,13 +4,14 @@ import { UserEducation, UserExperience, UserSkill } from '../models/User';
 import { Container } from '../shared/Container';
 import { Input } from '../shared/Input';
 import { Text } from '../shared/Text';
-import SkillBlock from './SkillBlock';
-import useWidth from '../Hooks/useWidth';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { DetailedSkill } from './DetailedSkill';
+import SvgIcon from '../shared/SvgIcon';
+import { formatDateNamed } from '../utils/formatDate';
+import Badge from '../shared/Badge';
+import { Button } from '../shared/Button';
 
 interface Props {
-  inputSkill: UserSkill;
-  setInputSkill: React.Dispatch<React.SetStateAction<UserSkill>>;
   setSkills: React.Dispatch<React.SetStateAction<UserSkill[]>>;
   skills: UserSkill[];
   education: UserEducation[];
@@ -18,102 +19,405 @@ interface Props {
   removeSkill: (index: number) => void;
 }
 
-const SubmitIcon = styled.div<{ disabled: boolean }>`
-  cursor: ${(props) => (props.disabled ? 'default' : 'pointer')};
-  background-color: ${(props) => props.theme.colors.primary};
-  padding: 4px 8px;
-  border-radius: 4px;
+const SubmitButton = styled(Button)`
+  align-self: flex-end;
+  margin-bottom: 24px;
+`;
 
+const SkillsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+  grid-gap: 12px;
+  margin-bottom: 24px;
+`;
+
+const RelatedContainer = styled.div`
+  width: 100%;
+  min-height: 50px;
+  border: 2px solid
+    ${(props) => (props.color ? props.color : props.theme.colors.secondary_L1)};
+  border-radius: 8px;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 8px;
+`;
+
+const RelatedList = styled.div<{ expanded: boolean }>`
+  width: 100%;
   position: absolute;
-  top: 5px;
-  right: 5px;
-  opacity: ${(props) => (props.disabled ? 0.5 : 1)};
+  top: 100%;
+  left: 0;
+  background: white;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
+  z-index: 9;
+  transition: all 0.3s ease-in-out;
+  max-height: ${(props) => (props.expanded ? '300px' : '0')};
+  overflow: ${(props) => (props.expanded ? 'auto' : 'hidden')};
+`;
 
+const Arrow = styled(Container)<{ expanded: boolean }>`
+  transition: all 0.3s ease-in-out;
+  transform: ${(props) => (props.expanded ? 'rotate(180deg)' : 'rotate(0deg)')};
+  pointer-events: none;
   &:hover {
-    background-color: ${(props) =>
-      props.disabled
-        ? props.theme.colors.primary
-        : props.theme.colors.primary_L1};
+    background-color: transparent;
   }
 `;
 
+const Row = styled(Container)`
+  transition: all 0.3s ease-in-out;
+
+  &:hover {
+    background-color: ${(props) => props.theme.colors.secondary_L2};
+  }
+`;
+const BackDrop = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  opacity: 0;
+`;
+
+type Mode = 'edit' | 'add';
+
 const SkillsForm = (props: Props) => {
-  const [disabled, setDisabled] = useState<boolean>(false);
+  const [currentSkill, setCurrentSkill] = useState<UserSkill>({
+    name: '',
+    educations: [],
+    experiences: [],
+  });
+  const [disabledAdd, setDisabledAdd] = useState<boolean>(false);
+  const [disabledEdit, setDisabledEdit] = useState<boolean>(false);
+  const [showEducationList, setShowEducationList] = useState<boolean>(false);
+  const [showExperienceList, setShowExperienceList] = useState<boolean>(false);
+  const [selectedExperienceIndexes, setSelectedExperienceIndexes] = useState<
+    number[]
+  >([]);
+  const [selectedEducationIndexes, setSelectedEducationIndexes] = useState<
+    number[]
+  >([]);
+  const [mode, setMode] = useState<Mode>('add');
 
-  const {
-    inputSkill,
-    setInputSkill,
-    setSkills,
-    skills,
-    education,
-    experience,
-    removeSkill,
-  } = props;
-
-  const { width } = useWidth();
+  const { setSkills, skills, education, experience, removeSkill } = props;
 
   const isSkillNameExists = (name: string) => {
     return skills.some((skill) => skill.name === name);
   };
 
-  useEffect(() => {
-    if (inputSkill.name.length > 0 && !isSkillNameExists(inputSkill.name)) {
-      setDisabled(false);
+  const toggleShowExperience = (e: React.MouseEvent) => {
+    if (e.target !== e.currentTarget) return;
+    if (showEducationList) setShowEducationList(!showEducationList);
+    setShowExperienceList(!showExperienceList);
+  };
+
+  const toggleShowEducation = (e: React.MouseEvent) => {
+    if (e.target !== e.currentTarget) return;
+    if (showExperienceList) setShowExperienceList(!showExperienceList);
+    setShowEducationList(!showEducationList);
+  };
+
+  const selectIndex = (index: number, type: 'experience' | 'education') => {
+    if (type === 'experience') {
+      if (selectedExperienceIndexes.includes(index)) {
+        setSelectedExperienceIndexes(
+          selectedExperienceIndexes.filter((i) => i !== index)
+        );
+      } else {
+        setSelectedExperienceIndexes([...selectedExperienceIndexes, index]);
+      }
     } else {
-      setDisabled(true);
+      if (selectedEducationIndexes.includes(index)) {
+        setSelectedEducationIndexes(
+          selectedEducationIndexes.filter((i) => i !== index)
+        );
+      } else {
+        setSelectedEducationIndexes([...selectedEducationIndexes, index]);
+      }
     }
-  }, [inputSkill.name]);
+  };
+
+  const numberOfYears = (field: UserEducation | UserExperience): number => {
+    const startMonth = new Date(field.startDate).getMonth() + 1;
+    const endMonth = field.endDate
+      ? new Date(field.endDate).getMonth() + 1
+      : new Date().getMonth() + 1;
+
+    const startYear = new Date(field.startDate).getFullYear();
+    const endYear = field.endDate
+      ? new Date(field.endDate).getFullYear()
+      : new Date().getFullYear();
+
+    let diff = (endMonth - startMonth + 12 * (endYear - startYear)) / 12;
+
+    let formatedDiff = diff.toFixed(1);
+
+    if (formatedDiff.includes('.0')) {
+      formatedDiff = formatedDiff.replace('.0', '');
+    }
+
+    diff = parseFloat(formatedDiff);
+
+    return diff;
+  };
+
+  const addSkill = () => {
+    let education: UserEducation[] = [];
+    selectedEducationIndexes.forEach((index) => {
+      education.push(props.education[index]);
+    });
+
+    let experience: UserExperience[] = [];
+
+    selectedExperienceIndexes.forEach((index) => {
+      experience.push(props.experience[index]);
+    });
+
+    const skill: UserSkill = {
+      ...currentSkill,
+      educations: education.map((edu) => ({
+        education: edu,
+        years: numberOfYears(edu),
+      })),
+      experiences: experience.map((exp) => ({
+        experience: exp,
+        years: numberOfYears(exp),
+      })),
+    };
+    if (currentSkill._id) {
+      const index = skills.findIndex((s) => s._id === currentSkill._id);
+      skills.splice(index, 1, skill);
+    } else {
+      setSkills([...skills, skill]);
+    }
+
+    resetMode();
+  };
+
+  const getSelectedIndexes = () => {
+    const educationIndexes: number[] = [];
+    props.education.forEach((e) => {
+      currentSkill.educations.forEach((s) => {
+        if (
+          e.name === s.education.name &&
+          e.university.name === s.education.university.name
+        ) {
+          educationIndexes.push(props.education.indexOf(e));
+        }
+      });
+    });
+    setSelectedEducationIndexes(educationIndexes);
+    const experienceIndexes: number[] = [];
+    props.experience.forEach((e) => {
+      currentSkill.experiences.forEach((s) => {
+        if (
+          e.name === s.experience.name &&
+          e.company.name === s.experience.company.name
+        ) {
+          experienceIndexes.push(props.experience.indexOf(e));
+        }
+      });
+    });
+    setSelectedExperienceIndexes(experienceIndexes);
+  };
+
+  const resetMode = () => {
+    setMode('add');
+    setCurrentSkill({
+      name: '',
+      educations: [],
+      experiences: [],
+    });
+    setSelectedEducationIndexes([]);
+    setSelectedExperienceIndexes([]);
+  };
+
+  useEffect(() => {
+    if (currentSkill.name.length > 0 && !isSkillNameExists(currentSkill.name)) {
+      setDisabledAdd(false);
+    } else {
+      setDisabledAdd(true);
+    }
+  }, [currentSkill.name]);
+
+  useEffect(() => {
+    if (currentSkill.name.length > 0) {
+      setDisabledEdit(false);
+    } else {
+      setDisabledEdit(true);
+    }
+  }, [currentSkill.name]);
+
+  useEffect(() => {
+    getSelectedIndexes();
+  }, [currentSkill]);
 
   return (
-    <Container>
+    <Container flex dir="column">
+      {showEducationList || showExperienceList ? (
+        <BackDrop
+          onClick={() => {
+            setShowEducationList(false);
+            setShowExperienceList(false);
+          }}
+        />
+      ) : null}
       <Text fontSize={32} fontWeight={600} mb={16}>
         What skills do you have?
       </Text>
-      <Container width="100%" flex>
-        <Container width="300px" position="relative">
-          <SubmitIcon
-            disabled={disabled}
-            onClick={() => {
-              if (disabled) return;
-              setSkills([...skills, inputSkill]);
-              setInputSkill({
-                name: '',
-                educations: [],
-                experiences: [],
-              });
-            }}
-          >
-            <Text color="white" fontSize={12} fontWeight="bold">
-              Add
-            </Text>
-          </SubmitIcon>
-          <Input
-            name="skills"
-            type="text"
-            width="300px"
-            value={inputSkill.name}
-            placeholder="Enter a skill"
-            onChange={(e) =>
-              setInputSkill({ ...inputSkill, name: e.target.value })
-            }
-          />
+
+      <Input
+        name=""
+        value={currentSkill.name}
+        type="text"
+        label="Add Skill"
+        onChange={(e) =>
+          setCurrentSkill({ ...currentSkill, name: e.target.value })
+        }
+      />
+      <Container flex gap={12} align="center" mb={24}>
+        <Container width="100%">
+          <Text fontWeight={'bold'} color="#8e8e8e" mb={6}>
+            Add Related Experience
+          </Text>
+          <RelatedContainer onClick={toggleShowExperience}>
+            <Container flex flexWrap gap={12}>
+              {selectedExperienceIndexes.map((index) => (
+                <Badge
+                  text={experience[index].company.name}
+                  key={index}
+                  isRemovable
+                  onRemove={() => selectIndex(index, 'experience')}
+                />
+              ))}
+            </Container>
+
+            <Arrow ml={'auto'} expanded={showExperienceList}>
+              <SvgIcon src="arrow" size={12} color="primary" />
+            </Arrow>
+
+            <RelatedList expanded={showExperienceList}>
+              {experience.map((exp, i) => (
+                <Row
+                  key={i}
+                  px={12}
+                  py={8}
+                  borderBottom={`1px solid var(--secondary-l1)`}
+                  onClick={() => selectIndex(i, 'experience')}
+                  position="relative"
+                >
+                  <Text fontWeight={'bold'} fontSize={18}>
+                    {exp.company.name}
+                  </Text>
+                  <Text color="black" fontSize={16}>
+                    {formatDateNamed(exp.startDate)} -{' '}
+                    {formatDateNamed(exp.endDate)}
+                  </Text>
+                  {selectedExperienceIndexes.includes(i) ? (
+                    <Container position="absolute" right="12px" top="14px">
+                      <SvgIcon src="check" size={24} color="primary" />
+                    </Container>
+                  ) : null}
+                </Row>
+              ))}
+            </RelatedList>
+          </RelatedContainer>
+        </Container>
+        <Container width="100%">
+          <Text fontWeight={'bold'} color="#8e8e8e" mb={6}>
+            Add Related Education
+          </Text>
+
+          <RelatedContainer onClick={toggleShowEducation}>
+            <Container flex flexWrap gap={12}>
+              {selectedEducationIndexes.map((index) => (
+                <Badge
+                  text={education[index].university.name}
+                  key={index}
+                  isRemovable
+                  onRemove={() => selectIndex(index, 'education')}
+                />
+              ))}
+            </Container>
+
+            <Arrow ml={'auto'} expanded={showEducationList}>
+              <SvgIcon src="arrow" size={12} color="primary" />
+            </Arrow>
+
+            <RelatedList expanded={showEducationList}>
+              {education.map((edu, i) => (
+                <Row
+                  key={i}
+                  px={12}
+                  py={8}
+                  borderBottom={`1px solid var(--secondary-l1)`}
+                  onClick={() => selectIndex(i, 'education')}
+                  position="relative"
+                >
+                  <Text fontWeight={'bold'} fontSize={18}>
+                    {edu.university.name}
+                  </Text>
+                  <Text color="black" fontSize={16}>
+                    {formatDateNamed(edu.startDate)} -{' '}
+                    {formatDateNamed(edu.endDate)}
+                  </Text>
+                  {selectedEducationIndexes.includes(i) ? (
+                    <Container position="absolute" right="12px" top="14px">
+                      <SvgIcon src="check" size={24} color="primary" />
+                    </Container>
+                  ) : null}
+                </Row>
+              ))}
+            </RelatedList>
+          </RelatedContainer>
         </Container>
       </Container>
-
-      <Container mb={12} width={width > 800 ? '60%' : '100%'} mx="auto">
+      <Container flex gap={12} mb={24} justify="flex-end">
+        {mode === 'edit' ? (
+          <Button
+            variant="primary"
+            disabled={disabledEdit}
+            onClick={() => {
+              addSkill();
+              resetMode();
+            }}
+          >
+            <Text color="white" fontSize={20} fontWeight="bold">
+              Update
+            </Text>
+          </Button>
+        ) : null}
+        <Button
+          variant={mode === 'add' ? 'primary' : 'outline'}
+          disabled={disabledEdit}
+          onClick={() => {
+            if (mode === 'add') {
+              addSkill();
+            } else {
+              resetMode();
+            }
+          }}
+        >
+          {mode === 'edit' ? 'Add New Skill' : 'Add'}
+        </Button>
+      </Container>
+      <SkillsGrid>
         {skills.map((skill, i) => (
-          <SkillBlock
+          <DetailedSkill
             skill={skill}
-            key={i}
             index={i}
-            education={education}
-            experience={experience}
-            skills={skills}
-            setSkills={setSkills}
+            key={i}
             removeSkill={removeSkill}
+            setCurrentSkill={setCurrentSkill}
+            setMode={setMode}
+            currentSkill={currentSkill}
           />
         ))}
-      </Container>
+      </SkillsGrid>
     </Container>
   );
 };

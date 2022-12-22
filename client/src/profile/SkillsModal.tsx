@@ -13,11 +13,7 @@ interface Props {
 
 const SkillsModal = (props: Props) => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [inputSkill, setInputSkill] = useState<UserSkill>({
-    name: '',
-    educations: [],
-    experiences: [],
-  });
+  
   const [skills, setSkills] = useState<UserSkill[]>([]);
 
   const { updateUser } = useContext(AuthContext);
@@ -48,8 +44,7 @@ const SkillsModal = (props: Props) => {
     <Modal setShowModal={props.setShowModal}>
       <Container flex dir="column" width="100%" pl={40} pt ={20}>
         <SkillsForm
-          inputSkill={inputSkill}
-          setInputSkill={setInputSkill}
+       
           setSkills={setSkills}
           skills={skills}
           education={props.user.education}

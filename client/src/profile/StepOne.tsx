@@ -12,6 +12,7 @@ import { Text } from '../shared/Text';
 import { TextArea } from '../shared/TextArea';
 import { useEditProfile } from './profileService';
 import SvgIcon from '../shared/SvgIcon';
+import ProfilePicture from '../shared/ProfilePicture';
 
 const HiddenInput = styled.input`
   display: none;
@@ -191,7 +192,9 @@ const StepOne = () => {
               <SvgIcon src="delete" color="white" />
             </DeletePictureButton>
           )}
-          {image ? (
+          {image && image.includes('cloudinary') ? (
+            <ProfilePicture size={250} src={image.split('-')[1]} />
+          ) : image && !image.includes('cloudinary') ? (
             <img src={image} alt="profile" />
           ) : (
             <img src={`assets/default.png`} alt="default" />
@@ -200,19 +203,18 @@ const StepOne = () => {
         </ImageContainer>
       </Container>
       <Container width="100%">
-        <Text fontSize={32} fontWeight={600} mb={16}>
+        <Text fontSize={32} fontWeight={600} mb={16} color="primary">
           Headline
         </Text>
         <Input
           type="text"
           value={title}
-          placeholder="Enter a link and press enter"
           onChange={(e) => setTitle(e.target.value)}
           name="headline"
           width="300px"
         />
-        <Text fontSize={32} fontWeight={600} mb={16}>
-          Tell your clients about yourself
+        <Text fontSize={32} fontWeight={600} mb={16} color="primary">
+          Tell us about yourself
         </Text>
         <TextArea value={bio} onChange={(e) => setBio(e.target.value)} />
       </Container>

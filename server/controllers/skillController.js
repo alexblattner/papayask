@@ -32,10 +32,10 @@ exports.create = async (skill, userId) => {
   }
 
   const newSkill = await Skill.create({
+    ...skill,
     user: userId,
     experiences: experienceList,
     educations: educationList,
-    ...skill,
   });
   return newSkill;
 };
