@@ -86,7 +86,7 @@ export const FlexItem = styled('div')`
     flex-direction: row;
 
     &:nth-of-type(2n) {
-      flex-direction: row;
+      flex-direction: row-reverse;
     }
 
     img {
