@@ -253,7 +253,7 @@ export const EditProfileProvider = ({
     try {
       // Make a request to the Wikipedia API to retrieve the university's logo
       const response = await api.get(`/university_logo/${encodedName}`);
-      console.log(response.data);
+
       // Get the URL for the logo
       const logoUrl: string = response.data;
 
@@ -343,8 +343,6 @@ export const EditProfileProvider = ({
   };
 
   const onChangeExperienceCompany = (company: Company | string) => {
-    console.log(company);
-
     if (company instanceof Object) {
       setInputExperience({
         ...inputExperience,

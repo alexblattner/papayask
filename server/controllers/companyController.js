@@ -32,7 +32,6 @@ exports.getByName = async (name) => {
 
 exports.search = async (req, res, next) => {
   const {search}  = req.params;
-  console.log(search);
   const companies = await Company.find({
     name: { $regex: search, $options: 'i' },
   });
