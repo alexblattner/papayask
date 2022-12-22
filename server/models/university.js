@@ -5,6 +5,7 @@ const mongoose = require('mongoose'),
       name: { type: Schema.Types.String },
       country: { type: Schema.Types.String },
       rank: { type: Schema.Types.Number, default: 1800 },
+      logo: { type: Schema.Types.String },
     },
     {
       timestamps: true,

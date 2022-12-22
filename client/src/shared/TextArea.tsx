@@ -9,7 +9,7 @@ interface TextAreaProps extends React.HTMLAttributes<HTMLTextAreaElement> {
 const StyledTextArea = styled.textarea`
   width: 100%;
   height: 200px;
-  border: 1px solid ${(props) => props.theme.colors.primary_L2};
+  border: 2px solid ${(props) => props.theme.colors.secondary_L1};
   border-radius: 8px;
   padding: 16px;
   font-size: 18px;

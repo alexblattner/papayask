@@ -12,14 +12,16 @@ export interface University {
   name: string;
   country: string;
   rank: number;
+  logo?: string,
 }
 
 export interface Company {
+  _id?: string;
   name: string;
   description?: string;
   logo?: string;
   website?: string;
-  email?: string;
+  emil?: string;
   country?: string;
   members?: UserProps[];
   foundingDate?: Date;

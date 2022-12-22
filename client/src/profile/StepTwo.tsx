@@ -6,6 +6,8 @@ import SvgIcon from '../shared/SvgIcon';
 import { useEditProfile } from './profileService';
 import ExperienceForm from './ExperienceForm';
 import EducationForm from './EducationForm';
+import CompanyLogo from '../shared/CompanyLogo';
+import UniversityLogo from '../shared/UniversityLogo';
 
 const StepTwo = () => {
   const {
@@ -51,18 +53,7 @@ const StepTwo = () => {
               align="center"
               gap={8}
             >
-              <Container
-                border="2px solid var(--secondary-l1)"
-                borderRadius="8px"
-                background="white"
-                width="88px"
-                height="88px"
-                flex
-                align="center"
-                justify="center"
-              >
-                <SvgIcon src="study" size={52} />
-              </Container>
+              <UniversityLogo logo={edu.university.logo} />
               <Container>
                 <Text fontSize={18} fontWeight="bold">
                   {edu.name}
@@ -109,18 +100,7 @@ const StepTwo = () => {
                 align="center"
                 gap={8}
               >
-                <Container
-                  border="2px solid var(--secondary-l1)"
-                  borderRadius="8px"
-                  background="white"
-                  width="88px"
-                  height="88px"
-                  flex
-                  align="center"
-                  justify="center"
-                >
-                  <SvgIcon src="work" size={52} />
-                </Container>
+                <CompanyLogo logo={exp.company.logo} />
                 <Container>
                   <Text fontSize={20} fontWeight="bold">
                     {exp.company.name}
