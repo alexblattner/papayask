@@ -227,6 +227,7 @@ app.get('/questions', middleware.decodeToken, questionController.getAll);
 app.get('/question/:id', middleware.decodeToken, questionController.getById);
 app.post('/question', middleware.decodeToken, questionController.create);
 app.post('/question/finish', middleware.decodeToken, questionController.finish);
+app.patch('/companies/:id', companyController.update);
 app.post('/pay', middleware.decodeToken, questionController.pay);
 app.post(
   '/question/update-status/:id',

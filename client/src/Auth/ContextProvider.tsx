@@ -8,15 +8,15 @@ interface AuthContextReturn {
   updateUser: (body: any) => Promise<void>;
   token: string | null | undefined;
   setUser: React.Dispatch<React.SetStateAction<UserProps | null | undefined>>;
-  getUser: () => void;
+  getUser: () => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextReturn>({
   user: null,
   updateUser: async () => {},
   token: null,
-  setUser: () => {},
-  getUser: () => {},
+  setUser:  () => {},
+  getUser: async () => {},
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -76,12 +76,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (!token) {
       return;
     }
-    const [updatedUser] = await Promise.all([
+    const updatedUser = await 
       api({
         method: 'get',
         url: `/user/${user?._id}`,
-      }),
-    ]);
+      });
+  
     setUser({
       id: updatedUser.data._id,
       ...updatedUser.data,

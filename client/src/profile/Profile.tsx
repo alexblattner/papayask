@@ -5,7 +5,12 @@ import { AuthContext } from '../Auth/ContextProvider';
 import { Container } from '../shared/Container';
 import { Text } from '../shared/Text';
 import ProfileSetup from './ProfileSetup';
-import { UserEducation, UserExperience, UserProps } from '../models/User';
+import {
+  Company,
+  UserEducation,
+  UserExperience,
+  UserProps,
+} from '../models/User';
 import api from '../utils/api';
 import ProfilePicture from '../shared/ProfilePicture';
 import SvgIcon from '../shared/SvgIcon';
@@ -21,6 +26,9 @@ import SkillsModal from './SkillsModal';
 import LanguagesModal from './LanguagesModal';
 import ProfileButtons from './ProfileButtons';
 import SkillBadge from './SkillBadge';
+import UpdateCompanyModal from './UpdateCompanyModal';
+import CompanyLogo from '../shared/CompanyLogo';
+import UniversityLogo from '../shared/UniversityLogo';
 
 const ProfileImage = styled.div`
   position: relative;
@@ -89,11 +97,42 @@ const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(49%, 1fr));
   grid-gap: 16px;
-`
+`;
+
+const Tooltip = styled('div')`
+  position: absolute;
+  bottom: 100%;
+  left: 100%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  color: ${({ theme }) => theme.colors.secondary};
+  background-color: white;
+  z-index: 1;
+  width: 180px;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s ease-in-out;
+  transform: translateY(100%);
+`;
+
+const WarningContainer = styled('div')`
+  position: relative;
+
+  &:hover ${Tooltip} {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateY(0);
+  }
+`;
 
 const Profile = () => {
   const [isOwner, setIsOwner] = React.useState<boolean>(false);
   const [bioEdit, setBioEdit] = React.useState<boolean>(false);
+  const [currentCompanyEdit, setCurrentCompanyEdit] =
+    React.useState<Company | null>(null);
   const [showEducationModal, setShowEducationModal] =
     React.useState<boolean>(false);
   const [showQuestionModal, setShowQuestionModal] =
@@ -164,6 +203,10 @@ const Profile = () => {
     setShowExperienceModal(true);
   };
 
+  const shoWarning = (company: Company): boolean => {
+    return !company.description || !company.logo;
+  };
+
   useEffect(() => {
     if (profileUser?.country) {
       const flag = flags.find(
@@ -197,7 +240,7 @@ const Profile = () => {
       }
     }
   }, [profileUser]);
-  
+
   if (!profileUser) return null;
 
   return (
@@ -248,6 +291,15 @@ const Profile = () => {
           user={profileUser}
         />
       )}
+
+      {currentCompanyEdit && (
+        <UpdateCompanyModal
+          company={currentCompanyEdit}
+          setShowModal={() => {
+            setCurrentCompanyEdit(null);
+          }}
+        />
+      )}
       <Container position="relative" mb={48}>
         <Container
           flex
@@ -290,7 +342,11 @@ const Profile = () => {
               </Text>
             </Container>
             <Container flex align="center" gap={12}>
-              <Text fontSize={width > 1145 ? 46 : 40} fontWeight={700}lineHeight = {1.5}>
+              <Text
+                fontSize={width > 1145 ? 46 : 40}
+                fontWeight={700}
+                lineHeight={1.5}
+              >
                 {profileUser.name}
               </Text>
               <Text fontSize={width > 1145 ? 46 : 40}>{profileFlag}</Text>
@@ -331,8 +387,8 @@ const Profile = () => {
           {profileUser.bio}
         </Text>
       </InfoContainer>
-      <Grid >
-        <InfoContainer >
+      <Grid>
+        <InfoContainer>
           <Container
             flex
             align="center"
@@ -360,6 +416,7 @@ const Profile = () => {
               mb={12}
               key={i}
               position="relative"
+              gap={8}
             >
               {isOwner && (
                 <HiddenSpan
@@ -370,16 +427,22 @@ const Profile = () => {
                   <SvgIcon src="pencil_fill" size={16} color="black" />
                 </HiddenSpan>
               )}
-              <Container flex align="center" justify="center" width="100px">
-                <SvgIcon src="work" size={50} />
-              </Container>
+              <CompanyLogo logo={exp.company.logo} />
               <Container key={i} flex dir="column" justify="space-between">
-                <Text fontSize={width > 1145 ? 18 : 16} fontWeight="bold">
-                  {exp.name}
-                </Text>
-                <Text fontSize={width > 1145 ? 18 : 16}>
-                  {exp.company.name}
-                </Text>
+                <Container flex align="center" gap={4}>
+                  <Text fontSize={width > 1145 ? 18 : 16} fontWeight="bold">
+                    {exp.company.name}
+                  </Text>
+                  {shoWarning(exp.company) && (
+                    <WarningContainer
+                      onClick={() => setCurrentCompanyEdit(exp.company)}
+                    >
+                      <SvgIcon src="warning" size={16} color="red" />
+                      <Tooltip>Please add company info</Tooltip>
+                    </WarningContainer>
+                  )}
+                </Container>
+                <Text fontSize={width > 1145 ? 18 : 16}>{exp.name}</Text>
                 <Text fontSize={width > 1145 ? 16 : 14}>
                   {formatDateNamed(exp.startDate)} -{' '}
                   {formatDateNamed(exp.endDate)}
@@ -388,7 +451,7 @@ const Profile = () => {
             </ItemContainer>
           ))}
         </InfoContainer>
-        <InfoContainer >
+        <InfoContainer>
           <Container
             flex
             align="center"
@@ -412,6 +475,7 @@ const Profile = () => {
               mb={12}
               key={i}
               position="relative"
+              gap={8}
             >
               {isOwner && (
                 <HiddenSpan
@@ -420,16 +484,12 @@ const Profile = () => {
                   <SvgIcon src="pencil_fill" size={16} color="black" />
                 </HiddenSpan>
               )}
-              <Container flex align="center" justify="center" width="100px">
-                <SvgIcon src="study" size={50} />
-              </Container>
+              <UniversityLogo logo={edu.university.logo} />
               <Container flex dir="column" justify="space-between" key={i}>
                 <Text fontSize={width > 1145 ? 18 : 16} fontWeight="bold">
-                  {edu.name}
-                </Text>
-                <Text fontSize={width > 1145 ? 18 : 16}>
                   {edu.university.name}
                 </Text>
+                <Text fontSize={width > 1145 ? 18 : 16}>{edu.name}</Text>
                 <Text fontSize={width > 1145 ? 16 : 14}>
                   {formatDateNamed(edu.startDate)} -{' '}
                   {formatDateNamed(edu.endDate)}
