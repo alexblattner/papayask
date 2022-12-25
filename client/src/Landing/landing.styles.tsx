@@ -150,48 +150,66 @@ export const FlexContainer = styled('div')`
     }
   }
 `;
-
 export const Strip = styled('section')`
-  background-color: rgba(205, 240, 243, 1);
-  padding: 8vw;
+background-color: rgba(205, 240, 243, 1);
+padding: 4vw;
   border-radius: 24px;
   position: relative;
   margin-bottom: 10vw;
-  display: flex;
-  justify-content: space-between;
-  gap: 48px;
-  flex-direction: column;
 
+  h2 {
+    font-family: 'Greycliff CF DemiBold';
+    width: 100%;text-align: center;
+    font-size: 10vw;
+  }
+  @media (min-width: 600px) {
+    h2 {
+      font-size: 4vw;
+    }
+  }
+`;
+export const Grid = styled('div')`
+  background-color: rgba(205, 240, 243, 1);
+  
   div {
     width: 100%;
-    text-align: center;
+    text-align: left;
+    margin-bottom: 0px ;
   }
-
+  h2{
+    text-align: left;
+    font-size: 8vw;
+  }
   p {
-    font-size: 4vw;
+    font-size: 5vw;
   }
 
   img {
-    width: 60%;
+    height: 40%;
     margin: 0;
     transform: translateX(0);
   }
 
   @media (min-width: 600px) {
-    flex-direction: row;
-    padding: 4vw 8vw;
-
+    display: grid;
+    grid-column-gap: 80px;
+    grid-row-gap: 0px;
+    grid-template-columns: auto auto;
     div {
-      width: 30%;
+      width: 100%;
       text-align: start;
+      h2{
+        font-size: 3vw;
+      }
     }
 
-    p {
-      font-size: 1.5vw;
+    p { 
+      font-size: 2vw;
     }
 
     img {
-      margin-left: 50%;
+      margin-left: 25%;
+      height: 25vw;
       transform: translateX(-50%);
     }
   }
