@@ -18,6 +18,7 @@ interface Props {
   setStepsDone: React.Dispatch<React.SetStateAction<number[]>>;
   setShowProfileSetup: React.Dispatch<React.SetStateAction<boolean>>;
   type: 'initial' | 'edit-all' | 'edit-one';
+  advisor: boolean;
 }
 
 const Progress = styled.div<{ progress: number }>`
@@ -92,11 +93,12 @@ const ProfileSetupFooter = ({
   setStepsDone,
   setShowProfileSetup,
   type,
+  advisor,
 }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const { width } = useWidth();
-  const { submit, progress } = useEditProfile();
+  const { submit, progress, becomeAdvisor } = useEditProfile();
   const { showToast } = useContext(ToastsContext);
 
   const submitProfile = async (type: 'save' | 'submit') => {
@@ -107,6 +109,9 @@ const ProfileSetupFooter = ({
       setIsLoading(true);
     }
     await submit();
+    if (advisor) {
+      await becomeAdvisor();
+    }
     if (type === 'save') {
       setIsSaving(false);
       const toast: ToastProps = {
@@ -119,6 +124,15 @@ const ProfileSetupFooter = ({
     }
     if (type === 'submit') {
       setIsLoading(false);
+      const toast: ToastProps = {
+        id: Date.now().toString(),
+        type: 'success',
+        message: 'Your request to become an advisor has been sent successfully',
+        show: true,
+      };
+      if (advisor) {
+        showToast(toast, 3);
+      }
       setShowProfileSetup(false);
     }
   };
@@ -192,7 +206,11 @@ const ProfileSetupFooter = ({
             onClick={() => submitProfile('submit')}
             disabled={isLoading || isSaving}
           >
-            {isLoading ? 'Please Wait...' : 'Submit'}
+            {isLoading
+              ? 'Please Wait...'
+              : !advisor
+              ? 'Submit'
+              : 'Become an advisor'}
           </Button>
         )}
       </Container>

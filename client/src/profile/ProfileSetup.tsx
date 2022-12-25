@@ -29,12 +29,14 @@ interface ProfileSetupProps {
   setShowProfileSetup: React.Dispatch<React.SetStateAction<boolean>>;
   type: 'initial' | 'edit-all' | 'edit-one';
   initialStep?: number | null;
+  advisor: boolean;
 }
 
 const ProfileSetup = ({
   setShowProfileSetup,
   type,
   initialStep,
+  advisor,
 }: ProfileSetupProps) => {
   const [pageLoaded, setPageLoaded] = useState<boolean>(false);
   const [step, setStep] = useState<number>(0);
@@ -95,6 +97,7 @@ const ProfileSetup = ({
           setStepsDone={setStepsDone}
           setShowProfileSetup={setShowProfileSetup}
           type={type}
+          advisor={advisor}
         />
       </Container>
     </SetupModal>

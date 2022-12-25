@@ -1,17 +1,17 @@
-const mongoose = require("mongoose"),
+const mongoose = require('mongoose'),
   { Schema } = mongoose,
   userSchema = new Schema(
     {
-      bio: { type: String, default: "" },
+      bio: { type: String, default: '' },
       social: [{ type: String }],
-      experience: [{ type: Schema.Types.ObjectId, ref: "Experience" }],
-      education: [{ type: Schema.Types.ObjectId, ref: "Education" }],
+      experience: [{ type: Schema.Types.ObjectId, ref: 'Experience' }],
+      education: [{ type: Schema.Types.ObjectId, ref: 'Education' }],
       name: { type: String, required: false },
-      skills: [{ type: Schema.Types.ObjectId, ref: "Skill" }],
+      skills: [{ type: Schema.Types.ObjectId, ref: 'Skill' }],
       email: { type: String, required: true, select: false },
       title: { type: String, required: false },
       picture: { type: String },
-      coverPicture: { type: Schema.Types.ObjectId, ref: "File" },
+      coverPicture: { type: Schema.Types.ObjectId, ref: 'File' },
       description: { type: String, required: false },
       request_settings: { type: Schema.Types.Mixed, required: false },
       reputation: { type: Number, required: true, default: 0 },
@@ -21,20 +21,19 @@ const mongoose = require("mongoose"),
       lastLogIn: { type: Schema.Types.Date, required: false, select: false },
       requestCount: { type: Number, default: 0 },
       appleId: { type: String },
-      verified: { type: Boolean, default: false },
       uid: { type: String, required: true },
-      // password: { type: String, required: true, select: false },
       languages: [{ type: String }],
       country: { type: String },
-      isSetUp: {
-        type: Boolean,
-        default: false,
-      },
       questionsInstructions: { type: String },
       authTime: { type: String, required: false, select: false },
+      advisorStatus: {
+        type: Schema.Types.Mixed,
+        enum: ['pending', 'approved', false],
+        default: false,
+      },
     },
     {
       timestamps: true,
     }
   );
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model('User', userSchema);

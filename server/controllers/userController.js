@@ -215,7 +215,6 @@ exports.update = async (req, res) => {
       education,
       skills,
       title,
-      isSetUp,
       languages,
       country,
       picture,
@@ -289,7 +288,6 @@ exports.update = async (req, res) => {
       education: education ? educationIds : undefined,
       skills: skills ? skillIds : undefined,
       title,
-      isSetUp,
       languages,
       country,
       picture,
@@ -434,7 +432,13 @@ exports.search = async (req, res, next) => {
   console.log(users);
   return res.send(users);
 };
+
+exports.becomeAdvisor = async (req, res, next) => {
+  
+};
+
 exports.apply = async (req, res, next) => {
+  const user = await User.findById(req.user._id);
   if (user) {
     let completion = 0;
     if (user.title) {
@@ -462,11 +466,7 @@ exports.apply = async (req, res, next) => {
     for (let i = 0; i < user.education.length; i++) {
       completion += 5;
     }
-    if (completion > 65) {
-      user.isSetUp = true;
-    } else {
-      user.isSetUp = false;
-    }
+
     user.save();
   } else {
     return res.status(401).json({ message: 'Unauthorized' });

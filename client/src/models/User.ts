@@ -1,3 +1,5 @@
+export type AdvisorStatus = 'pending' | 'approved' | boolean;
+
 export interface RequestSettings {
   concurrent: number;
   cost: number;
@@ -12,7 +14,7 @@ export interface University {
   name: string;
   country: string;
   rank: number;
-  logo?: string,
+  logo?: string;
 }
 
 export interface Company {
@@ -74,7 +76,6 @@ export interface UserProps {
   name: string;
   reputation: number;
   requestCount: number;
-  isSetUp: boolean;
   bio: string;
   email: string;
   picture?: string;
@@ -86,7 +87,7 @@ export interface UserProps {
   lastLogIn: Date;
   languages: string[];
   country: string;
-  verified: boolean;
   request_settings: RequestSettings;
   questionsInstructions?: string;
+  advisorStatus: AdvisorStatus;
 }

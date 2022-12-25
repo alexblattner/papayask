@@ -21,19 +21,6 @@ const ProfileButtons = (props: Props) => {
     <>
       {isOwner ? (
         <Container flex gap={12}>
-          {/*profileUser.verified ? (
-        <Button variant="outline" onClick={() => setShowSettings(true)}>
-          <Container flex align="center" gap={8}>
-            <SvgIcon src="settings" size={25} /> Settings
-          </Container>
-        </Button>
-      ) : (
-        <Button variant="outline" onClick={() => {}}>
-          <Container flex align="center" gap={8}>
-            Verify my account
-          </Container>
-        </Button>
-      )*/}
           <Button
             variant="text"
             onClick={openProfileSetup}
@@ -46,7 +33,7 @@ const ProfileButtons = (props: Props) => {
         </Container>
       ) : (
         <Container flex align="center" gap={12}>
-          {profileUser.verified && (
+          {profileUser.advisorStatus === 'approved' && (
             <Button
               variant="secondary"
               onClick={() => {

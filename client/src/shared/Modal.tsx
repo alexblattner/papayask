@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
+import SvgIcon from './SvgIcon';
+
 const BackDrop = styled.div`
   position: fixed;
   top: 0;
@@ -37,7 +39,8 @@ const StyledModal = styled.div<{
   margin-bottom: 50px;
 
   @media (max-width: 1300px) {
-    width: ${(props) => (props.fullscreen ? '90%' :  props.size === 'sm' ? '45%' : '70%')};
+    width: ${(props) =>
+      props.fullscreen ? '90%' : props.size === 'sm' ? '45%' : '70%'};
   }
 
   @media (max-width: 950px) {
@@ -46,13 +49,17 @@ const StyledModal = styled.div<{
 `;
 
 const CloseButton = styled.div`
+  background-color: ${(props) => props.theme.colors.primary};
   position: absolute;
   top: 16px;
-  right: 32px;
+  right: 16px;
   cursor: pointer;
-  font-size: 20px;
   font-weight: bold;
-  color: ${(props) => props.theme.colors.primary};
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
 `;
 
 interface Props {
@@ -82,7 +89,9 @@ const Modal = (props: Props) => {
         fullscreen={props.fullScreen}
         size={props.size}
       >
-        <CloseButton onClick={() => props.setShowModal(false)}>X</CloseButton>
+        <CloseButton onClick={() => props.setShowModal(false)}>
+          <SvgIcon src="close" color="white" size={12}/>
+        </CloseButton>
         {props.children}
       </StyledModal>
     </BackDrop>

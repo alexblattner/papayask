@@ -25,7 +25,7 @@ const CloudinaryPicture = (props: Props) => {
 
   if (!image) return null;
 
-  return <AdvancedImage cldImg={image}></AdvancedImage>;
+  return <AdvancedImage cldImg={image} ></AdvancedImage>;
 };
 
 export default CloudinaryPicture;

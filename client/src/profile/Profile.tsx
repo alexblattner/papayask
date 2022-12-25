@@ -258,6 +258,7 @@ const Profile = () => {
           setShowProfileSetup={setShowProfileSetup}
           type={editType}
           initialStep={initialSetupStep}
+          advisor={false}
         />
       )}
       {showEducationModal && (

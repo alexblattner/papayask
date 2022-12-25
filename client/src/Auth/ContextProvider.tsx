@@ -15,7 +15,7 @@ export const AuthContext = createContext<AuthContextReturn>({
   user: null,
   updateUser: async () => {},
   token: null,
-  setUser:  () => {},
+  setUser: () => {},
   getUser: async () => {},
 });
 
@@ -76,12 +76,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (!token) {
       return;
     }
-    const updatedUser = await 
-      api({
-        method: 'get',
-        url: `/user/${user?._id}`,
-      });
-  
+    const updatedUser = await api({
+      method: 'get',
+      url: `/user/${user?._id}`,
+    });
+
     setUser({
       id: updatedUser.data._id,
       ...updatedUser.data,

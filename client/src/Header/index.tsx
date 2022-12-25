@@ -23,13 +23,6 @@ const StyledHeader = styled.header`
   position: fixed;
 `;
 
-const ToastsContainer = styled.div`
-  position: fixed;
-  bottom: 0;
-  right: 50%;
-  transform: translateX(50%);
-`;
-
 function Header() {
   const { user } = useContext(AuthContext);
   const [showSignUp, setShowSignUp] = useState<boolean>(false);
@@ -39,6 +32,7 @@ function Header() {
   const [showBecomeAdvisorModal, setShowBecomeAdvisorModal] =
     useState<boolean>(false);
   const [showProfileSetup, setShowProfileSetup] = useState<boolean>(false);
+  const [isAdvisor, setIsAdvisor] = useState<boolean>(false);
 
   const handleSearch = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
@@ -57,13 +51,14 @@ function Header() {
               setShowProfileSetup={setShowProfileSetup}
               type={'initial'}
               initialStep={0}
+              advisor={isAdvisor}
             />
           )}
           {showBecomeAdvisorModal && (
             <BecomeAdvisorModal
               setShowBecomeAdvisorModal={setShowBecomeAdvisorModal}
               setShowProfileSetup={setShowProfileSetup}
-
+              setIsAdvisor={setIsAdvisor}
             />
           )}
           <StyledHeader>

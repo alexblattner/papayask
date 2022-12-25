@@ -65,7 +65,7 @@ const DesktopHeader = (props: Props) => {
       {user ? (
         <>
           <Container flex align="center" gap={16} ml="auto">
-            {!user.isSetUp && !editProfileShown && (
+            {user.advisorStatus !== 'approved' && !editProfileShown && (
               <Button
                 variant="outline"
                 onClick={() => setShowBecomeAdvisorModal(true)}
@@ -73,7 +73,7 @@ const DesktopHeader = (props: Props) => {
                 BECOME AN ADVISOR
               </Button>
             )}
-            {user.isSetUp ? (
+            {user.advisorStatus === 'approved' ? (
               <StyledLink onClick={() => setDropDownVisible(!dropDownVisible)}>
                 <SellerButton>
                   <Text fontSize={18} fontWeight="bold" color="white">

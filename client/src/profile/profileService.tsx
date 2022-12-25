@@ -71,6 +71,7 @@ interface EditProfileContextReturn {
   onChangeExperienceCountry: (country: string) => void;
   onChangeExperienceCompany: (company: Company | string) => void;
   removeSkill: (index: number) => void;
+  becomeAdvisor: () => Promise<void>;
 }
 
 export const EditProfileContext = createContext<EditProfileContextReturn>({
@@ -136,6 +137,7 @@ export const EditProfileContext = createContext<EditProfileContextReturn>({
   onChangeExperienceCountry: (country: string) => {},
   onChangeExperienceCompany: (company: Company | string) => {},
   removeSkill: (index: number) => {},
+  becomeAdvisor: async () => {},
 });
 
 export const useEditProfile = () => useContext(EditProfileContext);
@@ -367,7 +369,6 @@ export const EditProfileProvider = ({
   const submit = async () => {
     try {
       await updateUser({
-        isSetUp: progress > 75 ? true : false,
         title,
         bio,
         skills,
@@ -380,6 +381,13 @@ export const EditProfileProvider = ({
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const becomeAdvisor = async () => {
+    await api({
+      method: 'post',
+      url: `/user/${user?._id}/become-advisor`,
+    });
   };
 
   useEffect(() => {
@@ -475,6 +483,7 @@ export const EditProfileProvider = ({
     editProfileShown,
     removeSkill,
     setCloudinaryImageId,
+    becomeAdvisor,
   };
   return (
     <EditProfileContext.Provider value={value}>

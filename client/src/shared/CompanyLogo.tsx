@@ -7,7 +7,7 @@ interface Props {
   logo?: string;
 }
 
-const CompanyLogo = (props: Props) => {
+const CompanyLogo = ({logo}: Props) => {
   return (
     <Container
       border="2px solid var(--secondary-l1)"
@@ -19,10 +19,10 @@ const CompanyLogo = (props: Props) => {
       align="center"
       justify="center"
     >
-      {!props.logo ? (
+      {!logo ? (
         <SvgIcon src="work" size={50} />
       ) : (
-        <CloudinaryPicture publicId={props.logo} size={50} />
+        <CloudinaryPicture publicId={logo} size={50} />
       )}
     </Container>
   );

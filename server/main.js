@@ -4,7 +4,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const session = require('cookie-session');
-const axios=require('axios');
+const axios = require('axios');
 const qs = require('qs');
 const questionController = require('./controllers/questionController');
 const skillController = require('./controllers/skillController');
@@ -91,7 +91,7 @@ mongoose.connect(
   'mongodb+srv://papayask:' +
     process.env.MONGODB_PASSWORD +
     '@cluster' +
-    (process.env.NODE_ENV == 'production' ? "0.movlb" : "1.m1q2dzz") +
+    (process.env.NODE_ENV == 'production' ? '0.movlb' : '1.m1q2dzz') +
     '.mongodb.net/?retryWrites=true&w=majority',
   { useNewUrlParser: true, useUnifiedTopology: true }
 );
@@ -104,6 +104,7 @@ const Question = require('./models/question');
 const Note = require('./models/note');
 const User = require('./models/user');
 const University = require('./models/university');
+const Middleware = require('./middleware/Middleware');
 function removeext(str) {
   let noext = '';
   let extarr = str.split('.');
@@ -128,70 +129,66 @@ app.get('/university/:search', async (req, res, next) => {
   res.send(universities);
 });
 //universities setup
-app.get("/t",(req,res,next)=>{
-  fs.readFile('t.txt', function(err, data) {
+app.get('/t', (req, res, next) => {
+  fs.readFile('t.txt', function (err, data) {
     if (err) throw err;
-    const lines=data.toString().split("\r");
+    const lines = data.toString().split('\r');
     let universities = [];
-    let current=0
-    let lastRank=0
+    let current = 0;
+    let lastRank = 0;
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
-      const tabs = line.split("\t");
+      const tabs = line.split('\t');
 
-      if(i%3==0){
+      if (i % 3 == 0) {
         universities.push({
-          name: tabs[1]
-        })
-        current=universities.length-1
-      }else if(i%3==1){
-        universities[current].country=line.replace("\n","")
-      }else{
-
-        if(isNaN(parseFloat(tabs[1]))){
-          if(lastRank==0)
-            lastRank=universities.length
-          universities[current].score=0
-        }else{
-          if(isNaN(parseFloat(tabs[0])))
-            tabs.shift()
-          let score = parseFloat(tabs[0])
-          score += parseFloat(tabs[1])
-          score += parseFloat(tabs[2])
-          score += parseFloat(tabs[3])
-          score += parseFloat(tabs[4])
-          score += parseFloat(tabs[5])
-          score/=6
-          universities[current].score=score
+          name: tabs[1],
+        });
+        current = universities.length - 1;
+      } else if (i % 3 == 1) {
+        universities[current].country = line.replace('\n', '');
+      } else {
+        if (isNaN(parseFloat(tabs[1]))) {
+          if (lastRank == 0) lastRank = universities.length;
+          universities[current].score = 0;
+        } else {
+          if (isNaN(parseFloat(tabs[0]))) tabs.shift();
+          let score = parseFloat(tabs[0]);
+          score += parseFloat(tabs[1]);
+          score += parseFloat(tabs[2]);
+          score += parseFloat(tabs[3]);
+          score += parseFloat(tabs[4]);
+          score += parseFloat(tabs[5]);
+          score /= 6;
+          universities[current].score = score;
         }
       }
     }
-    universities.sort((a,b)=>{
-      return b.score-a.score
-    })
-    let rank=1
+    universities.sort((a, b) => {
+      return b.score - a.score;
+    });
+    let rank = 1;
     for (let i = 0; i < universities.length; i++) {
-      if(universities[i].score==0){
-        universities[i].rank=lastRank
-      }else{
-        if(i>0&&universities[i].score==universities[i-1].score){
-          universities[i].rank=universities[i-1].rank
-        }else{
-          universities[i].rank=rank
+      if (universities[i].score == 0) {
+        universities[i].rank = lastRank;
+      } else {
+        if (i > 0 && universities[i].score == universities[i - 1].score) {
+          universities[i].rank = universities[i - 1].rank;
+        } else {
+          universities[i].rank = rank;
         }
       }
-      rank++
+      rank++;
     }
-    const University = require("./models/university");
-    University.insertMany(universities,(err,docs)=>{
-      if(err){
-        console.log(err)
+    const University = require('./models/university');
+    University.insertMany(universities, (err, docs) => {
+      if (err) {
+        console.log(err);
       }
-    })
+    });
     res.send(universities);
-
   });
-})
+});
 
 // const eventsHandler = (req, res, next) => {
 //   const headers = {
@@ -264,6 +261,11 @@ app.post(
   '/confirmation-application',
   middleware.decodeToken,
   userController.apply
+);
+app.post(
+  'user/:userId/become-advisor',
+  Middleware.decodeToken,
+  userController.becomeAdvisor
 );
 app.post('/user/:userId/register-token', userController.registerToken);
 app.get('/search', userController.search);

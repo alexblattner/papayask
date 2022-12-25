@@ -51,12 +51,12 @@ const MobileHeader = (props: Props) => {
 
       {user ? (
         <Container flex align="center" gap={16} ml="auto">
-          {!user.isSetUp && (
+          {user.advisorStatus !== 'approved' && (
             <Button variant="outline" onClick={() => setShowProfileSetup(true)}>
               BECOME AN ADVISOR
             </Button>
           )}
-          {user.isSetUp ? (
+          {user.advisorStatus === 'approved' ? (
             <StyledLink to={`/profile/${user._id}`}>
               <SellerButton>
                 <Text fontSize={18} fontWeight="bold" color="white">
