@@ -60,7 +60,7 @@ const Landing = () => {
               We believe that everyone should have access to the best experts in
               the world. We want to make it easy for people to connect with each
               other and share knowledge. We found that reaching out to experts
-              is a very time consuming process and often unrelialbe.
+              is a very time consuming process and often unreliable.
             </Text>
           </div>
         </FlexItem>
@@ -114,7 +114,7 @@ const Landing = () => {
               <div>
                 <Subtitle>Services</Subtitle>
                 <p>
-                  Papayask is a platform that connects you to a relevant info
+                  Papayask is a platform that connects you to a relevant expert
                   for your needs so you can ask them your burning questions.
                 </p>
               </div>
