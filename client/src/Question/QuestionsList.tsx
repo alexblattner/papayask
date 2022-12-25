@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-
+import moment from "moment";
 import { Container } from "../shared/Container";
 import { AuthContext } from "../Auth/ContextProvider";
 import { Text } from "../shared/Text";
@@ -40,7 +40,7 @@ const TabIndicator = styled.div<{ currentTab: boolean }>`
 const Tab = styled.div<{ currentTab: boolean }>`
   width: 120px;
   padding-block: 6px;
-  margin-block: 4px;
+  /* margin-block: 4px; */
   cursor: pointer;
   position: relative;
   background-color: ${(props) =>
@@ -52,10 +52,15 @@ const Tab = styled.div<{ currentTab: boolean }>`
 `;
 
 const AnimatedContainer = styled("div")<{ currentTab: TabType }>`
-  width: 50%;
+  width: 80%;
   @media (max-width: 890px) {
     width: 100%;
   }
+`;
+
+const StyledDiv = styled("div")`
+  display: flex;
+  gap: 16px;
 `;
 
 const QuestionItem = styled("div")`
@@ -70,8 +75,9 @@ const QuestionItem = styled("div")`
   color: #000;
   gap: 16px;
   text-decoration: none;
-  padding: 10px;
+  padding: 8px 16px;
   border-bottom: ${(props) => props.theme.colors.primary} 1.4px solid;
+  justify-content: space-between;
 
   &:hover {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
@@ -125,15 +131,30 @@ const QuestionsList = () => {
   return (
     <Container width="100%" mx={"auto"} flex dir="row" align="center">
       <TabSwithcer>
+        <Text
+          fontSize={30}
+          fontWeight="bold"
+          margin-left="4px"
+          align="start"
+          color="#7F8E25"
+        >
+          Requests
+        </Text>
         <Tab
           currentTab={currentTab === "recieved"}
           onClick={() => setCurrentTab("recieved")}
         >
           <Text
+            color="primary"
             align="center"
-            fontWeight={currentTab === "recieved" ? "bold" : 400}
+            fontWeight={currentTab === "recieved" ? "bold" : 500}
           >
-            <img height={"16px"} src="/assets/images/inbox.svg" /> Recieved
+            <img
+              style={{ marginLeft: "4px" }}
+              height={"16px"}
+              src="/assets/images/inbox.svg"
+            />{" "}
+            Recieved
           </Text>
           <TabIndicator currentTab={currentTab === "recieved"} />
         </Tab>
@@ -143,10 +164,16 @@ const QuestionsList = () => {
           onClick={() => setCurrentTab("sent")}
         >
           <Text
+            color="primary"
             align="center"
-            fontWeight={currentTab === "sent" ? "bold" : 400}
+            fontWeight={currentTab === "sent" ? "bold" : 500}
           >
-            <img height={"16px"} src="/assets/images/send_arrow.svg" /> Sent
+            <img
+              style={{ marginLeft: "4px" }}
+              height={"16px"}
+              src="/assets/images/send_arrow.svg"
+            />{" "}
+            Sent
           </Text>
           <TabIndicator currentTab={currentTab === "sent"} />
         </Tab>
@@ -159,15 +186,24 @@ const QuestionsList = () => {
             questionId={selectedQuestionId}
           />
         )}
+        {currentTab === "recieved" ? (
+          <div style={{ height: "80px" }}></div>
+        ) : (
+          <div style={{ height: "100px" }}></div>
+        )}
         <AnimatedContainer currentTab={currentTab}>
           {questions.map((question, i) => (
             <QuestionItem
               key={question._id}
               //  onClick={() => onClick(question)}
             >
-              <Checkbox checked={false} />
-              {/* <input type="checkbox" /> */}
-              {/* <ProfilePicture
+              <StyledDiv>
+                <Checkbox checked={false} />
+
+                <SvgIcon src="heart" size={18} />
+
+                {/* <input type="checkbox" /> */}
+                {/* <ProfilePicture
                 src={
                   currentTab === "recieved"
                     ? question.sender.picture
@@ -175,56 +211,61 @@ const QuestionsList = () => {
                 }
                 size={80}
               /> */}
+              </StyledDiv>
+              <StyledDiv>
+                <Text fontWeight={"bold"}>
+                  {currentTab === "recieved"
+                    ? `from: @${question.sender.name}`
+                    : `to: @${question.receiver.name}`}
+                </Text>
+                {/* <Text>{question.}</Text> */}
 
-              <Text fontWeight={"bold"}>
-                {currentTab === "recieved"
-                  ? question.sender.name
-                  : `to: ${question.receiver.name}`}
-              </Text>
-              {/* <Text>{question.}</Text> */}
-
-              <Text>{question.description}</Text>
-
-              {currentTab === "recieved" &&
-                question.status.action === "pending" && (
-                  <Actions>
-                    <Button
-                      variant="secondary"
-                      onClick={() => {
-                        navigate(`/question/${question._id}`);
-                      }}
-                    >
-                      <SvgIcon src="check" size={15} />
-                    </Button>
-                    <Button
-                      variant="secondary"
-                      onClick={() => {
-                        setSelectedQuestionId(question._id);
-                        setShowRejectionModal(true);
-                      }}
-                    >
-                      <SvgIcon src="close" size={15} />
-                    </Button>
-                  </Actions>
-                )}
-              {currentTab === "recieved" &&
-                question.status.action === "rejected" && (
-                  <Actions>
-                    <Container flex gap={12}>
-                      <Text color="red">Declined</Text>
-                    </Container>
-                  </Actions>
-                )}
-              {currentTab === "recieved" &&
-                question.status.action === "accepted" &&
-                question.status.done && (
-                  <Actions>
-                    <Container flex gap={12}>
-                      <Text color="green">Done</Text>
-                    </Container>
-                  </Actions>
-                )}
-              <Text>{question.createdAt}</Text>
+                <Text>{question.description}</Text>
+              </StyledDiv>
+              <StyledDiv>
+                {currentTab === "recieved" &&
+                  question.status.action === "pending" && (
+                    <Actions>
+                      <Button
+                        variant="secondary"
+                        onClick={() => {
+                          navigate(`/question/${question._id}`);
+                        }}
+                      >
+                        <SvgIcon src="check" size={15} />
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        onClick={() => {
+                          setSelectedQuestionId(question._id);
+                          setShowRejectionModal(true);
+                        }}
+                      >
+                        <SvgIcon src="close" size={15} />
+                      </Button>
+                    </Actions>
+                  )}
+                {currentTab === "recieved" &&
+                  question.status.action === "rejected" && (
+                    <Actions>
+                      <Container flex gap={12}>
+                        <Text color="red">Declined</Text>
+                      </Container>
+                    </Actions>
+                  )}
+                {currentTab === "recieved" &&
+                  question.status.action === "accepted" &&
+                  question.status.done && (
+                    <Actions>
+                      <Container flex gap={12}>
+                        <Text color="green">Done</Text>
+                      </Container>
+                    </Actions>
+                  )}
+              </StyledDiv>
+              <StyledDiv>
+                <Text align="end">{moment(question.createdAt).calendar()}</Text>
+              </StyledDiv>
             </QuestionItem>
           ))}
         </AnimatedContainer>
