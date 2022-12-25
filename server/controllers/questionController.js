@@ -59,7 +59,6 @@ exports.getById = async (req, res, next) => {
         question.status.action === "pending" &&
         question.receiver.toString() == req.user._id.toString()
       ) {
-        console.log("here");
         question.status.action = "accepted";
         question.markModified("status");
         await question.save();
@@ -73,9 +72,10 @@ exports.getById = async (req, res, next) => {
 
 exports.create = async (req, res, next) => {
   try {
-    const { description, receiver } = req.body;
+    const { description, receiver, title } = req.body;
     let question = new Question({
       description,
+      title,
       receiver,
       sender: req.user._id,
     });

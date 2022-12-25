@@ -5,6 +5,7 @@ import { PayPalButtons } from "@paypal/react-paypal-js";
 import { UserProps } from "../models/User";
 import { Text } from "../shared/Text";
 import { TextArea } from "../shared/TextArea";
+import { Input } from "../shared/Input";
 import Alert from "../shared/Alert";
 import formatCurrency from "../utils/formatCurrency";
 import { AuthContext } from "../Auth/ContextProvider";
@@ -30,6 +31,7 @@ interface Props {
 const Creator = (props: Props) => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const [message, setMessage] = React.useState<string>("");
+  const [title, setTitle] = React.useState<string>("");
   const [alertType, setAlertType] = React.useState<
     "success" | "error" | "info"
   >("info");
@@ -65,7 +67,8 @@ const Creator = (props: Props) => {
       setShowAlert(true);
       const res = await sendQuestion(
         props.user._id,
-        messageRef.current?.value as string
+        messageRef.current?.value as string,
+        title
       );
       if (res.status === 200) {
         setTimeout(() => {
@@ -170,13 +173,20 @@ const Creator = (props: Props) => {
           type={alertType}
           loading={loading}
         />
+        <Input
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Subject"
+          name="title"
+          type="text"
+        ></Input>
         <TextArea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           ref={messageRef}
         />
         <PayPalButtons
-          disabled={loading || message === ""}
+          disabled={loading || message === "" || title === ""}
           fundingSource={undefined}
           createOrder={createOrder}
           onApprove={onApprove}

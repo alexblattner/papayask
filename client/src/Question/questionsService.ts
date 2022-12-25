@@ -1,6 +1,6 @@
-import { useContext } from 'react';
-import { AuthContext } from '../Auth/ContextProvider';
-import api from '../utils/api';
+import { useContext } from "react";
+import { AuthContext } from "../Auth/ContextProvider";
+import api from "../utils/api";
 
 const useQuestionsService = () => {
   const { token, setUser, user } = useContext(AuthContext);
@@ -8,16 +8,15 @@ const useQuestionsService = () => {
   const sendQuestion = async (
     recieverId: string,
     description: string,
+    title: string,
     files?: File[]
   ) => {
     try {
-      const res = await api.post(
-        '/question',
-        {
-          receiver: recieverId,
-          description,
-        },
-      );
+      const res = await api.post("/question", {
+        receiver: recieverId,
+        description,
+        title,
+      });
 
       return res;
     } catch (error) {
@@ -27,10 +26,10 @@ const useQuestionsService = () => {
 
   const rejectQuestion = async (questionId: string, reason: string) => {
     try {
-      const res = await api.post(
-        `/question/update-status/${questionId}`,
-        { reason, action: 'rejected' },
-      );
+      const res = await api.post(`/question/update-status/${questionId}`, {
+        reason,
+        action: "rejected",
+      });
 
       const question = res.data;
 

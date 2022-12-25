@@ -1,22 +1,23 @@
-const mongoose = require('mongoose'),
+const mongoose = require("mongoose"),
   { Schema } = mongoose,
   questionSchema = new Schema(
     {
-      sender: { type: Schema.Types.ObjectId, ref: 'User' },
-      receiver: { type: Schema.Types.ObjectId, ref: 'User' },
+      sender: { type: Schema.Types.ObjectId, ref: "User" },
+      receiver: { type: Schema.Types.ObjectId, ref: "User" },
+      title: { type: String },
       description: { type: Schema.Types.Mixed, required: true },
       files: [{ type: Schema.Types.ObjectId, ref: "File" }],
       status: {
         action: {
           type: String,
-          enum: ['pending', 'accepted', 'rejected'],
-          default: 'pending',
+          enum: ["pending", "accepted", "rejected"],
+          default: "pending",
         },
         reason: { type: String },
         done: { type: Boolean, default: false },
       },
       notes: {
-        type: [{ type: Schema.Types.ObjectId, ref: 'Note' }],
+        type: [{ type: Schema.Types.ObjectId, ref: "Note" }],
         default: [],
       },
     },
@@ -24,4 +25,4 @@ const mongoose = require('mongoose'),
       timestamps: true,
     }
   );
-module.exports = mongoose.model('Question', questionSchema);
+module.exports = mongoose.model("Question", questionSchema);
