@@ -10,6 +10,7 @@ import {
   LandingPage,
   MainPage,
   Strip,
+  Grid,
   Title,
   Subtitle,
   Text,
@@ -60,51 +61,53 @@ const Landing = () => {
               We believe that everyone should have access to the best experts in
               the world. We want to make it easy for people to connect with each
               other and share knowledge. We found that reaching out to experts
-              is a very time consuming process and often unrelialbe.
-            </Text>
-          </div>
-        </FlexItem>
-        <FlexItem>
-          <img src={glass} alt="Pro" />
-          <div>
-            <Title>How it works</Title>
-            <Text>
-              Find the right expert for you Papayask gives you the ability to
-              search the skill you’re looking for in a person including a
-              variety of other options. This gives you the ability to search for
-              the right advisor for you.
+              is a very time consuming process and often unreliable.
             </Text>
           </div>
         </FlexItem>
         <Strip>
-          <div>
-            <img src={chat} alt="chat" />
-            <Title>Ask your question</Title>
-            <p>
-              After finding the best professional for your needs, you can pay to
-              ask them a question privately. Just write down your question, pay
-              and wait for an answer
-            </p>
-          </div>
-          <div>
-            <img src={lock} alt="lock" />
-            <Title>Security</Title>
-            <p>
-              Detailed and verified profiles Papayask gives its advisors the
-              ability to specify relevant details to prove their competences. To
-              ensure authenticity, we verify all profiles before they can offer
-              their services.
-            </p>
-          </div>
-          <div>
-            <img src={money} alt="money" />
-            <Title>Payment protection</Title>
-            <p>
-              The payment process is done through Paypal to ensure the security
-              of the payment. Should there happen to be a legitimate issue, we
-              will refund you in full.
-            </p>
-          </div>
+          <h2>How it works</h2>
+          <Grid>
+
+            <div>
+            <img src={glass} alt="Pro" />
+              <Title>Find the right expert for you </Title>
+              <Text>
+                Papayask gives you the ability to
+                search the skill you’re looking for in a person including a
+                variety of other options. This gives you the ability to search for
+                the right advisor for you.
+              </Text>
+            </div>
+            <div>
+              <img src={chat} alt="chat" />
+              <Title>Ask your question</Title>
+              <p>
+                After finding the best professional for your needs, you can pay to
+                ask them a question privately. Just write down your question, pay
+                and wait for an answer
+              </p>
+            </div>
+            <div>
+              <img src={lock} alt="lock" />
+              <Title>Security</Title>
+              <p>
+                Detailed and verified profiles Papayask gives its advisors the
+                ability to specify relevant details to prove their competences. To
+                ensure authenticity, we verify all profiles before they can offer
+                their services.
+              </p>
+            </div>
+            <div>
+              <img src={money} alt="money" />
+              <Title>Payment protection</Title>
+              <p>
+                The payment process is done through Paypal to ensure the security
+                of the payment. Should there happen to be a legitimate issue, we
+                will refund you in full.
+              </p>
+            </div>
+          </Grid>
         </Strip>
         <FlexItem>
           <img src={info} alt="Search" />
@@ -114,7 +117,7 @@ const Landing = () => {
               <div>
                 <Subtitle>Services</Subtitle>
                 <p>
-                  Papayask is a platform that connects you to a relevant info
+                  Papayask is a platform that connects you to a relevant expert
                   for your needs so you can ask them your burning questions.
                 </p>
               </div>
