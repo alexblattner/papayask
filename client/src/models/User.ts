@@ -1,4 +1,4 @@
-export type AdvisorStatus = 'pending' | 'approved' | boolean;
+
 
 export interface RequestSettings {
   concurrent: number;
@@ -65,6 +65,8 @@ export interface UserSkill {
   totalEducationYears?: number;
   totalExperienceYears?: number;
 }
+
+export type AdvisorStatus = 'pending' | 'approved' | boolean;
 
 export interface UserProps {
   _id: string;
