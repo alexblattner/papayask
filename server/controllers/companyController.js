@@ -31,6 +31,9 @@ exports.getByName = async (name) => {
 };
 
 exports.search = async (req, res, next) => {
-  const token = await LinkedIn.auth.getAccessToken();
-  console.log(22222, token);
+  const {search}  = req.params;
+  const companies = await Company.find({
+    name: { $regex: search, $options: 'i' },
+  });
+  return res.status(200).json({ companies });
 };

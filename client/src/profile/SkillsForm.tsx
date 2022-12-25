@@ -19,11 +19,6 @@ interface Props {
   removeSkill: (index: number) => void;
 }
 
-const SubmitButton = styled(Button)`
-  align-self: flex-end;
-  margin-bottom: 24px;
-`;
-
 const SkillsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
@@ -266,8 +261,8 @@ const SkillsForm = (props: Props) => {
           }}
         />
       ) : null}
-      <Text fontSize={32} fontWeight={600} mb={16}>
-        What skills do you have?
+      <Text fontSize={32} fontWeight={600} mb={16} color= 'primary'>
+        Add your skills
       </Text>
 
       <Input

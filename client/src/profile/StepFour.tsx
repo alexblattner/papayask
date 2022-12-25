@@ -12,7 +12,7 @@ const StepFour = () => {
   const { addLanguage, removeLanguage, languages, country, setCountry } = useEditProfile()
   return (
     <>
-      <Text fontSize={32} fontWeight="bold" mb={16}>
+      <Text fontSize={32} fontWeight="bold" mb={16} color= 'primary'>
         Country of residence and languages
       </Text>
       <CountriesSelect

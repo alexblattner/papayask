@@ -1,13 +1,13 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const Suggestions = styled('div')<{ show: boolean }>`
   position: absolute;
-  top: 35px;
+  top: calc(100% - 30px);
   left: 0;
   max-height: 240px;
   pointer-events: ${(props) => (props.show ? 'auto' : 'none')};
   background-color: #fff;
-  width: 300px;
+  width: 100%;
   z-index: 999;
   transition: all 0.2s ease-in-out;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);

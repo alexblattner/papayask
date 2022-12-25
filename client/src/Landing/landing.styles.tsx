@@ -85,7 +85,7 @@ export const FlexItem = styled('div')`
   @media (min-width: 600px) {
     flex-direction: row;
 
-    &:nth-of-type(2n) {
+    &:nth-of-type(2) {
       flex-direction: row-reverse;
     }
 
@@ -115,7 +115,7 @@ export const Subtitle = styled('h3')`
   @media (min-width: 600px) {
     font-size: 2vw;
   }
-`
+`;
 export const Text = styled('p')`
   font-size: 5vw;
   line-height: 6vw;
@@ -142,7 +142,6 @@ export const FlexContainer = styled('div')`
     font-size: 4vw;
   }
 
-
   @media (min-width: 600px) {
     flex-direction: row;
 
@@ -150,7 +149,7 @@ export const FlexContainer = styled('div')`
       font-size: 1.5vw;
     }
   }
-`
+`;
 
 export const Strip = styled('section')`
   background-color: rgba(205, 240, 243, 1);

@@ -21,6 +21,7 @@ const StepTwo = () => {
     inputEducation,
     onChangeCountry,
     onChangeExperience,
+    onChangeExperienceCompany,
     inputExperience,
     onChangeExperienceCountry,
   } = useEditProfile();
@@ -81,6 +82,7 @@ const StepTwo = () => {
           onChangeExperience={onChangeExperience}
           inputExperience={inputExperience}
           onChangeExperienceCountry={onChangeExperienceCountry}
+          onChangeExperienceCompany={onChangeExperienceCompany}
           type="Initial"
         />
         <Container flex dir="column">
