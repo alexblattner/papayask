@@ -151,15 +151,16 @@ export const FlexContainer = styled('div')`
   }
 `;
 export const Strip = styled('section')`
-background-color: rgba(205, 240, 243, 1);
-padding: 4vw;
+  background-color: rgba(205, 240, 243, 1);
+  padding: 4vw;
   border-radius: 24px;
   position: relative;
   margin-bottom: 10vw;
 
   h2 {
     font-family: 'Greycliff CF DemiBold';
-    width: 100%;text-align: center;
+    width: 100%;
+    text-align: center;
     font-size: 10vw;
   }
   @media (min-width: 600px) {
@@ -170,24 +171,24 @@ padding: 4vw;
 `;
 export const Grid = styled('div')`
   background-color: rgba(205, 240, 243, 1);
-  
+
   div {
     width: 100%;
-    text-align: left;
-    margin-bottom: 0px ;
+    text-align: center;
+    margin-bottom: 0px;
+
+    h2 {
+      text-align: center;
+      font-size: 8vw;
+    }
   }
-  h2{
-    text-align: left;
-    font-size: 8vw;
-  }
+
   p {
     font-size: 5vw;
   }
 
   img {
-    height: 40%;
-    margin: 0;
-    transform: translateX(0);
+    width: 80%;
   }
 
   @media (min-width: 600px) {
@@ -198,19 +199,18 @@ export const Grid = styled('div')`
     div {
       width: 100%;
       text-align: start;
-      h2{
+      h2 {
+        text-align: start;
         font-size: 3vw;
       }
     }
 
-    p { 
+    p {
       font-size: 2vw;
     }
 
     img {
-      margin-left: 25%;
-      height: 25vw;
-      transform: translateX(-50%);
+      width: 60%;
     }
   }
 `;
