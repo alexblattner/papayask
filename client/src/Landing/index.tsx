@@ -66,7 +66,7 @@ const Landing = () => {
           </div>
         </FlexItem>
         <Strip>
-          <h2>How it works</h2>
+          <h2>How it works?</h2>
           <Grid>
             <div>
               <img src={glass} alt="Pro" />

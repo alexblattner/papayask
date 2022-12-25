@@ -152,7 +152,7 @@ export const FlexContainer = styled('div')`
 `;
 export const Strip = styled('section')`
   background-color: rgba(205, 240, 243, 1);
-  padding: 4vw;
+  padding: 4vw 8vw;
   border-radius: 24px;
   position: relative;
   margin-bottom: 10vw;
@@ -188,7 +188,7 @@ export const Grid = styled('div')`
   }
 
   img {
-    width: 80%;
+    width: 70%;
   }
 
   @media (min-width: 600px) {
