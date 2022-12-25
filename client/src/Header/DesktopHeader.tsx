@@ -65,7 +65,7 @@ const DesktopHeader = (props: Props) => {
       {user ? (
         <>
           <Container flex align="center" gap={16} ml="auto">
-            {user.advisorStatus !== 'approved' && !editProfileShown && (
+            {user.advisorStatus==false && !editProfileShown && (
               <Button
                 variant="outline"
                 onClick={() => setShowBecomeAdvisorModal(true)}
