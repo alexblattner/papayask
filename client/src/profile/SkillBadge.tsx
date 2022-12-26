@@ -32,14 +32,20 @@ const BadgeContent = styled('div')<{ expanded: boolean }>`
 interface Props {
   skill: UserSkill;
 }
-
+function capitalize(str:string) {
+  let newstr = str.toLowerCase().split(' ');
+  for (var i = 0; i < newstr.length; i++) {
+    newstr[i] = newstr[i].charAt(0).toUpperCase() + newstr[i].slice(1); 
+  }
+  return newstr.join(' ');
+}
 const SkillBadge = ({ skill }: Props) => {
   const [expanded, setExpanded] = useState<boolean>(false);
   return (
     <StyledBadge onClick={() => setExpanded((prevState) => !prevState)}>
       <Container flex justify="space-between" align="center">
-        <Text color="#92462A" fontSize={16} fontWeight={'bold'}>
-          {skill.name}
+        <Text color="#92462A" fontSize={20} fontWeight={'bolder'}>
+          {capitalize(skill.name)}
         </Text>
         {skill.educations.length || skill.experiences.length ? (
           <Arrow expanded={expanded}>

@@ -41,12 +41,14 @@ export const FirstSectionContent = styled('div')`
   line-height: 10vw;
 
   @media (min-width: 600px) {
-    top: 25%;
-    left: 8%;
-    font-size: 2.3vw;
-    width: 40%;
-    transform: translateX(0);
-    line-height: 3vw;
+      top: 25%;
+      left: 5%;
+      font-size: 3.3vw;
+      width: 49%;
+      -webkit-transform: translateX(0);
+      -ms-transform: translateX(0);
+      transform: translateX(0);
+      line-height: 4vw;
   }
 `;
 
