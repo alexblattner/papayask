@@ -193,10 +193,7 @@ const QuestionsList = () => {
         )}
         <AnimatedContainer currentTab={currentTab}>
           {questions.map((question, i) => (
-            <QuestionItem
-              key={question._id}
-              //  onClick={() => onClick(question)}
-            >
+            <QuestionItem key={question._id} onClick={() => onClick(question)}>
               <StyledDiv>
                 <Checkbox checked={false} />
 

@@ -158,8 +158,8 @@ exports.getById = async (req, res, next) => {
     return new Error(err);
   }
 };
-exports.edit= async (req, res, next) => {
-  const note= await Note.findById(req.body.id).exec();
+exports.edit = async (req, res, next) => {
+  const note = await Note.findById(req.body.id).exec();
   if (note && note.user.toString() == req.user._id.toString()) {
     await note.update({ content: req.body.content });
     return res.send(note);
@@ -168,34 +168,47 @@ exports.edit= async (req, res, next) => {
   }
 };
 
+exports.deleteNote = async (req, res) => {
+  try {
+    await Note.findByIdAndRemove(req.body.id);
+    rea.status(204);
+  } catch (e) {
+    console.log(e.message);
+  }
+};
 
-exports.create= async (req, res, next) => {
+exports.create = async (req, res, next) => {
   const question = await Question.findById(req.body.questionId).exec();
   if (question && question.receiver.toString() == req.user._id.toString()) {
-    let content= Array.isArray(req.body.content) ? req.body.content[0] : req.body.content;
-    let submission={
+    let content = Array.isArray(req.body.content)
+      ? req.body.content[0]
+      : req.body.content;
+    let submission = {
       user: req.user._id,
       question: req.body.questionId,
       content: content,
-    }
-    if(req.body.coordinates) submission.coordinates=req.body.coordinates;
-    await Note.create(submission)
-      .then(async(data) => {
-        if(!question.status||!question.status.action||question.status.action=="pending"){
-          if(question.status){
-            question.status.action="answered";
-          }else{
-            question.status={action:"accepted",done:false,reason:""};
-          }
+    };
+    if (req.body.coordinates) submission.coordinates = req.body.coordinates;
+    await Note.create(submission).then(async (data) => {
+      if (
+        !question.status ||
+        !question.status.action ||
+        question.status.action == "pending"
+      ) {
+        if (question.status) {
+          question.status.action = "answered";
+        } else {
+          question.status = { action: "accepted", done: false, reason: "" };
         }
-        question.notes.push(data._id);
-        await question.save();
-        return res.send(data);
-      })
+      }
+      question.notes.push(data._id);
+      await question.save();
+      return res.send(data);
+    });
   } else {
     return res.sendStatus(403);
   }
-}
+};
 
 exports.getAll = (req, res, next) => {
   Review.find({}, (error, subscribers) => {

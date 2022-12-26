@@ -100,8 +100,6 @@ const Creator = (props: Props) => {
       const res = await api.post("/pay", finalInfo, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log(868686, res.data.result.id);
-
       return res.data.result.id;
     } catch (error) {
       setLoading(false);
@@ -110,7 +108,6 @@ const Creator = (props: Props) => {
   };
 
   const onApprove = async (data: any, actions: any) => {
-    console.log(8686, data.orderID);
     let info = {
       cost: props.user.request_settings ? props.user.request_settings.cost : 1,
       capture: data.orderID,
@@ -175,7 +172,11 @@ const Creator = (props: Props) => {
         />
         <Input
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={(e) => {
+            if (e.target.value.length <= 100) {
+              setTitle(e.target.value);
+            }
+          }}
           placeholder="Subject"
           name="title"
           type="text"
