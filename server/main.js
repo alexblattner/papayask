@@ -91,7 +91,7 @@ mongoose.connect(
   'mongodb+srv://papayask:' +
     process.env.MONGODB_PASSWORD +
     '@cluster' +
-    (process.env.NODE_ENV == 'production1' ? "0.movlb" : "1.m1q2dzz") +
+    (process.env.NODE_ENV == 'production' ? "0.movlb" : "1.m1q2dzz") +
     '.mongodb.net/?retryWrites=true&w=majority',
   { useNewUrlParser: true, useUnifiedTopology: true }
 );
