@@ -70,7 +70,9 @@ const DesktopHeader = (props: Props) => {
                 variant="outline"
                 onClick={() => setShowBecomeAdvisorModal(true)}
               >
-                BECOME AN ADVISOR
+                {user.advisorStatus === 'pending'
+                  ? 'PENDING'
+                  : 'BECOME AN ADVISOR'}
               </Button>
             )}
             {user.advisorStatus === 'approved' ? (
