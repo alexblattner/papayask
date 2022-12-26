@@ -193,12 +193,16 @@ export const Grid = styled('div')`
 
   @media (min-width: 600px) {
     display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    align-items: start; 
     grid-column-gap: 80px;
     grid-row-gap: 0px;
-    grid-template-columns: auto auto;
     div {
       width: 100%;
       text-align: start;
+      display: flex;
+      flex-direction: column;
+      align-items: start;
       h2 {
         text-align: start;
         font-size: 3vw;

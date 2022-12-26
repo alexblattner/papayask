@@ -11,7 +11,7 @@ import useWidth from '../Hooks/useWidth';
 import DesktopHeader from './DesktopHeader';
 import MobileHeader from './MobileHeader';
 import BecomeAdvisorModal from './BecomeAdvisorModal';
-
+import { AdvisorStatus } from '../models/User';
 const StyledHeader = styled.header`
   width: 100%;
   height: 80px;
@@ -32,7 +32,7 @@ function Header() {
   const [showBecomeAdvisorModal, setShowBecomeAdvisorModal] =
     useState<boolean>(false);
   const [showProfileSetup, setShowProfileSetup] = useState<boolean>(false);
-  const [isAdvisor, setIsAdvisor] = useState<boolean>(false);
+  const [isAdvisor, setIsAdvisor] = useState<AdvisorStatus|boolean>(false);
 
   const handleSearch = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();

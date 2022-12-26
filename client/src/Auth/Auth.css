@@ -98,7 +98,10 @@
 	margin: 8px 32.6px;
 }
 #name-inputs input {
-    width: 48%; margin:0; margin-left:4%;
+    width: 48%; margin:0;
+}
+#name-inputs input:nth-child(2) {
+    margin-left:4%;
 }
 .connection form input[type="submit"]{
     background-color: var(--primary);

@@ -7,6 +7,7 @@ import { useEditProfile } from './profileService';
 import { Text } from '../shared/Text';
 import { ToastsContext } from '../toast/ToastContext';
 import { ToastProps } from '../toast/Toast';
+import { AdvisorStatus } from '../models/User';
 
 interface Props {
   step: number;
@@ -15,7 +16,7 @@ interface Props {
   setStepsDone: React.Dispatch<React.SetStateAction<number[]>>;
   setShowProfileSetup: React.Dispatch<React.SetStateAction<boolean>>;
   type: 'initial' | 'edit-all' | 'edit-one';
-  advisor: boolean;
+  advisor: AdvisorStatus|boolean;
 }
 
 const ProfileSetupFooter = ({
@@ -41,7 +42,8 @@ const ProfileSetupFooter = ({
       setIsLoading(true);
     }
     await submit();
-    if (advisor) {
+
+    if (advisor&&progress>=75) {
       await becomeAdvisor();
     }
     if (type === 'save') {
@@ -132,7 +134,7 @@ const ProfileSetupFooter = ({
           >
             {isLoading
               ? 'Please Wait...'
-              : !advisor
+              : !advisor&&progress<75
               ? 'Submit'
               : 'Become an advisor'}
           </Button>

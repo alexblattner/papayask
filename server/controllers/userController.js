@@ -438,7 +438,7 @@ exports.becomeAdvisor = async (req, res, next) => {
 };
 
 exports.apply = async (req, res, next) => {
-  const user = await User.findById(req.user._id);
+  const user = await User.findById(req.user._id).populate('skills');
   if (user) {
     let completion = 0;
     if (user.title) {
@@ -451,6 +451,7 @@ exports.apply = async (req, res, next) => {
       completion += 15;
     }
     for (let i = 0; i < user.skills.length; i++) {
+      console.log(11,user.skills[i]);
       if (
         user.skills[i].experiences.length > 0 ||
         user.skills[i].educations.length > 0
@@ -466,8 +467,13 @@ exports.apply = async (req, res, next) => {
     for (let i = 0; i < user.education.length; i++) {
       completion += 5;
     }
-
-    user.save();
+    if(completion >= 75) {
+      user.advisorStatus = 'pending';
+      user.save();
+      return res.status(200).json({ message: 'Application sent successfully' });
+    }else {
+      return res.status(400).json({ message: 'Application failed' });
+    }
   } else {
     return res.status(401).json({ message: 'Unauthorized' });
   }

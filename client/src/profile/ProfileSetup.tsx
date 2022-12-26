@@ -11,7 +11,7 @@ import StepFour from './StepFour';
 import SetupWarning from './SetupWarning';
 import useWidth from '../Hooks/useWidth';
 import { EditProfileContext } from './profileService';
-
+import { AdvisorStatus } from '../models/User';
 const SetupModal = styled('div')<{ pageLoaded: boolean }>`
   position: fixed;
   top: 0;
@@ -29,7 +29,7 @@ interface ProfileSetupProps {
   setShowProfileSetup: React.Dispatch<React.SetStateAction<boolean>>;
   type: 'initial' | 'edit-all' | 'edit-one';
   initialStep?: number | null;
-  advisor: boolean;
+  advisor: AdvisorStatus|boolean;
 }
 
 const ProfileSetup = ({
