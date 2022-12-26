@@ -52,7 +52,7 @@ const LanguagesSelect = (props: Props) => {
       <Input
         type="text"
         value={value}
-        placeholder="Languages"
+        label="Languages"
         name=""
         width={props.width}
         onChange={(e) => setValue(e.target.value)}

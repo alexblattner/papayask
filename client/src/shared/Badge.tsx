@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import Divider from './Divider';
-
+import SvgIcon from './SvgIcon';
 const StyledBadge = styled.div`
   display: flex;
   align-items: center;
@@ -11,6 +11,11 @@ const StyledBadge = styled.div`
   cursor: pointer;
   font-weight: bold;
   gap: 12px;
+  span {
+    font-size: 14px;
+    font-weight: normal;
+    cursor: pointer;
+  }
 `;
 
 interface Props {
@@ -30,9 +35,8 @@ const Badge = (props: Props) => {
     <StyledBadge>
       {props.text}
 
-      {props.isRemovable && <Divider orientation="vertical" />}
       {props.isRemovable && (
-        <span onClick={() => removeBadge(props.text)}>X</span>
+        <span onClick={() => removeBadge(props.text)}>✖</span>
       )}
     </StyledBadge>
   );
