@@ -4,12 +4,13 @@ import { UserEducation, UserExperience, UserSkill } from '../models/User';
 import { Container } from '../shared/Container';
 import { Input } from '../shared/Input';
 import { Text } from '../shared/Text';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { DetailedSkill } from './DetailedSkill';
 import SvgIcon from '../shared/SvgIcon';
 import { formatDateNamed } from '../utils/formatDate';
 import Badge from '../shared/Badge';
 import { Button } from '../shared/Button';
+import { EditProfileContext } from './profileService';
 
 interface Props {
   setSkills: React.Dispatch<React.SetStateAction<UserSkill[]>>;
@@ -81,24 +82,26 @@ const BackDrop = styled.div`
 type Mode = 'edit' | 'add';
 
 const SkillsForm = (props: Props) => {
-  const [currentSkill, setCurrentSkill] = useState<UserSkill>({
-    name: '',
-    educations: [],
-    experiences: [],
-  });
   const [disabledAdd, setDisabledAdd] = useState<boolean>(false);
   const [disabledEdit, setDisabledEdit] = useState<boolean>(false);
   const [showEducationList, setShowEducationList] = useState<boolean>(false);
   const [showExperienceList, setShowExperienceList] = useState<boolean>(false);
-  const [selectedExperienceIndexes, setSelectedExperienceIndexes] = useState<
-    number[]
-  >([]);
-  const [selectedEducationIndexes, setSelectedEducationIndexes] = useState<
-    number[]
-  >([]);
+
+  const {
+    selectedExperienceIndexes,
+    setSelectedExperienceIndexes,
+    selectedEducationIndexes,
+    setSelectedEducationIndexes,
+    skills,
+    removeSkill,
+    addSkill,
+    currentSkill,
+    setCurrentSkill,
+  } = useContext(EditProfileContext);
+
   const [mode, setMode] = useState<Mode>('add');
 
-  const { setSkills, skills, education, experience, removeSkill } = props;
+  const { education, experience } = props;
 
   const isSkillNameExists = (name: string) => {
     return skills.some((skill) => skill.name === name);
@@ -136,60 +139,8 @@ const SkillsForm = (props: Props) => {
     }
   };
 
-  const numberOfYears = (field: UserEducation | UserExperience): number => {
-    const startMonth = new Date(field.startDate).getMonth() + 1;
-    const endMonth = field.endDate
-      ? new Date(field.endDate).getMonth() + 1
-      : new Date().getMonth() + 1;
-
-    const startYear = new Date(field.startDate).getFullYear();
-    const endYear = field.endDate
-      ? new Date(field.endDate).getFullYear()
-      : new Date().getFullYear();
-
-    let diff = (endMonth - startMonth + 12 * (endYear - startYear)) / 12;
-
-    let formatedDiff = diff.toFixed(1);
-
-    if (formatedDiff.includes('.0')) {
-      formatedDiff = formatedDiff.replace('.0', '');
-    }
-
-    diff = parseFloat(formatedDiff);
-
-    return diff;
-  };
-
-  const addSkill = () => {
-    let education: UserEducation[] = [];
-    selectedEducationIndexes.forEach((index) => {
-      education.push(props.education[index]);
-    });
-
-    let experience: UserExperience[] = [];
-
-    selectedExperienceIndexes.forEach((index) => {
-      experience.push(props.experience[index]);
-    });
-
-    const skill: UserSkill = {
-      ...currentSkill,
-      educations: education.map((edu) => ({
-        education: edu,
-        years: numberOfYears(edu),
-      })),
-      experiences: experience.map((exp) => ({
-        experience: exp,
-        years: numberOfYears(exp),
-      })),
-    };
-    if (currentSkill._id) {
-      const index = skills.findIndex((s) => s._id === currentSkill._id);
-      skills.splice(index, 1, skill);
-    } else {
-      setSkills([...skills, skill]);
-    }
-
+  const add = () => {
+    addSkill();
     resetMode();
   };
 
@@ -261,7 +212,7 @@ const SkillsForm = (props: Props) => {
           }}
         />
       ) : null}
-      <Text fontSize={32} fontWeight={600} mb={16} color= 'primary'>
+      <Text fontSize={32} fontWeight={600} mb={16} color="primary">
         Add your skills
       </Text>
 
@@ -377,8 +328,7 @@ const SkillsForm = (props: Props) => {
             variant="primary"
             disabled={disabledEdit}
             onClick={() => {
-              addSkill();
-              resetMode();
+              add();
             }}
           >
             <Text color="white" fontSize={20} fontWeight="bold">
@@ -388,10 +338,10 @@ const SkillsForm = (props: Props) => {
         ) : null}
         <Button
           variant={mode === 'add' ? 'primary' : 'outline'}
-          disabled={disabledEdit}
+          disabled={disabledAdd}
           onClick={() => {
             if (mode === 'add') {
-              addSkill();
+              add();
             } else {
               resetMode();
             }

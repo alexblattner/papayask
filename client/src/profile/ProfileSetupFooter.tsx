@@ -3,7 +3,7 @@ import React, { useContext, useState } from 'react';
 import { Button } from '../shared/Button';
 import { Container } from '../shared/Container';
 import useWidth from '../Hooks/useWidth';
-import { useEditProfile } from './profileService';
+import { EditProfileContext, useEditProfile } from './profileService';
 import { Text } from '../shared/Text';
 import { ToastsContext } from '../toast/ToastContext';
 import { ToastProps } from '../toast/Toast';
@@ -16,7 +16,7 @@ interface Props {
   setStepsDone: React.Dispatch<React.SetStateAction<number[]>>;
   setShowProfileSetup: React.Dispatch<React.SetStateAction<boolean>>;
   type: 'initial' | 'edit-all' | 'edit-one';
-  advisor: AdvisorStatus|boolean;
+  advisor: AdvisorStatus | boolean;
 }
 
 const ProfileSetupFooter = ({
@@ -31,8 +31,17 @@ const ProfileSetupFooter = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const { width } = useWidth();
-  const { submit, progress, becomeAdvisor } = useEditProfile();
+  const {
+    submit,
+    progress,
+    becomeAdvisor,
+    addEducation,
+    inputEducation,
+    addExperience,
+    inputExperience,
+  } = useEditProfile();
   const { showToast } = useContext(ToastsContext);
+  const { currentSkill, addSkill } = useContext(EditProfileContext);
 
   const submitProfile = async (type: 'save' | 'submit') => {
     if (isLoading || isSaving) return;
@@ -43,7 +52,7 @@ const ProfileSetupFooter = ({
     }
     await submit();
 
-    if (advisor&&progress>=75) {
+    if (advisor && progress >= 75) {
       await becomeAdvisor();
     }
     if (type === 'save') {
@@ -72,6 +81,31 @@ const ProfileSetupFooter = ({
   };
 
   const nextStep = () => {
+    if (step === 1) {
+      if (
+        inputEducation.startDate &&
+        inputEducation.name &&
+        inputEducation.level &&
+        inputEducation.university.name &&
+        inputEducation.university.country
+      ) {
+        addEducation(inputEducation);
+      }
+      if (
+        inputExperience.startDate &&
+        inputExperience.company.name &&
+        inputExperience.name &&
+        inputExperience.type &&
+        inputExperience.geographic_specialization
+      ) {
+        addExperience(inputExperience);
+      }
+    }
+    if (step === 2) {
+      if (currentSkill.name !== '') {
+        addSkill();
+      }
+    }
     if (step < 3) {
       setStep(step + 1);
       setStepsDone([...stepsDone, step + 1]);
@@ -134,7 +168,7 @@ const ProfileSetupFooter = ({
           >
             {isLoading
               ? 'Please Wait...'
-              : !advisor&&progress<75
+              : !advisor && progress < 75
               ? 'Submit'
               : 'Become an advisor'}
           </Button>
