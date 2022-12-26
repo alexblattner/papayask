@@ -88,8 +88,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const updateUser = async (body: any) => {
-    console.log(body);
-
     try {
       const res = await api({
         method: 'patch',

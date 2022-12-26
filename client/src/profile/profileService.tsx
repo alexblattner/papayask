@@ -72,6 +72,16 @@ interface EditProfileContextReturn {
   onChangeExperienceCompany: (company: Company | string) => void;
   removeSkill: (index: number) => void;
   becomeAdvisor: () => Promise<void>;
+  addSkill: () => void;
+  updateSkills: () => Promise<void>;
+  selectedExperienceIndexes: number[];
+  setSelectedExperienceIndexes: React.Dispatch<
+    React.SetStateAction<number[]>
+  >;
+  selectedEducationIndexes: number[];
+  setSelectedEducationIndexes: React.Dispatch<React.SetStateAction<number[]>>;
+  currentSkill: UserSkill;
+  setCurrentSkill: React.Dispatch<React.SetStateAction<UserSkill>>;
 }
 
 export const EditProfileContext = createContext<EditProfileContextReturn>({
@@ -138,6 +148,19 @@ export const EditProfileContext = createContext<EditProfileContextReturn>({
   onChangeExperienceCompany: (company: Company | string) => {},
   removeSkill: (index: number) => {},
   becomeAdvisor: async () => {},
+  addSkill: () => {},
+  updateSkills: async () => {},
+  selectedExperienceIndexes: [],
+  setSelectedExperienceIndexes: () => {},
+  selectedEducationIndexes: [],
+  setSelectedEducationIndexes: () => {},
+  currentSkill: {
+    name: '',
+    educations: [],
+    experiences: [],
+  },
+  setCurrentSkill: () => {},
+
 });
 
 export const useEditProfile = () => useContext(EditProfileContext);
@@ -181,10 +204,87 @@ export const EditProfileProvider = ({
     geographic_specialization: '',
   });
 
+  const [selectedExperienceIndexes, setSelectedExperienceIndexes] = useState<
+    number[]
+  >([]);
+  const [selectedEducationIndexes, setSelectedEducationIndexes] = useState<
+    number[]
+  >([]);
+
+  const [currentSkill, setCurrentSkill] = useState<UserSkill>({
+    name: '',
+    educations: [],
+    experiences: [],
+  });
+
+  const numberOfYears = (field: UserEducation | UserExperience): number => {
+    const startMonth = new Date(field.startDate).getMonth() + 1;
+    const endMonth = field.endDate
+      ? new Date(field.endDate).getMonth() + 1
+      : new Date().getMonth() + 1;
+
+    const startYear = new Date(field.startDate).getFullYear();
+    const endYear = field.endDate
+      ? new Date(field.endDate).getFullYear()
+      : new Date().getFullYear();
+
+    let diff = (endMonth - startMonth + 12 * (endYear - startYear)) / 12;
+
+    let formatedDiff = diff.toFixed(1);
+
+    if (formatedDiff.includes('.0')) {
+      formatedDiff = formatedDiff.replace('.0', '');
+    }
+
+    diff = parseFloat(formatedDiff);
+
+    return diff;
+  };
+
   const removeSkill = (index: number) => {
     const newSkills = [...skills];
     newSkills.splice(index, 1);
     setSkills(newSkills);
+  };
+
+  const updateSkills = async () => {
+    try {
+      await updateUser({ skills });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const addSkill = () => {
+    if (!user) return;
+    let education: UserEducation[] = [];
+    selectedEducationIndexes.forEach((index) => {
+      education.push(user.education[index]);
+    });
+
+    let experience: UserExperience[] = [];
+
+    selectedExperienceIndexes.forEach((index) => {
+      experience.push(user.experience[index]);
+    });
+
+    const skill: UserSkill = {
+      ...currentSkill,
+      educations: education.map((edu) => ({
+        education: edu,
+        years: numberOfYears(edu),
+      })),
+      experiences: experience.map((exp) => ({
+        experience: exp,
+        years: numberOfYears(exp),
+      })),
+    };
+    if (currentSkill._id) {
+      const index = skills.findIndex((s) => s._id === currentSkill._id);
+      skills.splice(index, 1, skill);
+    } else {
+      setSkills([...skills, skill]);
+    }
   };
 
   const onChangeEducation = (
@@ -484,6 +584,14 @@ export const EditProfileProvider = ({
     removeSkill,
     setCloudinaryImageId,
     becomeAdvisor,
+    addSkill,
+    updateSkills,
+    selectedEducationIndexes,
+    setSelectedEducationIndexes,
+    selectedExperienceIndexes,
+    setSelectedExperienceIndexes,
+    currentSkill,
+    setCurrentSkill,
   };
   return (
     <EditProfileContext.Provider value={value}>
