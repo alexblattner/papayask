@@ -35,10 +35,10 @@ export const FirstSectionContent = styled('div')`
   left: 50%;
   transform: translateX(-50%);
   color: white;
-  font-size: 10vw;
+  font-size: 9vw;
   width: 66%;
   font-weight: bold;
-  line-height: 8vw;
+  line-height: 10vw;
 
   @media (min-width: 600px) {
     top: 25%;
@@ -51,7 +51,7 @@ export const FirstSectionContent = styled('div')`
 `;
 
 export const Arrow = styled('img')`
-  width: 10vw;
+  width: 15vw;
   cursor: pointer;
   margin-top: 5vw;
   margin-left: 50%;
@@ -79,7 +79,7 @@ export const FlexItem = styled('div')`
   }
 
   img {
-    width: 30vw;
+    width: 50vw;
   }
 
   @media (min-width: 600px) {
@@ -90,7 +90,7 @@ export const FlexItem = styled('div')`
     }
 
     img {
-      width: 13vw;
+      width: 18vw;
     }
   }
 `;
@@ -188,7 +188,7 @@ export const Grid = styled('div')`
   }
 
   img {
-    width: 70%;
+    width: 50vw;
   }
 
   @media (min-width: 600px) {
@@ -214,7 +214,7 @@ export const Grid = styled('div')`
     }
 
     img {
-      width: 60%;
+      width: 18vw;
     }
   }
 `;
