@@ -43,8 +43,8 @@ export const FirstSectionContent = styled('div')`
   @media (min-width: 600px) {
       top: 25%;
       left: 5%;
-      font-size: 3.3vw;
-      width: 49%;
+      font-size: 3.8vw;
+      width: 42%;
       -webkit-transform: translateX(0);
       -ms-transform: translateX(0);
       transform: translateX(0);
@@ -61,7 +61,7 @@ export const Arrow = styled('img')`
 
   @media (min-width: 600px) {
     width: 5vw;
-    margin-top: 3vw;
+    margin-top: 6vw;
   }
 `;
 
