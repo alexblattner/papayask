@@ -54,18 +54,10 @@ const AdvisorWarning = (props: Props) => {
             props.setShowProfileSetup(false);
           }}
         >
-          Cancel
+          Keep editing
         </Button>
         <Button variant="primary" onClick={saveProgress} disabled={isLoading}>
           Save progress
-        </Button>
-        <Button
-          variant="primary"
-          onClick={() => {
-            props.setAdvisorWarning(false);
-          }}
-        >
-          Edit profile
         </Button>
       </Container>
     </Modal>
