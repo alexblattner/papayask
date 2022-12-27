@@ -84,19 +84,21 @@ const BecomeAdvisorModal = (props: Props) => {
               Your application is pending!
             </Text>
           </Container>
-          <Text fontSize={18} mb={24} align="justify">
-            Please be aware that the review process can take some time.
-          </Text>
+          <Container width="100%">
+            <Text fontSize={18} mb={24} align="justify">
+              Please be aware that the review process can take some time.
+            </Text>
 
-          <Text fontSize={18} mb={24} align="justify">
-            We appreciate your patience and will be in touch with you as soon as
-            a decision has been made regarding your application.
-          </Text>
+            <Text fontSize={18} mb={24} align="justify">
+              We appreciate your patience and will be in touch with you as soon
+              as a decision has been made regarding your application.
+            </Text>
 
-          <Text fontSize={18} mb={24} align="justify">
-            In the meantime, you can continue to edit your profile and add more
-            information.
-          </Text>
+            <Text fontSize={18} mb={24} align="justify">
+              In the meantime, you can continue to edit your profile and add
+              more information.
+            </Text>
+          </Container>
         </Container>
       ) : null}
 
