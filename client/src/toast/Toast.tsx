@@ -33,6 +33,7 @@ const StyledToast = styled('div')<{
   transition: all 0.3s ease-in-out;
   font-weight: bold;
   border-radius: 4px;
+  text-align: center;
 `;
 
 const Toast = (props: Props) => {

@@ -63,20 +63,21 @@ const ProfileSetupFooter = ({
 
     await submit();
 
-    if (advisor && progress >= 75) {
-      const res=await becomeAdvisor();
-      if(res){
+    if (type === 'submit' && advisor && progress >= 75) {
+      const res = await becomeAdvisor();
+      if (res) {
         const toast: ToastProps = {
           id: Date.now().toString(),
           type: 'success',
-          message: 'Your request to become an advisor has been sent successfully',
+          message:
+            'Your request to become an advisor has been sent successfully',
           show: true,
         };
         showToast(toast, 3);
       }
     }
 
-    if (type === 'save') {
+    if (type === 'save' || (type === 'submit' && !advisor)) {
       setIsSaving(false);
       const toast: ToastProps = {
         id: Date.now().toString(),
@@ -84,20 +85,12 @@ const ProfileSetupFooter = ({
         message: 'Profile saved successfully',
         show: true,
       };
+
       showToast(toast, 3);
     }
 
     if (type === 'submit') {
       setIsLoading(false);
-      const toast: ToastProps = {
-        id: Date.now().toString(),
-        type: 'success',
-        message: 'Your request to become an advisor has been sent successfully',
-        show: true,
-      };
-      if (advisor) {
-        showToast(toast, 3);
-      }
       setShowProfileSetup(false);
     }
     getUser();

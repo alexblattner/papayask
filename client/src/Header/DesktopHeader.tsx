@@ -55,7 +55,7 @@ const DesktopHeader = (props: Props) => {
   const signout = () => {
     auth.signOut();
   };
-  console.log(9999,user)
+  
   return (
     <HeaderContainer>
       <Link to="/">
