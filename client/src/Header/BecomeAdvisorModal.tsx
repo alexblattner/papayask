@@ -7,12 +7,12 @@ import { EditProfileContext } from '../profile/profileService';
 import { AuthContext } from '../Auth/ContextProvider';
 import { Container } from '../shared/Container';
 import { Button } from '../shared/Button';
-import {AdvisorStatus} from '../models/User';
+import { AdvisorStatus } from '../models/User';
 import api from '../utils/api';
 interface Props {
   setShowBecomeAdvisorModal: React.Dispatch<React.SetStateAction<boolean>>;
   setShowProfileSetup: React.Dispatch<React.SetStateAction<boolean>>;
-  setIsAdvisor: React.Dispatch<React.SetStateAction<AdvisorStatus|boolean>>;
+  setIsAdvisor: React.Dispatch<React.SetStateAction<AdvisorStatus | boolean>>;
 }
 
 const StyledSpan = styled.span`
@@ -109,24 +109,21 @@ const BecomeAdvisorModal = (props: Props) => {
         </Button>
         <Button
           variant="primary"
-          onClick={async() => {
-            if (progress < 75){
+          onClick={async () => {
+            if (progress < 75) {
               props.setShowBecomeAdvisorModal(false);
               props.setShowProfileSetup(true);
               props.setIsAdvisor(!user?.advisorStatus ? true : false);
-            }else{
-              const response=await api.post('/confirmation-application');
-              if(response.status===200){
+            } else {
+              const response = await api.post('/confirmation-application');
+              if (response.status === 200) {
                 props.setShowBecomeAdvisorModal(false);
                 props.setIsAdvisor('pending');
-              }else
-              alert('Something went wrong');
+              } else alert('Something went wrong');
             }
           }}
         >
-          {progress < 75
-            ? 'Edit profile'
-            : 'Become an Advisor'}
+          {progress < 75 ? 'Edit profile' : 'Become an Advisor'}
         </Button>
       </Container>
     </Modal>

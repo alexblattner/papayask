@@ -8,6 +8,7 @@ import { Text } from '../shared/Text';
 import { ToastsContext } from '../toast/ToastContext';
 import { ToastProps } from '../toast/Toast';
 import { AdvisorStatus } from '../models/User';
+import AdvisorWarning from './AdvisorWarning';
 
 interface Props {
   step: number;
@@ -30,6 +31,7 @@ const ProfileSetupFooter = ({
 }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [showWarning, setShowWarning] = useState<boolean>(false);
   const { width } = useWidth();
   const {
     submit,
@@ -45,6 +47,12 @@ const ProfileSetupFooter = ({
 
   const submitProfile = async (type: 'save' | 'submit') => {
     if (isLoading || isSaving) return;
+
+    if (advisor && type === 'submit' && progress < 75) {
+      setShowWarning(true);
+      return;
+    }
+
     if (type === 'save') {
       setIsSaving(true);
     } else {
@@ -128,18 +136,26 @@ const ProfileSetupFooter = ({
       mt={'auto'}
       justify={width > 768 ? 'flex-end' : 'center'}
     >
-      <Button
-        variant="outline"
-        onClick={() => submitProfile('save')}
-        disabled={isSaving}
-      >
-        <Container flex gap={12} align="center">
-          <Text fontWeight="bold" color="primary" fontSize={16}>
-            SAVE PROGRESS
-          </Text>
-          <Text color="primary">({progress}% COMPLETE)</Text>
-        </Container>
-      </Button>
+      {showWarning ? (
+        <AdvisorWarning
+          setAdvisorWarning={setShowWarning}
+          setShowProfileSetup={setShowProfileSetup}
+        />
+      ) : null}
+      {advisor ? (
+        <Button
+          variant="primary"
+          onClick={() => submitProfile('save')}
+          disabled={isSaving}
+        >
+          <Container flex gap={12} align="center">
+            <Text fontWeight="bold" color="white" fontSize={16}>
+              SAVE PROGRESS
+            </Text>
+            <Text color="white">({progress}% COMPLETE)</Text>
+          </Container>
+        </Button>
+      ) : null}
       <Container ml={width > 768 ? 'auto' : 0} flex gap={12} align="center">
         <Button variant="outline" onClick={() => setShowProfileSetup(false)}>
           Close
@@ -168,8 +184,8 @@ const ProfileSetupFooter = ({
           >
             {isLoading
               ? 'Please Wait...'
-              : !advisor && progress < 75
-              ? 'Submit'
+              : !advisor
+              ? 'Save'
               : 'Become an advisor'}
           </Button>
         )}
