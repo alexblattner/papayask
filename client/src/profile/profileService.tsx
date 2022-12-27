@@ -71,7 +71,7 @@ interface EditProfileContextReturn {
   onChangeExperienceCountry: (country: string) => void;
   onChangeExperienceCompany: (company: Company | string) => void;
   removeSkill: (index: number) => void;
-  becomeAdvisor: () => Promise<void>;
+  becomeAdvisor: () => Promise<any>;
   addSkill: () => void;
   updateSkills: () => Promise<void>;
   selectedExperienceIndexes: number[];
@@ -484,9 +484,9 @@ export const EditProfileProvider = ({
   };
 
   const becomeAdvisor = async () => {
-    await api({
+    return await api({
       method: 'post',
-      url: `/user/${user?._id}/become-advisor`,
+      url: `confirmation-application`,
     });
   };
 

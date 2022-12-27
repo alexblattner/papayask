@@ -46,6 +46,7 @@ const ProfileSetupFooter = ({
   const { currentSkill, addSkill } = useContext(EditProfileContext);
 
   const submitProfile = async (type: 'save' | 'submit') => {
+    alert(1)
     if (isLoading || isSaving) return;
 
     if (advisor && type === 'submit' && progress < 75) {
@@ -58,11 +59,25 @@ const ProfileSetupFooter = ({
     } else {
       setIsLoading(true);
     }
+    alert(2)
+
     await submit();
+    alert(3)
 
     if (advisor && progress >= 75) {
-      await becomeAdvisor();
+      const res=await becomeAdvisor();
+      if(res){
+        const toast: ToastProps = {
+          id: Date.now().toString(),
+          type: 'success',
+          message: 'Your request to become an advisor has been sent successfully',
+          show: true,
+        };
+        showToast(toast, 3);
+      }
     }
+    alert(4)
+
     if (type === 'save') {
       setIsSaving(false);
       const toast: ToastProps = {
@@ -73,6 +88,8 @@ const ProfileSetupFooter = ({
       };
       showToast(toast, 3);
     }
+    alert(5)
+
     if (type === 'submit') {
       setIsLoading(false);
       const toast: ToastProps = {
@@ -86,6 +103,8 @@ const ProfileSetupFooter = ({
       }
       setShowProfileSetup(false);
     }
+    alert(6)
+
   };
 
   const nextStep = () => {
