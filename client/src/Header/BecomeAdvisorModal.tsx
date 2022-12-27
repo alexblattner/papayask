@@ -111,21 +111,12 @@ const BecomeAdvisorModal = (props: Props) => {
         </Button>
         <Button
           variant="primary"
-          onClick={async () => {
-            if (progress < 75) {
-              props.setShowBecomeAdvisorModal(false);
-              props.setShowProfileSetup(true);
-              props.setIsAdvisor(!user?.advisorStatus ? true : false);
-            } else {
-              const response = await api.post('/confirmation-application');
-              if (response.status === 200) {
-                props.setShowBecomeAdvisorModal(false);
-                props.setIsAdvisor('pending');
-              } else alert('Something went wrong');
-            }
+          onClick={() => {
+            props.setShowBecomeAdvisorModal(false);
+            props.setShowProfileSetup(true);
           }}
         >
-          {progress < 75 ? 'Edit profile' : 'Become an Advisor'}
+          Edit profile
         </Button>
       </Container>
     </Modal>
