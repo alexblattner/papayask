@@ -104,6 +104,8 @@ export const DateInput = (props: InputProps) => {
   useEffect(() => {
     if (props.value) {
       setDate(new Date(formatedDate(props.value)));
+    }else{
+      setDate(null)
     }
   }, [props.value]);
 

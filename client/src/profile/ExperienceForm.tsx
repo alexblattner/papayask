@@ -29,7 +29,45 @@ const StyledSelect = styled.select`
     display: none;
   }
 `;
-
+const CheckBox=styled.label`
+  margin-top: 10px;margin-left: 5px;
+  margin-bottom: 30px;
+  input{
+    appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+    margin-right: 10px;
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    margin-bottom:-4px;
+    border: ${({ theme }) => `2px solid ${theme.colors.primary}`};
+  }
+  input:checked:before {
+    content: "";
+    width: 3px;
+    height: 12px;
+    border-radius: 2px;
+    background: ${({ theme }) => `${theme.colors.primary}`};
+    display: inline-block;
+    vertical-align: middle;
+    transform: rotate(45deg);
+    margin-left: 9px;
+    margin-top: -9px;
+  }
+  input:checked:after {
+    content: "";
+    width: 7px;
+    height: 3px;
+    border-radius: 2px;
+    background: ${({ theme }) => `${theme.colors.primary}`};
+    display: inline-block;
+    vertical-align: middle;
+    transform: rotate(45deg) skew(-20deg);
+    margin-left: -10px;
+    margin-top: -5.75px;
+  }
+  `
 const StyleOption = styled.option``;
 
 interface Props {
@@ -74,7 +112,9 @@ const ExperienceForm = ({
       !inputExperience.geographic_specialization
     );
   };
-
+  useEffect(() => {
+    console.log(863,inputExperience)
+  }, [inputExperience])
   return (
     <>
       <Text fontSize={32} fontWeight={'bold'} mb={16} color= 'var(--primary)'>
@@ -128,6 +168,11 @@ const ExperienceForm = ({
             inputExperience={inputExperience}
           />
         </Container>
+        <CheckBox><input type="checkbox" onChange={()=>{
+            if(inputExperience.endDate){
+              onChangeExperience('endDate', '')
+            }
+          }} checked={!inputExperience.endDate} />I am currently working there</CheckBox>
         {closeForm !== undefined && (
           <Button variant="outline" onClick={closeForm}>
             Cancel
