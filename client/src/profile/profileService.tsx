@@ -75,9 +75,7 @@ interface EditProfileContextReturn {
   addSkill: () => void;
   updateSkills: () => Promise<void>;
   selectedExperienceIndexes: number[];
-  setSelectedExperienceIndexes: React.Dispatch<
-    React.SetStateAction<number[]>
-  >;
+  setSelectedExperienceIndexes: React.Dispatch<React.SetStateAction<number[]>>;
   selectedEducationIndexes: number[];
   setSelectedEducationIndexes: React.Dispatch<React.SetStateAction<number[]>>;
   currentSkill: UserSkill;
@@ -160,7 +158,6 @@ export const EditProfileContext = createContext<EditProfileContextReturn>({
     experiences: [],
   },
   setCurrentSkill: () => {},
-
 });
 
 export const useEditProfile = () => useContext(EditProfileContext);
@@ -257,24 +254,27 @@ export const EditProfileProvider = ({
 
   const addSkill = () => {
     if (!user) return;
-    let education: UserEducation[] = [];
+    let educationList: UserEducation[] = [];
     selectedEducationIndexes.forEach((index) => {
-      education.push(user.education[index]);
+      educationList.push(education[index]);
     });
 
-    let experience: UserExperience[] = [];
+    let experienceList: UserExperience[] = [];
 
     selectedExperienceIndexes.forEach((index) => {
-      experience.push(user.experience[index]);
+      experienceList.push(experience[index]);
     });
+
+    console.log(educationList);
+    console.log(experienceList);
 
     const skill: UserSkill = {
       ...currentSkill,
-      educations: education.map((edu) => ({
+      educations: educationList.map((edu) => ({
         education: edu,
         years: numberOfYears(edu),
       })),
-      experiences: experience.map((exp) => ({
+      experiences: experienceList.map((exp) => ({
         experience: exp,
         years: numberOfYears(exp),
       })),
@@ -285,6 +285,13 @@ export const EditProfileProvider = ({
     } else {
       setSkills([...skills, skill]);
     }
+    setCurrentSkill({
+      name: '',
+      educations: [],
+      experiences: [],
+    });
+    setSelectedEducationIndexes([]);
+    setSelectedExperienceIndexes([]);
   };
 
   const onChangeEducation = (
