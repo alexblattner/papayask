@@ -9,7 +9,7 @@ import { ToastsContext } from '../toast/ToastContext';
 import { ToastProps } from '../toast/Toast';
 import { AdvisorStatus } from '../models/User';
 import AdvisorWarning from './AdvisorWarning';
-
+import { AuthContext } from '../Auth/ContextProvider';
 interface Props {
   step: number;
   setStep: React.Dispatch<React.SetStateAction<number>>;
@@ -33,6 +33,8 @@ const ProfileSetupFooter = ({
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [showWarning, setShowWarning] = useState<boolean>(false);
   const { width } = useWidth();
+  const { getUser } = React.useContext(AuthContext);
+
   const {
     submit,
     progress,
@@ -91,6 +93,7 @@ const ProfileSetupFooter = ({
       setIsLoading(false);
       setShowProfileSetup(false);
     }
+    getUser();
   };
 
   const nextStep = () => {

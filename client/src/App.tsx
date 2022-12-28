@@ -10,7 +10,7 @@ import './App.css';
 import { AuthContext } from './Auth/ContextProvider';
 import Header from './Header';
 import Profile from './profile/Profile';
-import Main from './main/Main';
+import Landing from './Landing';
 import { theme } from './styledCompunentConfig/theme';
 import { EditProfileProvider } from './profile/profileService';
 import { ToastsContext } from './toast/ToastContext';
@@ -55,7 +55,7 @@ function App() {
                   {user?.user ? (
                     <Route path="*" element={<Profile />} />
                   ) : (
-                    <Route path="*" element={<Main />} />
+                    <Route path="*" element={<Landing />} />
                   )}
                 </Routes>
                 <ToastsContainer>

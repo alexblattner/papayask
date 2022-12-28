@@ -207,7 +207,6 @@ exports.update = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    console.log(req.body);
 
     const {
       bio,
@@ -451,7 +450,6 @@ exports.apply = async (req, res, next) => {
       completion += 15;
     }
     for (let i = 0; i < user.skills.length; i++) {
-      console.log(11,user.skills[i]);
       if (
         user.skills[i].experiences.length > 0 ||
         user.skills[i].educations.length > 0
