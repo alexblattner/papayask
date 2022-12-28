@@ -8,12 +8,13 @@ class Middleware {
     }
     const token = req.headers.authorization.split(" ")[1];
     try {
+      // console.log("token", token);
       const decoded = await admin.auth().verifyIdToken(token);
-
+      // console.log(decoded);
       const { uid } = decoded;
 
       let user = await User.findOne({ uid });
-
+      // console.log(user);
       // if (!user) {
       //   user = awiat User.create(decoded);
       //   // return res.status(401).json({ error: "Unauthorized" });

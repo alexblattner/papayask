@@ -161,8 +161,9 @@ exports.getById = async (req, res, next) => {
 exports.edit = async (req, res, next) => {
   const note = await Note.findById(req.body.id).exec();
   if (note && note.user.toString() == req.user._id.toString()) {
-    await note.update({ content: req.body.content });
-    return res.send(note);
+    await note.updateOne({ content: req.body.content });
+    const updatedNote = await Note.findById(req.body.id).exec();
+    return res.send(updatedNote);
   } else {
     return res.sendStatus(403);
   }
@@ -170,8 +171,8 @@ exports.edit = async (req, res, next) => {
 
 exports.deleteNote = async (req, res) => {
   try {
-    await Note.findByIdAndRemove(req.body.id);
-    rea.status(204);
+    const deleted = await Note.findByIdAndRemove(req.params.id);
+    return res.send(deleted);
   } catch (e) {
     console.log(e.message);
   }

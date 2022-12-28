@@ -215,7 +215,7 @@ app.get("/realtime-notifications/:id", eventsHandler);
 app.post("/user", userController.createOrLogin);
 app.post("/note", middleware.decodeToken, noteController.create);
 app.patch("/note", middleware.decodeToken, noteController.edit);
-app.delete("/note", middleware.decodeToken, noteController.deleteNote);
+app.delete("/note/:id", middleware.decodeToken, noteController.deleteNote);
 app.patch("/user/:userId", middleware.decodeToken, userController.update);
 app.get("/user/:id", userController.getById);
 app.get("/questions", middleware.decodeToken, questionController.getAll);

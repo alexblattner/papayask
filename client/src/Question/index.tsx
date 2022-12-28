@@ -12,11 +12,18 @@ import Description from "./Description";
 import Input from "./Input";
 import Note from "./Note";
 import { AuthContext } from "../Auth/ContextProvider";
+import { UpdateNote } from "../models/Question";
+// interface UpdateNote {
+//   updateId: string;
+//   updateText: string;
+// }
+
 function Question() {
   const { token, user } = useContext(AuthContext);
   const [highlightedNoteId, setHighlightedNoteId] = useState<string>("");
   const [data, setData] = useState<QuestionProps | null>(null); //question data
   const [notes, setNotes] = useState<NoteProps[]>([]); //answer data
+  const [updateNote, setUpdateNote] = useState<UpdateNote | null>(null);
   const [cutting, setCutting] = useState(false);
   const { device } = useDevice();
   useEffect(() => {
@@ -31,7 +38,13 @@ function Question() {
       }, 100);
     }
   }, [user, token]);
+
+  useEffect(() => {
+    console.log("notes", notes);
+  }, [notes]);
+
   const loadData = async () => {
+    console.log("notes update");
     const urlSplit = window.location.pathname.split("/question/");
     const questionId = urlSplit[1];
     const res = await api.get(`/question/` + questionId);
@@ -50,7 +63,22 @@ function Question() {
     }
   };
   const addNote = (note: NoteProps) => {
-    setNotes([...notes, note]);
+    setNotes((prev) => [...prev, note]);
+  };
+
+  const noteUpdate = (note: NoteProps, index: number): void => {
+    setNotes((prev) => {
+      const tempNotes: NoteProps[] = prev;
+      tempNotes.splice(index, 1, note);
+      return [...tempNotes];
+    });
+  };
+  const deleteNote = (index: number): void => {
+    setNotes((prev) => {
+      const tempNotes: NoteProps[] = prev;
+      tempNotes.splice(index, 1);
+      return [...tempNotes];
+    });
   };
   const finish = () => {
     api
@@ -85,14 +113,22 @@ function Question() {
             </div>
           ) : null}
           {postContent()}
-          {notes.map((note) => (
-            <Note data={note} />
+          {notes.map((note, index) => (
+            <Note
+              data={note}
+              setUpdateNote={setUpdateNote}
+              index={index}
+              deleteNote={deleteNote}
+            />
           ))}
           {data ? (
             <Input
               senderId={data?.sender._id}
               done={data ? data.status.done : true}
               addNote={addNote}
+              setUpdateNote={setUpdateNote}
+              updateNote={updateNote}
+              noteUpdate={noteUpdate}
             />
           ) : null}
         </div>
