@@ -20,7 +20,6 @@ const Note = (props: Props) => {
   const { data, setUpdateNote, index, deleteNote } = props;
 
   const handleDeleteClick = () => {
-    // const body: any = { id: data._id };
     api
       .delete(`/note/${data._id}`)
       .then((res) => {
