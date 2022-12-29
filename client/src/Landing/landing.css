@@ -1,11 +1,11 @@
 @font-face {
     font-family: 'GreycliffCF';
-    src: url('./fonts/GreycliffCF-Regular.woff');
+    src: url('../fonts/Greycliff\ CF\ v2.6\ Webfont/GreycliffCF-Regular.woff');
     font-weight: normal;
 }
 
 @font-face {
     font-family: 'GreycliffCF';
-    src: url('./fonts/GreycliffCF-Bold.woff');
+    src: url('../fonts/Greycliff\ CF\ v2.6\ Webfont/GreycliffCF-Bold.woff');
     font-weight: bold;
 }
