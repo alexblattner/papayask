@@ -84,11 +84,11 @@ const domain =
     ? 'snipcritics.com'
     : 'scbackend.com';
 mongoose.connect(
-  'mongodb+srv://SnipCritics:' +
+  'mongodb+srv://papayask:' +
     process.env.MONGODB_PASSWORD +
     '@cluster' +
-    (process.env.NODE_ENV == 'production' ? 0 : 2) +
-    '.3mops8t.mongodb.net/?retryWrites=true&w=majority',
+    (process.env.NODE_ENV == 'production' ? '0.movlb' : '1.m1q2dzz') +
+    '.mongodb.net/?retryWrites=true&w=majority',
   { useNewUrlParser: true, useUnifiedTopology: true }
 );
 

@@ -1,12 +1,12 @@
-const admin = require("./config");
-const User = require("../models/user");
+const admin = require('./config');
+const User = require('../models/user');
 
 class Middleware {
   async decodeToken(req, res, next) {
     if (!req.headers.authorization) {
-      return res.status(401).json({ error: "Unauthorized" });
+      return res.status(401).json({ error: 'Unauthorized' });
     }
-    const token = req.headers.authorization.split(" ")[1];
+    const token = req.headers.authorization.split(' ')[1];
     try {
       const decoded = await admin.auth().verifyIdToken(token);
       const { uid } = decoded;
@@ -22,9 +22,10 @@ class Middleware {
         }
         return next();
       }
-      return res.status(401).send("Unauthorized");
+      return res.status(401).send('Unauthorized');
     } catch (err) {
-      return res.status(500).send("Internal Server Error");
+      console.log(err);
+      return res.status(500).send('Internal Server Error');
     }
   }
 }

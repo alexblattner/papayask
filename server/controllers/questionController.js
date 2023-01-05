@@ -77,6 +77,7 @@ exports.create = async (req, res, next) => {
       model: 'User',
     });
 
+    console.log(question);
     sendEventToClient(receiver, question);
     return res.send(question);
   } catch (err) {
@@ -91,14 +92,78 @@ exports.getAll = async (req, res, next) => {
     const questions = await Question.find({
       $or: [{ sender: userId}, { receiver: userId}],
     })
-      .populate({
-        path: 'sender',
-        model: 'User',
-      })
-      .populate({
-        path: 'receiver',
-        model: 'User',
-      })
+    .populate({
+      path: 'sender',
+      model: 'User',
+      populate: [
+        {
+          path: 'experience',
+          populate: { path: 'company', model: 'Company' },
+        },
+        {
+          path: 'education',
+          populate: { path: 'university', model: 'University' },
+        },
+        {
+          path: 'skills',
+          model: 'Skill',
+          populate: [
+            {
+              path: 'experiences.experience',
+              model: 'Experience',
+              populate: {
+                path: 'company',
+                model: 'Company',
+              },
+            },
+            {
+              path: 'educations.education',
+              model: 'Education',
+              populate: {
+                path: 'university',
+                model: 'University',
+              },
+            },
+          ],
+        },
+      ],
+    })
+    .populate({
+      path: 'receiver',
+      model: 'User',
+      populate: [
+        {
+          path: 'experience',
+          populate: { path: 'company', model: 'Company' },
+        },
+        {
+          path: 'education',
+          populate: { path: 'university', model: 'University' },
+        },
+        {
+          path: 'skills',
+          model: 'Skill',
+          populate: [
+            {
+              path: 'experiences.experience',
+              model: 'Experience',
+              populate: {
+                path: 'company',
+                model: 'Company',
+              },
+            },
+            {
+              path: 'educations.education',
+              model: 'Education',
+              populate: {
+                path: 'university',
+                model: 'University',
+              },
+            },
+          ],
+        },
+      ],
+    })
       .exec();
 
     const sent = questions.filter(

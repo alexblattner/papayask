@@ -96,7 +96,7 @@ const Creator = (props: Props) => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      return res.data.result._id;
+      return res.data.result.id;
     } catch (error) {
       setLoading(false);
       console.log(error);
