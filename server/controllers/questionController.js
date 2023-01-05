@@ -28,36 +28,44 @@ exports.deleteOldPost = async (req, res, next) => {
 exports.getById = async (req, res, next) => {
   const id = req.params.id;
   try {
-    const question = await Question.findById(id).populate({
-      path: 'sender',
-      model: 'User',
-    }).populate({
-      path: 'notes',
-      model: 'Note',
-      populate: {
-        path: "user",
-        model: "User",
-      }
+    const question = await Question.findById(id)
+      .populate({
+        path: 'sender',
+        model: 'User',
+      })
+      .populate({
+        path: 'notes',
+        model: 'Note',
+        populate: {
+          path: 'user',
+          model: 'User',
+        },
       });
-      if(!question){
-        return res.status(404).json({
-          status: "fail",
-          message: "Question not found",
-        });
-      }else if(question.receiver.toString()!==req.user._id.toString()&&question.sender.toString()!==req.user._id.toString()){
-        return res.status(401).json({
-          status: "fail",
-          message: "Unauthorized",
-        });
-      }else{
-        if(question.status.action==='pending'&&question.receiver.toString()==req.user._id.toString()){
-          console.log('here');
-          question.status.action='accepted';
-          question.markModified('status');
-          await question.save();
-        }
-        return res.send(question);
+    if (!question) {
+      return res.status(404).json({
+        status: 'fail',
+        message: 'Question not found',
+      });
+    } else if (
+      question.receiver.toString() !== req.user._id.toString() &&
+      question.sender.toString() !== req.user._id.toString()
+    ) {
+      return res.status(401).json({
+        status: 'fail',
+        message: 'Unauthorized',
+      });
+    } else {
+      if (
+        question.status.action === 'pending' &&
+        question.receiver.toString() == req.user._id.toString()
+      ) {
+        console.log('here');
+        question.status.action = 'accepted';
+        question.markModified('status');
+        await question.save();
       }
+      return res.send(question);
+    }
   } catch (error) {
     console.log(error);
   }
@@ -94,10 +102,74 @@ exports.getAll = async (req, res, next) => {
       .populate({
         path: 'sender',
         model: 'User',
+        populate: [
+          {
+            path: 'experience',
+            populate: { path: 'company', model: 'Company' },
+          },
+          {
+            path: 'education',
+            populate: { path: 'university', model: 'University' },
+          },
+          {
+            path: 'skills',
+            model: 'Skill',
+            populate: [
+              {
+                path: 'experiences.experience',
+                model: 'Experience',
+                populate: {
+                  path: 'company',
+                  model: 'Company',
+                },
+              },
+              {
+                path: 'educations.education',
+                model: 'Education',
+                populate: {
+                  path: 'university',
+                  model: 'University',
+                },
+              },
+            ],
+          },
+        ],
       })
       .populate({
         path: 'receiver',
         model: 'User',
+        populate: [
+          {
+            path: 'experience',
+            populate: { path: 'company', model: 'Company' },
+          },
+          {
+            path: 'education',
+            populate: { path: 'university', model: 'University' },
+          },
+          {
+            path: 'skills',
+            model: 'Skill',
+            populate: [
+              {
+                path: 'experiences.experience',
+                model: 'Experience',
+                populate: {
+                  path: 'company',
+                  model: 'Company',
+                },
+              },
+              {
+                path: 'educations.education',
+                model: 'Education',
+                populate: {
+                  path: 'university',
+                  model: 'University',
+                },
+              },
+            ],
+          },
+        ],
       })
       .exec();
 
@@ -398,26 +470,29 @@ exports.getBySearch = async (req, res, next) => {
       return next();
     });
 };
-exports.finish=async(req,res,next)=>{
-  const {questionId}=req.body;
-  const question=await Question.findById(questionId);
-  if(!question){
+exports.finish = async (req, res, next) => {
+  const { questionId } = req.body;
+  const question = await Question.findById(questionId);
+  if (!question) {
     return res.status(404).json({
-      status: "fail",
-      message: "Question not found",
+      status: 'fail',
+      message: 'Question not found',
     });
-  }else{
-    const notes=await Note.find({question:question._id, user:question.receiver});
-    if(notes.length>0){
-      question.status.done=true;
+  } else {
+    const notes = await Note.find({
+      question: question._id,
+      user: question.receiver,
+    });
+    if (notes.length > 0) {
+      question.status.done = true;
       question.markModified('status');
       await question.save();
-      return res.send("done");
-    }else{
+      return res.send('done');
+    } else {
       return res.status(400);
     }
   }
-}
+};
 exports.deleteAll = (req, res, next) => {
   Post.deleteMany()
     .then(() => {
