@@ -3,6 +3,7 @@ const User = require('../models/user');
 
 class Middleware {
   async decodeToken(req, res, next) {
+    console.log('decodeToken');
     if (!req.headers.authorization) {
       return res.status(401).json({ error: 'Unauthorized' });
     }

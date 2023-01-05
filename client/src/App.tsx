@@ -29,7 +29,7 @@ function App() {
   const user = useContext(AuthContext);
   const { toasts } = useContext(ToastsContext);
   useEffect(() => {
-      ReactGA.initialize('UA-252855513');
+      ReactGA.initialize('UA-252855513-1');
       ReactGA.pageview(window.location.pathname);
   }, []);
   return (
