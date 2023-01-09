@@ -23,11 +23,11 @@ const util = require('util');
 const unlinkFile = util.promisify(fs.unlink);
 let { eventsHandler } = require('./utils/eventsHandler');
 console.log(
-  'mongodb+srv://SnipCritics:' +
+  'mongodb+srv://papayask:' +
     process.env.MONGODB_PASSWORD +
     '@cluster' +
-    (process.env.NODE_ENV == 'production' ? 0 : 2) +
-    '.rfgl2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
+    (process.env.NODE_ENV == 'production' ? 0 : 1) +
+    '.m1q2dzz.mongodb.net/?retryWrites=true&w=majority'
 );
 const {
   uploadFile,
@@ -39,9 +39,9 @@ const {
 } = require('./wasabi');
 const origin =
   process.env.NODE_ENV == 'development'
-    ? ['http://localhost:3000', 'http://localhost:58550']
+    ? ['http://localhost:3000', 'http://localhost:58550','https://www.papayask.com', 'https://papayask.com']
     : process.env.NODE_ENV == 'production'
-    ? ['https://www.snipcritics.com', 'https://snipcritics.com']
+    ? ['https://www.papayask.com', 'https://papayask.com']
     : ['https://www.scbackend.com', 'https://scbackend.com'];
 app.disable('x-powered-by');
 
@@ -84,11 +84,11 @@ const domain =
     ? 'snipcritics.com'
     : 'scbackend.com';
 mongoose.connect(
-  'mongodb+srv://SnipCritics:' +
+  'mongodb+srv://papayask:' +
     process.env.MONGODB_PASSWORD +
     '@cluster' +
-    (process.env.NODE_ENV == 'production' ? 0 : 2) +
-    '.3mops8t.mongodb.net/?retryWrites=true&w=majority',
+    (process.env.NODE_ENV == 'production' ? "0.movlb" : "1.m1q2dzz") +
+    '.mongodb.net/?retryWrites=true&w=majority',
   { useNewUrlParser: true, useUnifiedTopology: true }
 );
 

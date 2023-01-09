@@ -118,6 +118,7 @@ exports.login = async (req, res, next) => {
   }
 };
 exports.createOrLogin = async (req, res, next) => {
+  console.log('createOrLogin');
   try {
     const doesUserExist = await User.findOne({
       $or: [{ uid: req.body.uid }, { email: req.body.email }],
