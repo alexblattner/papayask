@@ -38,38 +38,4 @@ const mongoose = require('mongoose'),
     }
   );
 
-userSchema.methods.populateExperienceAndEducation = function () {
-  return this.populate([
-    {
-      path: 'experience',
-      populate: { path: 'company', model: 'Company' },
-    },
-    {
-      path: 'education',
-      populate: { path: 'university', model: 'University' },
-    },
-    {
-      path: 'skills',
-      model: 'Skill',
-      populate: [
-        {
-          path: 'experiences.experience',
-          model: 'Experience',
-          populate: {
-            path: 'company',
-            model: 'Company',
-          },
-        },
-        {
-          path: 'educations.education',
-          model: 'Education',
-          populate: {
-            path: 'university',
-            model: 'University',
-          },
-        },
-      ],
-    },
-  ]);
-};
 module.exports = mongoose.model('User', userSchema);

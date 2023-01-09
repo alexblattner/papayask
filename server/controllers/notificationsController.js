@@ -10,7 +10,7 @@ exports.create = async (notificationData) => {
     body,
     question,
   });
-  notification = await notification
+  notification = await Notification
     .findById(notification._id)
     .populate({
       path: 'sender',

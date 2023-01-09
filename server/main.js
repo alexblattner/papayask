@@ -10,6 +10,9 @@ const questionsRouter = require('./routers/questionsRouter');
 const notesRouter = require('./routers/notesRouter');
 const userRouter = require('./routers/userRouter');
 
+const University = require('./models/university');
+const Company = require('./models/company');
+
 const cloudinary = require('./utils/cloudinary');
 
 var app = express();
@@ -19,18 +22,23 @@ const util = require('util');
 
 let { eventsHandler } = require('./utils/eventsHandler');
 console.log(
-  'mongodb+srv://SnipCritics:' +
+  'mongodb+srv://papayask:' +
     process.env.MONGODB_PASSWORD +
     '@cluster' +
-    (process.env.NODE_ENV == 'production' ? 0 : 2) +
-    '.rfgl2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
+    (process.env.NODE_ENV == 'production' ? 0 : 1) +
+    '.m1q2dzz.mongodb.net/?retryWrites=true&w=majority'
 );
 
 const origin =
   process.env.NODE_ENV == 'development'
-    ? ['http://localhost:3000', 'http://localhost:58550']
+    ? [
+        'http://localhost:3000',
+        'http://localhost:58550',
+        'https://www.papayask.com',
+        'https://papayask.com',
+      ]
     : process.env.NODE_ENV == 'production'
-    ? ['https://www.snipcritics.com', 'https://snipcritics.com']
+    ? ['https://www.papayask.com', 'https://papayask.com']
     : ['https://www.scbackend.com', 'https://scbackend.com'];
 app.disable('x-powered-by');
 
@@ -87,7 +95,6 @@ db.once('open', () => {
   console.log('Successfully connected to MongoDB using Mongoose!');
 });
 
-const University = require('./models/university');
 function removeext(str) {
   let noext = '';
   let extarr = str.split('.');
@@ -177,13 +184,20 @@ app.get('/university/:search', async (req, res, next) => {
 //   });
 // })
 
-
 app.get('/realtime-notifications/:id', eventsHandler);
 
 app.use('/notifications', notificationsRouter);
 app.use('/questions', questionsRouter);
 app.use('/note', notesRouter);
 app.use('/user', userRouter);
+
+app.get('/company/:search', async (req, res, next) => {
+  const search = req.params.search;
+  const companies = await Company.find({
+    name: { $regex: search, $options: 'i' },
+  });
+  res.json({ companies });
+});
 
 app.get('/logout', (req, res, next) => {
   const uid = req.session.uid;
