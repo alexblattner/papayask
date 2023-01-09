@@ -1,22 +1,14 @@
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
-const fetch = require('node-fetch');
-const { OAuth2Client } = require('google-auth-library');
-const client = new OAuth2Client(process.env.GOOGLE_APP_ID);
-
 const User = require('../models/user');
 const experienceController = require('./experienceController');
 const educationController = require('./educationController');
 const skillController = require('./skillController');
-const fileController = require('./fileController');
-const questionsController = require('./questionController');
 const Question = require('../models/question');
 
 function escapeRegex(text) {
   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 }
 
-const getQuestions = async (user, req) => {
+const getQuestions = async (user) => {
   const questions = await Question.find({
     $or: [{ sender: user._id }, { receiver: user._id }],
   })
@@ -31,10 +23,10 @@ const getQuestions = async (user, req) => {
     .exec();
 
   const sent = questions.filter(
-    (q) => q.sender._id.toString() === req.user._id.toString()
+    (q) => q.sender._id.toString() === user._id.toString()
   );
   const received = questions.filter(
-    (q) => q.receiver._id.toString() === req.user._id.toString()
+    (q) => q.receiver._id.toString() === user._id.toString()
   );
 
   return { sent, received };

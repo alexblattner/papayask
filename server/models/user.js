@@ -1,17 +1,17 @@
-const mongoose = require("mongoose"),
+const mongoose = require('mongoose'),
   { Schema } = mongoose,
   userSchema = new Schema(
     {
-      bio: { type: String, default: "" },
+      bio: { type: String, default: '' },
       social: [{ type: String }],
-      experience: [{ type: Schema.Types.ObjectId, ref: "Experience" }],
-      education: [{ type: Schema.Types.ObjectId, ref: "Education" }],
+      experience: [{ type: Schema.Types.ObjectId, ref: 'Experience' }],
+      education: [{ type: Schema.Types.ObjectId, ref: 'Education' }],
       name: { type: String, required: false },
-      skills: [{ type: Schema.Types.ObjectId, ref: "Skill" }],
+      skills: [{ type: Schema.Types.ObjectId, ref: 'Skill' }],
       email: { type: String, required: true, select: false },
       title: { type: String, required: false },
       picture: { type: String },
-      coverPicture: { type: Schema.Types.ObjectId, ref: "File" },
+      coverPicture: { type: Schema.Types.ObjectId, ref: 'File' },
       description: { type: String, required: false },
       request_settings: { type: Schema.Types.Mixed, required: false },
       reputation: { type: Number, required: true, default: 0 },
@@ -37,4 +37,39 @@ const mongoose = require("mongoose"),
       timestamps: true,
     }
   );
-module.exports = mongoose.model("User", userSchema);
+
+userSchema.methods.populateExperienceAndEducation = function () {
+  return this.populate([
+    {
+      path: 'experience',
+      populate: { path: 'company', model: 'Company' },
+    },
+    {
+      path: 'education',
+      populate: { path: 'university', model: 'University' },
+    },
+    {
+      path: 'skills',
+      model: 'Skill',
+      populate: [
+        {
+          path: 'experiences.experience',
+          model: 'Experience',
+          populate: {
+            path: 'company',
+            model: 'Company',
+          },
+        },
+        {
+          path: 'educations.education',
+          model: 'Education',
+          populate: {
+            path: 'university',
+            model: 'University',
+          },
+        },
+      ],
+    },
+  ]);
+};
+module.exports = mongoose.model('User', userSchema);
