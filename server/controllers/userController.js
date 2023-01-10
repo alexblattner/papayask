@@ -44,7 +44,7 @@ exports.encourageMail = async (req, res, next) => {
 };
 exports.getById = async (req, res, next) => {
   try {
-    let udata = await User.findById(req.params.id)
+    let udata = await User.findById(req.params.userId)
       .populate({
         path: 'experience',
         populate: { path: 'company', model: 'Company' },
