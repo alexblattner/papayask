@@ -216,7 +216,6 @@ export const BottomSection = styled('section')`
 `;
 
 export const Footer = styled('div')`
-  background-color: #fbeeea;
   display: flex;
   align-items: center;
   justify-content: center;

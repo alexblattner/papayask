@@ -122,11 +122,7 @@ const Landing = () => {
             </div>
           </FlexItem>
         </Strip>
-        <BottomSection>
-          <h4>Who are we?</h4>
-          <h2>Alex Blatner, CEO & Founder</h2>
-          <img src={ceo} alt="ceo" />
-        </BottomSection>
+       
         <Footer>
           <div>
             <img src={pin} alt="pin" />
@@ -141,7 +137,9 @@ const Landing = () => {
             <p>Papayask@info.com</p>
           </div>
         </Footer>
-        <p style={{ textAlign: 'center', fontWeight: 'bold', padding: '1em 0'}}>
+        <p
+          style={{ textAlign: 'center', fontWeight: 'bold', padding: '1em 0' }}
+        >
           All rights resserved to Papayask ©
         </p>
       </MainPage>
