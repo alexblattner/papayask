@@ -12,20 +12,18 @@ import {
   Strip,
   InfoSection,
   FlexItemImage,
-  BottomSection,
   Footer,
 } from './landing.styles';
 import arrow from './assets/arrow_down.svg';
-import lock from './assets/lock.svg';
+import lock from './assets/Lock.svg';
 import search_img from './assets/search_img.svg';
 import money_img from './assets/money_img.svg';
 import question_img from './assets/question_img.svg';
-import question from './assets/question.svg';
-import search from './assets/search.svg';
+import question from './assets/Question.svg';
+import search from './assets/Search.svg';
 import money from './assets/money.svg';
 import info from './assets/info.svg';
 import cogs from './assets/cogs.svg';
-import ceo from './assets/ceo.svg';
 import light from './assets/light.svg';
 import pin from './assets/pin.svg';
 import letter from './assets/letter.svg';
