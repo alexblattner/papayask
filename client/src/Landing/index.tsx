@@ -10,19 +10,26 @@ import {
   LandingPage,
   MainPage,
   Strip,
-  Grid,
-  Title,
-  Subtitle,
-  Text,
+  InfoSection,
+  FlexItemImage,
+  BottomSection,
+  Footer,
 } from './landing.styles';
 import arrow from './assets/arrow_down.svg';
 import lock from './assets/lock.svg';
-import expert from './assets/expert.svg';
-import globe from './assets/globe.svg';
-import glass from './assets/glass.svg';
-import chat from './assets/chat.svg';
+import search_img from './assets/search_img.svg';
+import money_img from './assets/money_img.svg';
+import question_img from './assets/question_img.svg';
+import question from './assets/question.svg';
+import search from './assets/search.svg';
 import money from './assets/money.svg';
 import info from './assets/info.svg';
+import cogs from './assets/cogs.svg';
+import ceo from './assets/ceo.svg';
+import light from './assets/light.svg';
+import pin from './assets/pin.svg';
+import letter from './assets/letter.svg';
+import phone from './assets/phone.svg';
 import first from './assets/section_1_bg.jpg';
 import firstMobile from './assets/section_1_bg_mobile.jpg';
 const Landing = () => {
@@ -43,94 +50,100 @@ const Landing = () => {
         </FirstSectionContent>
       </FirstSection>
       <MainPage id="main">
-        <FlexItem>
-          <img src={expert} alt="Search" />
-          <div>
-            <Title>What is papayask?</Title>
-            <Text>
-              Papayask is a platform that connects you to a relevant expert for
-              your needs so you can ask them your burning questions.
-            </Text>
-          </div>
-        </FlexItem>
-        <FlexItem>
-          <img src={globe} alt="Question" />
-          <div>
-            <Title>Why we made the platform</Title>
-            <Text>
-              We believe that everyone should have access to the best experts in
-              the world. We want to make it easy for people to connect with each
-              other and share knowledge. We found that reaching out to experts
-              is a very time consuming process and often unreliable.
-            </Text>
-          </div>
-        </FlexItem>
+        <InfoSection>
+          <img src={light} alt="light-bolb" />
+          <p>
+            <span>Papayask </span>is a marketplace where the product is
+            knowledge and wisdom. The way it works is the following:
+          </p>
+        </InfoSection>
+        <FlexContainer>
+          <FlexItem reverse={true}>
+            <img src={search} alt="search" />
+            <FlexItemImage>
+              <h3> 1. Search for the perfect expert. </h3>
+              <img src={search_img} alt="search_img" />
+            </FlexItemImage>
+          </FlexItem>
+          <FlexItem>
+            <img src={money} alt="money" />
+            <FlexItemImage>
+              <h3>2. Ask, pay and wait for an answer</h3>
+              <img src={money_img} alt="money_img" />
+            </FlexItemImage>
+          </FlexItem>
+          <FlexItem reverse={true}>
+            <img src={question} alt="question" />
+            <FlexItemImage>
+              <h3>3. Get answer and confirm</h3>
+              <img src={question_img} alt="question_img" />
+            </FlexItemImage>
+          </FlexItem>
+        </FlexContainer>
         <Strip>
-          <h2>How it works?</h2>
-          <Grid>
+          <FlexItem>
+            <img src={cogs} alt="cogs" />
             <div>
-              <img src={glass} alt="Pro" />
-              <Title>Find the right expert for you </Title>
-              <Text>
-                Papayask gives you the ability to search the skill you’re
-                looking for in a person including a variety of other options.
-                This gives you the ability to search for the right advisor for
-                you.
-              </Text>
-            </div>
-            <div>
-              <img src={chat} alt="chat" />
-              <Title>Ask your question</Title>
+              <h2>Why we chose this process</h2>
               <p>
-                After finding the best professional for your needs, you can pay
-                to ask them a question privately. Just write down your question,
-                pay and wait for an answer
+                We wanted to increase the variety of experts available on the
+                platform by minimizing the time commitment and increasing the
+                flexibility using the current format. That way, knowledge
+                seekers can access even higher quality individuals than before
+                who usually have limited time during the day. Another advantage
+                of the format is that it is less expensive than a regular
+                consultation making the process cheaper and more
+                straightforward.
               </p>
             </div>
+          </FlexItem>
+          <FlexItem reverse={true}>
+            <img src={lock} alt="lock" />
             <div>
-              <img src={money} alt="money" />
-              <Title>Payment protection</Title>
+              <h2>Security</h2>
               <p>
-                The payment process is done through Paypal to ensure the
-                security of the payment. Should there happen to be a legitimate
-                issue, we will refund you in full.
+                Papayask ensures that all profiles are truthful by verifying all
+                of them before they can receive questions. It is a one time
+                process that we deem necessary. We also ensure that all payments
+                are safe by using https and the PayPal APIs.
               </p>
             </div>
+          </FlexItem>
+          <FlexItem>
+            <img src={info} alt="info" />
             <div>
-              <img src={lock} alt="lock" />
-              <Title>Security</Title>
+              <h2>The current situation</h2>
               <p>
-                Detailed and verified profiles Papayask gives its advisors the
-                ability to specify relevant details to prove their competences.
-                To ensure authenticity, we verify all profiles before they can
-                offer their services.
+                Before making the services available, we need to have a starting
+                amount of verified experts to show. For this reason, we are
+                showing a temporary bare bones version of the platform. Once we
+                are ready, we will notify all experts.
               </p>
             </div>
-          </Grid>
+          </FlexItem>
         </Strip>
-        <FlexItem>
-          <img src={info} alt="Search" />
+        <BottomSection>
+          <h4>Who are we?</h4>
+          <h2>Alex Blatner, CEO & Founder</h2>
+          <img src={ceo} alt="ceo" />
+        </BottomSection>
+        <Footer>
           <div>
-            <Title>The current situation</Title>
-            <FlexContainer>
-              <div>
-                <Subtitle>Services</Subtitle>
-                <p>
-                  Papayask is a platform that connects you to a relevant expert
-                  for your needs so you can ask them your burning questions.
-                </p>
-              </div>
-              <div>
-                <Subtitle>About us</Subtitle>
-                <p>
-                  We are a team of tech professionals and seasoned entrepreneurs
-                  that aims to provide the best services to our customers. We
-                  are passionate about our work and welcome your feedback.
-                </p>
-              </div>
-            </FlexContainer>
+            <img src={pin} alt="pin" />
+            <p>Hachashmonaim 105, Tel Aviv, Israel</p>
           </div>
-        </FlexItem>
+          <div>
+            <img src={phone} alt="phone" />
+            <p>+972 53-340-1522</p>
+          </div>
+          <div>
+            <img src={letter} alt="letter" />
+            <p>Papayask@info.com</p>
+          </div>
+        </Footer>
+        <p style={{ textAlign: 'center', fontWeight: 'bold', padding: '1em 0'}}>
+          All rights resserved to Papayask ©
+        </p>
       </MainPage>
     </LandingPage>
   );
