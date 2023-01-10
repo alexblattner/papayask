@@ -31,11 +31,153 @@ const mongoose = require('mongoose'),
         default: false,
       },
       questionsInstructions: { type: String },
+      favorites: {
+        users: {
+          type: [Schema.Types.ObjectId],
+          ref: 'User',
+          default: [],
+        },
+        questions: {
+          type: [Schema.Types.ObjectId],
+          ref: 'Question',
+          default: [],
+        },
+      },
       authTime: { type: String, required: false, select: false },
     },
     {
       timestamps: true,
     }
   );
+
+userSchema.pre('findOne', function (next) {
+  populateUser.call(this);
+  next();
+});
+
+userSchema.pre('save', async function (next) {
+  await populateUser.call(this);
+  next();
+});
+
+userSchema.pre('find', function (next) {
+  populateUser.call(this);
+  next();
+});
+
+userSchema.pre('findById', function (next) {
+  populateUser.call(this);
+  next();
+});
+
+userSchema.pre('findOneAndUpdate', function (next) {
+  populateUser.call(this);
+  next();
+});
+
+function populateUser() {
+  this.populate({
+    path: 'experience',
+    populate: { path: 'company', model: 'Company' },
+  });
+  this.populate({
+    path: 'education',
+    populate: { path: 'university', model: 'University' },
+  });
+  this.populate({
+    path: 'skills',
+    populate: [
+      {
+        path: 'experiences.experience',
+        model: 'Experience',
+        populate: {
+          path: 'company',
+          model: 'Company',
+        },
+      },
+      {
+        path: 'educations.education',
+        model: 'Education',
+        populate: {
+          path: 'university',
+          model: 'University',
+        },
+      },
+    ],
+  });
+  this.populate({
+    path: 'favorites.users',
+    populate: [
+      {
+        path: 'experience',
+        populate: { path: 'company', model: 'Company' },
+      },
+      {
+        path: 'education',
+        populate: { path: 'university', model: 'University' },
+      },
+      {
+        path: 'skills',
+        populate: [
+          {
+            path: 'experiences.experience',
+            model: 'Experience',
+            populate: {
+              path: 'company',
+              model: 'Company',
+            },
+          },
+          {
+            path: 'educations.education',
+            model: 'Education',
+            populate: {
+              path: 'university',
+              model: 'University',
+            },
+          },
+        ],
+      },
+    ],
+  });
+  this.populate({
+    path: 'favorites.questions',
+    populate: [
+      {
+        path: 'user',
+        populate: [
+          {
+            path: 'experience',
+            populate: { path: 'company', model: 'Company' },
+          },
+          {
+            path: 'education',
+            populate: { path: 'university', model: 'University' },
+          },
+          {
+            path: 'skills',
+            populate: [
+              {
+                path: 'experiences.experience',
+                model: 'Experience',
+                populate: {
+                  path: 'company',
+                  model: 'Company',
+                },
+              },
+              {
+                path: 'educations.education',
+                model: 'Education',
+                populate: {
+                  path: 'university',
+                  model: 'University',
+                },
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  });
+}
 
 module.exports = mongoose.model('User', userSchema);

@@ -10,18 +10,6 @@ exports.getById = async (req, res, next) => {
   const id = req.params.id;
   try {
     const question = await Question.findById(id)
-      .populate({
-        path: 'sender',
-        model: 'User',
-      })
-      .populate({
-        path: 'notes',
-        model: 'Note',
-        populate: {
-          path: 'user',
-          model: 'User',
-        },
-      });
     if (!question) {
       return res.status(404).json({
         status: 'fail',
@@ -68,11 +56,7 @@ exports.create = async (req, res, next) => {
     });
     await question.save();
 
-    question = await Question.findById(question._id).populate({
-      path: 'sender',
-      model: 'User',
-    });
-
+    question = await Question.findById(question._id)
     sendEventToClient(receiver, question, 'question');
     return res.send(question);
   } catch (err) {
@@ -86,120 +70,7 @@ exports.getAll = async (req, res, next) => {
   try {
     const questions = await Question.find({
       $or: [{ sender: userId }, { receiver: userId }],
-    })
-      .populate({
-        path: 'sender',
-        model: 'User',
-        populate: [
-          {
-            path: 'experience',
-            populate: { path: 'company', model: 'Company' },
-          },
-          {
-            path: 'education',
-            populate: { path: 'university', model: 'University' },
-          },
-          {
-            path: 'skills',
-            model: 'Skill',
-            populate: [
-              {
-                path: 'experiences.experience',
-                model: 'Experience',
-                populate: {
-                  path: 'company',
-                  model: 'Company',
-                },
-              },
-              {
-                path: 'educations.education',
-                model: 'Education',
-                populate: {
-                  path: 'university',
-                  model: 'University',
-                },
-              },
-            ],
-          },
-        ],
-      })
-      .populate({
-        path: 'receiver',
-        model: 'User',
-        populate: [
-          {
-            path: 'experience',
-            populate: { path: 'company', model: 'Company' },
-          },
-          {
-            path: 'education',
-            populate: { path: 'university', model: 'University' },
-          },
-          {
-            path: 'skills',
-            model: 'Skill',
-            populate: [
-              {
-                path: 'experiences.experience',
-                model: 'Experience',
-                populate: {
-                  path: 'company',
-                  model: 'Company',
-                },
-              },
-              {
-                path: 'educations.education',
-                model: 'Education',
-                populate: {
-                  path: 'university',
-                  model: 'University',
-                },
-              },
-            ],
-          },
-        ],
-      })
-      .populate({
-        path: 'notes',
-        model: 'Note',
-        populate: {
-          path: 'user',
-          model: 'User',
-          populate: [
-            {
-              path: 'experience',
-              populate: { path: 'company', model: 'Company' },
-            },
-            {
-              path: 'education',
-              populate: { path: 'university', model: 'University' },
-            },
-            {
-              path: 'skills',
-              model: 'Skill',
-              populate: [
-                {
-                  path: 'experiences.experience',
-                  model: 'Experience',
-                  populate: {
-                    path: 'company',
-                    model: 'Company',
-                  },
-                },
-                {
-                  path: 'educations.education',
-                  model: 'Education',
-                  populate: {
-                    path: 'university',
-                    model: 'University',
-                  },
-                },
-              ],
-            },
-          ],
-        },
-      })
-      .exec();
+    });
 
     const sent = questions.filter(
       (q) => q.sender._id.toString() === req.user._id.toString()
@@ -239,10 +110,7 @@ exports.updateStatus = async (req, res, next) => {
   const { id } = req.params;
   const { action, reason } = req.body;
   try {
-    const question = await Question.findById(id).populate({
-      path: 'sender',
-      model: 'User',
-    });
+    const question = await Question.findById(id)
 
     question.status.action = action;
     question.status.reason = reason;

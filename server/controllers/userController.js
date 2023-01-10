@@ -3,6 +3,7 @@ const experienceController = require('./experienceController');
 const educationController = require('./educationController');
 const skillController = require('./skillController');
 const Question = require('../models/question');
+const { default: mongoose } = require('mongoose');
 
 function escapeRegex(text) {
   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
@@ -11,16 +12,7 @@ function escapeRegex(text) {
 const getQuestions = async (user) => {
   const questions = await Question.find({
     $or: [{ sender: user._id }, { receiver: user._id }],
-  })
-    .populate({
-      path: 'sender',
-      model: 'User',
-    })
-    .populate({
-      path: 'receiver',
-      model: 'User',
-    })
-    .exec();
+  });
 
   const sent = questions.filter(
     (q) => q.sender._id.toString() === user._id.toString()
@@ -44,38 +36,7 @@ exports.encourageMail = async (req, res, next) => {
 };
 exports.getById = async (req, res, next) => {
   try {
-    let udata = await User.findById(req.params.userId)
-      .populate({
-        path: 'experience',
-        populate: { path: 'company', model: 'Company' },
-      })
-      .populate({
-        path: 'education',
-        populate: { path: 'university', model: 'University' },
-      })
-      .populate({
-        path: 'skills',
-        model: 'Skill',
-        populate: [
-          {
-            path: 'experiences.experience',
-            model: 'Experience',
-            populate: {
-              path: 'company',
-              model: 'Company',
-            },
-          },
-          {
-            path: 'educations.education',
-            model: 'Education',
-            populate: {
-              path: 'university',
-              model: 'University',
-            },
-          },
-        ],
-      });
-
+    let udata = await User.findById(req.params.userId);
     return res.send(udata);
   } catch (err) {
     return new Error(err);
@@ -94,37 +55,8 @@ exports.createOrLogin = async (req, res, next) => {
   try {
     const doesUserExist = await User.findOne({
       $or: [{ uid: req.body.uid }, { email: req.body.email }],
-    })
-      .populate({
-        path: 'experience',
-        populate: { path: 'company', model: 'Company' },
-      })
-      .populate({
-        path: 'education',
-        populate: { path: 'university', model: 'University' },
-      })
-      .populate({
-        path: 'skills',
-        model: 'Skill',
-        populate: [
-          {
-            path: 'experiences.experience',
-            model: 'Experience',
-            populate: {
-              path: 'company',
-              model: 'Company',
-            },
-          },
-          {
-            path: 'educations.education',
-            model: 'Education',
-            populate: {
-              path: 'university',
-              model: 'University',
-            },
-          },
-        ],
-      });
+    });
+
     if (!doesUserExist) {
       const newUserOb = {
         uid: req.body.uid,
@@ -137,38 +69,8 @@ exports.createOrLogin = async (req, res, next) => {
         newUserOb.picture = req.body.photoURL;
       }
       const user = new User(newUserOb);
-      const createdUser = await user
-        .save()
-        .populate({
-          path: 'experience',
-          populate: { path: 'company', model: 'Company' },
-        })
-        .populate({
-          path: 'education',
-          populate: { path: 'university', model: 'University' },
-        })
-        .populate({
-          path: 'skills',
-          model: 'Skill',
-          populate: [
-            {
-              path: 'experiences.experience',
-              model: 'Experience',
-              populate: {
-                path: 'company',
-                model: 'Company',
-              },
-            },
-            {
-              path: 'educations.education',
-              model: 'Education',
-              populate: {
-                path: 'university',
-                model: 'University',
-              },
-            },
-          ],
-        });
+      const createdUser = await user.save();
+
       const questions = await getQuestions(createdUser, req);
       createdUser.questions = questions;
       return res.send(createdUser);
@@ -301,39 +203,9 @@ exports.update = async (req, res) => {
     };
 
     try {
-      user = await User.findByIdAndUpdate(req.params.userId, body, {
+      user = await User.findOneAndUpdate({_id :req.params.userId}, body, {
         new: true,
-      })
-        .populate({
-          path: 'experience',
-          populate: { path: 'company', model: 'Company' },
-        })
-        .populate({
-          path: 'education',
-          populate: { path: 'university', model: 'University' },
-        })
-        .populate({
-          path: 'skills',
-          model: 'Skill',
-          populate: [
-            {
-              path: 'experiences.experience',
-              model: 'Experience',
-              populate: {
-                path: 'company',
-                model: 'Company',
-              },
-            },
-            {
-              path: 'educations.education',
-              model: 'Education',
-              populate: {
-                path: 'university',
-                model: 'University',
-              },
-            },
-          ],
-        });
+      });
 
       const questions = await getQuestions(user, req);
 
@@ -439,4 +311,21 @@ exports.search = async (req, res, next) => {
   ]).exec();
   console.log(users);
   return res.send(users);
+};
+
+exports.favorite = async (req, res, next) => {
+  const user = await User.findById(req.user._id);
+  const favorite = mongoose.Types.ObjectId(req.body.favorite);
+  if (!user) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+  if (user.favorites.includes(favorite)) {
+    user.favorites = user.favorites.filter(
+      (favorite) => favorite != req.params.userId
+    );
+  } else {
+    user.favorites.push(favorite);
+  }
+  await user.save();
+  return res.status(200).json({ message: 'Favorite updated successfully' });
 };
