@@ -3,7 +3,7 @@ const experienceController = require('./experienceController');
 const educationController = require('./educationController');
 const skillController = require('./skillController');
 const Question = require('../models/question');
-const { default: mongoose } = require('mongoose');
+
 
 function escapeRegex(text) {
   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
@@ -203,7 +203,7 @@ exports.update = async (req, res) => {
     };
 
     try {
-      user = await User.findOneAndUpdate({_id :req.params.userId}, body, {
+      user = await User.findOneAndUpdate({ _id: req.params.userId }, body, {
         new: true,
       });
 
@@ -309,22 +309,59 @@ exports.search = async (req, res, next) => {
     },
     { $match: search },
   ]).exec();
-  console.log(users);
   return res.send(users);
 };
 
 exports.favorite = async (req, res, next) => {
   const user = await User.findById(req.user._id);
-  const favorite = mongoose.Types.ObjectId(req.body.favorite);
+  const favorite = req.params.id;
+  const type = req.body.type;
   if (!user) {
     return res.status(404).json({ error: 'User not found' });
   }
-  if (user.favorites.includes(favorite)) {
-    user.favorites = user.favorites.filter(
-      (favorite) => favorite != req.params.userId
-    );
-  } else {
-    user.favorites.push(favorite);
+  if (type === 'users') {
+    const favoritedUser = await User.findOne({ _id: favorite });
+    let favorited = false;
+    user.favorites.users.forEach((item) => {
+      if (item.id.toString() === favorite.toString()) {
+        favorited = true;
+      }
+    });
+    if (favorited) {
+      user.favorites.users = user.favorites.users.filter(
+        (item) => item.id.toString() !== favorite.toString()
+      );
+    } else {
+      user.favorites.users = {
+        id: favorite,
+        name: favoritedUser.name,
+        picture: favoritedUser.picture ?? '',
+        title: favoritedUser.title ?? '',
+      };
+    }
+  } else if (type === 'questions') {
+    const question = await Question.findById(favorite);
+    let favorited = false;
+    user.favorites.questions.forEach((item) => {
+      if (item.id.toString() === favorite.toString()) {
+        favorited = true;
+      }
+    });
+    if (favorited) {
+      user.favorites.questions = user.favorites.questions.filter(
+        (item) => item.id.toString() !== favorite.toString()
+      );
+    } else {
+      user.favorites.questions.push({
+        id: favorite,
+        description: question.description,
+        senderName: question.sender.name,
+        senderPicture: question.sender.picture,
+        createdAt: question.createdAt,
+        status: question.status,
+        endAnswerTime: question.endAnswerTime,
+      });
+    }
   }
   await user.save();
   return res.status(200).json({ message: 'Favorite updated successfully' });

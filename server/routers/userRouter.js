@@ -9,6 +9,6 @@ router.get('/:userId', userController.getById);
 router.post('/:userId/register-token', userController.registerToken);
 router.post('/search', userController.search);
 router.get('/search', userController.search);
-router.post('/favorite', middleware.decodeToken, userController.favorite);
+router.post('/favorite/:id', middleware.decodeToken, userController.favorite);
 
 module.exports = router;

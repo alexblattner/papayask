@@ -32,16 +32,33 @@ const mongoose = require('mongoose'),
       },
       questionsInstructions: { type: String },
       favorites: {
-        users: {
-          type: [Schema.Types.ObjectId],
-          ref: 'User',
-          default: [],
-        },
-        questions: {
-          type: [Schema.Types.ObjectId],
-          ref: 'Question',
-          default: [],
-        },
+        users: [
+          {
+            name: { type: String },
+            id: { type: Schema.Types.ObjectId, ref: 'User' },
+            title: { type: String },
+            picture: { type: String },
+          },
+        ],
+        questions: [
+          {
+            id: { type: Schema.Types.ObjectId, ref: 'Question' },
+            description: { type: String },
+            senderName: { type: String },
+            senderPicture: { type: String },
+            createdAt: { type: Schema.Types.Date },
+            status: {
+              action: {
+                type: String,
+                enum: ['pending', 'accepted', 'rejected'],
+                default: 'pending',
+              },
+              reason: { type: String },
+              done: { type: Boolean, default: false },
+            },
+            endAnswerTime: { type: Date, required: true },
+          },
+        ],
       },
       authTime: { type: String, required: false, select: false },
     },
@@ -102,79 +119,6 @@ function populateUser() {
           path: 'university',
           model: 'University',
         },
-      },
-    ],
-  });
-  this.populate({
-    path: 'favorites.users',
-    populate: [
-      {
-        path: 'experience',
-        populate: { path: 'company', model: 'Company' },
-      },
-      {
-        path: 'education',
-        populate: { path: 'university', model: 'University' },
-      },
-      {
-        path: 'skills',
-        populate: [
-          {
-            path: 'experiences.experience',
-            model: 'Experience',
-            populate: {
-              path: 'company',
-              model: 'Company',
-            },
-          },
-          {
-            path: 'educations.education',
-            model: 'Education',
-            populate: {
-              path: 'university',
-              model: 'University',
-            },
-          },
-        ],
-      },
-    ],
-  });
-  this.populate({
-    path: 'favorites.questions',
-    populate: [
-      {
-        path: 'user',
-        populate: [
-          {
-            path: 'experience',
-            populate: { path: 'company', model: 'Company' },
-          },
-          {
-            path: 'education',
-            populate: { path: 'university', model: 'University' },
-          },
-          {
-            path: 'skills',
-            populate: [
-              {
-                path: 'experiences.experience',
-                model: 'Experience',
-                populate: {
-                  path: 'company',
-                  model: 'Company',
-                },
-              },
-              {
-                path: 'educations.education',
-                model: 'Education',
-                populate: {
-                  path: 'university',
-                  model: 'University',
-                },
-              },
-            ],
-          },
-        ],
       },
     ],
   });
