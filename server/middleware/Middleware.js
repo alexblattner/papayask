@@ -3,7 +3,6 @@ const User = require('../models/user');
 
 class Middleware {
   async decodeToken(req, res, next) {
-    console.log('decodeToken');
     if (!req.headers.authorization) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
@@ -21,12 +20,10 @@ class Middleware {
       }
       return res.status(401).send('Unauthorized');
     } catch (err) {
-      console.log(err);
       return res.status(500).send({ error: err.message });
     }
   }
   async getUser(req, res, next) {
-    console.log('getUser');
     if (!req.headers.authorization) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
@@ -37,7 +34,6 @@ class Middleware {
       let user = await User.findOne({ uid });
       return res.send(user);
     } catch (err) {
-      console.log(err);
       return res.status(500).send({ error: err.message });
     }
   }
