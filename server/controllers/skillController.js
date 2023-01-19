@@ -30,10 +30,10 @@ exports.create = async (skill, userId) => {
   }
 
   const newSkill = await Skill.create({
+    ...skill,
     user: userId,
     experiences: experienceList,
     educations: educationList,
-    ...skill,
   });
   return newSkill;
 };
@@ -66,8 +66,14 @@ exports.update = async (skill) => {
   }
   const updateSkill = await Skill.findByIdAndUpdate(
     skill._id,
-    { $set: { ...skill, experiences: experienceList, educations: educationList } },
+    {
+      $set: {
+        ...skill,
+        experiences: experienceList,
+        educations: educationList,
+      },
+    },
     { new: true }
   ).exec();
   return updateSkill;
-}
+};

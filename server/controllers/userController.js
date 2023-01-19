@@ -4,7 +4,6 @@ const educationController = require('./educationController');
 const skillController = require('./skillController');
 const Question = require('../models/question');
 
-
 function escapeRegex(text) {
   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 }
@@ -34,6 +33,20 @@ exports.encourageMail = async (req, res, next) => {
     sendinblue(users[i].email, users[i].username, 5, 1);
   }
 };
+
+exports.getAllAdvisors = async (req, res, next) => {
+  try {
+    let advisors = await User.find({ advisorStatus: 'approved' });
+    advisors = advisors.filter(
+      (a) => a._id.toString() != req.user._id.toString()
+    );
+
+    return res.send(advisors);
+  } catch (err) {
+    return new Error(err);
+  }
+};
+
 exports.getById = async (req, res, next) => {
   try {
     let udata = await User.findById(req.params.userId);
@@ -365,4 +378,19 @@ exports.favorite = async (req, res, next) => {
   }
   await user.save();
   return res.status(200).json({ message: 'Favorite updated successfully' });
+};
+
+exports.applyForAdvisor = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    user.advisorStatus = 'pending';
+    await user.save();
+    return res.status(200).json({ message: 'Application sent successfully' });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
 };

@@ -48,7 +48,7 @@ const Search = () => {
     //initial search
     const urlParams = new URLSearchParams(search);
     const searchParams = urlParams.get("search");
-    const res = await api.get("/search/", {
+    const res = await api.get("user/search/", {
       params: {
         search: searchParams,
         budget,
