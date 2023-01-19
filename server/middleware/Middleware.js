@@ -25,5 +25,21 @@ class Middleware {
       return res.status(500).send({ error: err.message });
     }
   }
+  async getUser(req, res, next) {
+    console.log('getUser');
+    if (!req.headers.authorization) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    const token = req.headers.authorization.split(' ')[1];
+    try {
+      const decoded = await admin.auth().verifyIdToken(token);
+      const { uid } = decoded;
+      let user = await User.findOne({ uid });
+      return res.send(user);
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send({ error: err.message });
+    }
+  }
 }
 module.exports = new Middleware();
