@@ -24,7 +24,8 @@ exports.delete = async (req, res) => {
 
 exports.create= async (req, res, next) => {
   const question = await Question.findById(req.body.questionId).exec();
-  if (question && question.receiver.toString() == req.user._id.toString()) {
+  if (!question) return res.sendStatus(404)
+  if (question.receiver._id.toString() == req.user._id.toString()) {
     let content= Array.isArray(req.body.content) ? req.body.content[0] : req.body.content;
     let submission={
       user: req.user._id,
