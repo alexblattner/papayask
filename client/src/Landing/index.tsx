@@ -15,7 +15,7 @@ import {
   Footer,
 } from './landing.styles';
 import arrow from './assets/arrow_down.svg';
-import lock from './assets/lock.svg';
+import lock from './assets/Lock.svg';
 import search_img from './assets/search_img.svg';
 import money_img from './assets/money_img.svg';
 import question_img from './assets/question_img.svg';
