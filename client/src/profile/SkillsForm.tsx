@@ -231,7 +231,7 @@ const SkillsForm = (props: Props) => {
         value={inputSkillName}
         type="text"
         label="Add Skill"
-        placeholder='multiple skills can be added by separating by a comma (",")'
+        placeholder='multiple skills can be added separated by a comma (",")'
         onChange={(e) => onChangeInput(e)}
       />
       <Container flex gap={12} align="center" mb={24}>
