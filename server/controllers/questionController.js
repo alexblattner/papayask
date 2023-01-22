@@ -26,6 +26,7 @@ exports.deleteOldPost = async (req, res, next) => {
 };
 
 exports.getById = async (req, res, next) => {
+  console.log('here');
   const id = req.params.id;
   try {
     const question = await Question.findById(id)

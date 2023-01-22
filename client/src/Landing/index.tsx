@@ -15,7 +15,7 @@ import {
   Footer,
 } from './landing.styles';
 import arrow from './assets/arrow_down.svg';
-import lock from './assets/Lock.svg';
+import lock from './assets/lock.svg';
 import search_img from './assets/search_img.svg';
 import money_img from './assets/money_img.svg';
 import question_img from './assets/question_img.svg';
@@ -128,7 +128,7 @@ const Landing = () => {
           </div>
           <div>
             <img src={phone} alt="phone" />
-            <p>+972 53-340-1522</p>
+            <p>+972 54-343-6359</p>
           </div>
           <div>
             <img src={letter} alt="letter" />

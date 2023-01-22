@@ -83,22 +83,22 @@ const AuthForm = (props: Props) => {
         });
     } else if(type == "signup") {
       if(firstName.length<2 || lastName.length<2){
-        alert(9)
         setError("First and last name must be at least 2 characters long");
         return;
+      }else{
+        await auth
+          .createUserWithEmailAndPassword(email, password)
+          .then(async (userCred: any) => {
+            if (userCred) {
+              window.localStorage.setItem("auth", "true");
+              window.localStorage.setItem("firstName", firstName);
+              window.localStorage.setItem("lastName", lastName);
+            }
+          })
+          .catch((err: any) => {
+            setError(err.message);
+          });
       }
-      await auth
-        .createUserWithEmailAndPassword(email, password)
-        .then(async (userCred: any) => {
-          if (userCred) {
-            window.localStorage.setItem("auth", "true");
-            window.localStorage.setItem("firstName", firstName);
-            window.localStorage.setItem("lastName", lastName);
-          }
-        })
-        .catch((err: any) => {
-          setError(err.message);
-        });
     }
   };
   const resetPassword = async (e: React.FormEvent<HTMLFormElement>) => {
