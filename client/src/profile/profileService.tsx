@@ -80,6 +80,8 @@ interface EditProfileContextReturn {
   setSelectedEducationIndexes: React.Dispatch<React.SetStateAction<number[]>>;
   currentSkill: UserSkill;
   setCurrentSkill: React.Dispatch<React.SetStateAction<UserSkill>>;
+  inputSkillName: string;
+  setInputSkillName: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const EditProfileContext = createContext<EditProfileContextReturn>({
@@ -157,6 +159,8 @@ export const EditProfileContext = createContext<EditProfileContextReturn>({
     educations: [],
     experiences: [],
   },
+  inputSkillName: '',
+  setInputSkillName: () => {},
   setCurrentSkill: () => {},
 });
 
@@ -200,6 +204,7 @@ export const EditProfileProvider = ({
     type: '',
     geographic_specialization: '',
   });
+  const [inputSkillName, setInputSkillName] = useState<string>('');
 
   const [selectedExperienceIndexes, setSelectedExperienceIndexes] = useState<
     number[]
@@ -265,26 +270,28 @@ export const EditProfileProvider = ({
       experienceList.push(experience[index]);
     });
 
-    console.log(educationList);
-    console.log(experienceList);
-
-    const skill: UserSkill = {
-      ...currentSkill,
-      educations: educationList.map((edu) => ({
-        education: edu,
-        years: numberOfYears(edu),
-      })),
-      experiences: experienceList.map((exp) => ({
-        experience: exp,
-        years: numberOfYears(exp),
-      })),
-    };
-    if (currentSkill._id) {
-      const index = skills.findIndex((s) => s._id === currentSkill._id);
-      skills.splice(index, 1, skill);
-    } else {
-      setSkills([...skills, skill]);
-    }
+    const skillsNames = inputSkillName.split(',').map((s) => s.trim());
+    const newSkills: UserSkill[] = [];
+    skillsNames.forEach((skillName) => {
+      const skillIndex = skills.findIndex((skill) => skill.name === skillName);
+      if (skillIndex !== -1) {
+        const newSkills = skills.splice(skillIndex, 1);
+        setSkills([...newSkills]);
+      }
+      const skill: UserSkill = {
+        name: skillName,
+        educations: educationList.map((edu) => ({
+          education: edu,
+          years: numberOfYears(edu),
+        })),
+        experiences: experienceList.map((exp) => ({
+          experience: exp,
+          years: numberOfYears(exp),
+        })),
+      };
+      newSkills.push(skill);
+    });
+    setSkills([...skills, ...newSkills]);
     setCurrentSkill({
       name: '',
       educations: [],
@@ -599,6 +606,8 @@ export const EditProfileProvider = ({
     setSelectedExperienceIndexes,
     currentSkill,
     setCurrentSkill,
+    inputSkillName,
+    setInputSkillName,
   };
   return (
     <EditProfileContext.Provider value={value}>

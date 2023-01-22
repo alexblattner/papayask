@@ -97,6 +97,8 @@ const SkillsForm = (props: Props) => {
     addSkill,
     currentSkill,
     setCurrentSkill,
+    inputSkillName,
+    setInputSkillName,
   } = useContext(EditProfileContext);
 
   const [mode, setMode] = useState<Mode>('add');
@@ -182,21 +184,29 @@ const SkillsForm = (props: Props) => {
     setSelectedExperienceIndexes([]);
   };
 
+  const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputSkillName(e.target.value);
+  };
+
   useEffect(() => {
-    if (currentSkill.name.length > 0 && !isSkillNameExists(currentSkill.name)) {
+    setInputSkillName(currentSkill.name);
+  }, [currentSkill]);
+
+  useEffect(() => {
+    if (inputSkillName.length > 0 && !isSkillNameExists(inputSkillName)) {
       setDisabledAdd(false);
     } else {
       setDisabledAdd(true);
     }
-  }, [currentSkill.name]);
+  }, [inputSkillName]);
 
   useEffect(() => {
-    if (currentSkill.name.length > 0) {
+    if (inputSkillName.length > 0) {
       setDisabledEdit(false);
     } else {
       setDisabledEdit(true);
     }
-  }, [currentSkill.name]);
+  }, [inputSkillName]);
 
   useEffect(() => {
     getSelectedIndexes();
@@ -218,12 +228,11 @@ const SkillsForm = (props: Props) => {
 
       <Input
         name=""
-        value={currentSkill.name}
+        value={inputSkillName}
         type="text"
         label="Add Skill"
-        onChange={(e) =>
-          setCurrentSkill({ ...currentSkill, name: e.target.value })
-        }
+        placeholder='multiple skills can be added by separating by a comma (",")'
+        onChange={(e) => onChangeInput(e)}
       />
       <Container flex gap={12} align="center" mb={24}>
         <Container width="100%">

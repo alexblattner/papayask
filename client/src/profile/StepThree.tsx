@@ -11,7 +11,6 @@ const StepThree = () => {
   } = useEditProfile();
   return (
     <SkillsForm
-   
       setSkills={setSkills}
       skills={skills}
       education={education}
