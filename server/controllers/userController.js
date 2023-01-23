@@ -23,6 +23,7 @@ exports.encourageMail = async (req, res, next) => {
     sendinblue(users[i].email, users[i].username, 5, 1);
   }
 };
+
 exports.getById = async (req, res, next) => {
   try {
     let udata = await User.findById(req.params.id)
@@ -118,6 +119,7 @@ exports.login = async (req, res, next) => {
 };
 exports.createOrLogin = async (req, res, next) => {
   try {
+    console.log("createOrLogin");
     const doesUserExist = await User.findOne({
       $or: [{ uid: req.body.uid }, { email: req.body.email }],
     })
@@ -207,15 +209,12 @@ exports.update = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    console.log(req.body);
-
     const {
       bio,
       experience,
       education,
       skills,
       title,
-      isSetUp,
       languages,
       country,
       picture,
@@ -277,7 +276,7 @@ exports.update = async (req, res) => {
             const newSkill = await skillController.create(skills[i]);
             skillIds.push(newSkill._id);
           } catch (e) {
-            // console.log(e);
+            console.log(e);
           }
         }
       }
@@ -289,7 +288,6 @@ exports.update = async (req, res) => {
       education: education ? educationIds : undefined,
       skills: skills ? skillIds : undefined,
       title,
-      isSetUp,
       languages,
       country,
       picture,
@@ -496,15 +494,14 @@ exports.searchAutomationResults = async (req, res) => {
   console.log("search", search);
   try {
     const educationSearchResults = await educationController.search(regex);
-    // const skillsSearchResults = await skillController.search(regex);
-    // const experienceSearchResults = await experienceController.search(regex);
-    let results = educationSearchResults.map((result) =>
-      result.name.toLowerCase()
-    );
-    // .concat(skillsSearchResults.map((result) => result.name.toLowerCase()))
-    // .concat(
-    // experienceSearchResults.map((result) => result.name.toLowerCase())
-    // );
+    const skillsSearchResults = await skillController.search(regex);
+    const experienceSearchResults = await experienceController.search(regex);
+    let results = educationSearchResults
+      .map((result) => result.name.toLowerCase())
+      .concat(skillsSearchResults.map((result) => result.name.toLowerCase()))
+      .concat(
+        experienceSearchResults.map((result) => result.name.toLowerCase())
+      );
     const uniqueStrings = new Set(results);
     const filteredResults = Array.from(uniqueStrings);
     res.send(filteredResults);
@@ -513,6 +510,7 @@ exports.searchAutomationResults = async (req, res) => {
   }
 };
 exports.apply = async (req, res, next) => {
+  const user = await User.findById(req.user._id).populate("skills");
   if (user) {
     let completion = 0;
     if (user.title) {
@@ -540,12 +538,13 @@ exports.apply = async (req, res, next) => {
     for (let i = 0; i < user.education.length; i++) {
       completion += 5;
     }
-    if (completion > 65) {
-      user.isSetUp = true;
+    if (completion >= 75) {
+      user.advisorStatus = "pending";
+      user.save();
+      return res.status(200).json({ message: "Application sent successfully" });
     } else {
-      user.isSetUp = false;
+      return res.status(400).json({ message: "Application failed" });
     }
-    user.save();
   } else {
     return res.status(401).json({ message: "Unauthorized" });
   }
