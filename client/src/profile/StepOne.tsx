@@ -77,9 +77,11 @@ const StepOne = () => {
 
   const { width } = useWidth();
   const {
+    name,
     title,
     bio,
     image,
+    setName,
     setTitle,
     setBio,
     setImage,
@@ -203,6 +205,16 @@ const StepOne = () => {
         </ImageContainer>
       </Container>
       <Container width="100%">
+      <Text fontSize={32} fontWeight={600} mb={16} color="primary">
+          First Name and Last Name
+        </Text>
+        <Input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          name="name"
+          width='300px'
+        />
         <Text fontSize={32} fontWeight={600} mb={16} color="primary">
           Headline
         </Text>

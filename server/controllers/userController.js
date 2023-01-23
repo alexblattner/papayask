@@ -118,7 +118,6 @@ exports.login = async (req, res, next) => {
 };
 exports.createOrLogin = async (req, res, next) => {
   try {
-    console.log('createOrLogin');
     const doesUserExist = await User.findOne({
       $or: [{ uid: req.body.uid }, { email: req.body.email }],
     })
@@ -154,9 +153,13 @@ exports.createOrLogin = async (req, res, next) => {
       });
 
     if (!doesUserExist) {
+      let name=""
+      if (req.body.displayName!=="null null") {
+        name=req.body.displayName
+      }
       const newUserOb = {
         uid: req.body.uid,
-        name: req.body.displayName,
+        name,
         email: req.body.email.toLowerCase(),
         confirmed: false,
         authTime: req.body.auth_time,
@@ -214,6 +217,7 @@ exports.update = async (req, res) => {
       experience,
       education,
       skills,
+      name,
       title,
       languages,
       country,
@@ -287,6 +291,7 @@ exports.update = async (req, res) => {
       experience: experience ? experienceIds : undefined,
       education: education ? educationIds : undefined,
       skills: skills ? skillIds : undefined,
+      name,
       title,
       languages,
       country,
