@@ -275,7 +275,10 @@ export const EditProfileProvider = ({
       experienceList.push(experience[index]);
     });
 
-    const skillsNames = inputSkillName.split(',').map((s) => s.trim());
+    let skillsNames = inputSkillName.split(',').map((s) => s.trim());
+    if (skillsNames[skillsNames.length - 1] === '') {
+      skillsNames = skillsNames.slice(0, skillsNames.length - 1);
+    }
     const newSkills: UserSkill[] = [];
     skillsNames.forEach((skillName) => {
       const skillIndex = skills.findIndex((skill) => skill.name === skillName);
