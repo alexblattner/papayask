@@ -16,14 +16,19 @@ exports.getById = async (req, res, next) => {
         message: 'Question not found',
       });
     } else if (
-      question.receiver.toString() !== req.user._id.toString() &&
-      question.sender.toString() !== req.user._id.toString()
+      question.receiver._id.toString() !== req.user._id.toString() &&
+      question.sender._id.toString() !== req.user._id.toString()
     ) {
+      console.log('Unauthorized',question.receiver.toString())
+      console.log('Unauthorized', req.user._id.toString())
+      console.log('Unauthorized', question.sender.toString())
+      console.log('Unauthorized', req.user._id.toString());
       return res.status(401).json({
         status: 'fail',
         message: 'Unauthorized',
       });
     } else {
+      console.log('question')
       return res.send(question);
     }
   } catch (error) {

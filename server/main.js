@@ -21,6 +21,7 @@ const fs = require('fs');
 const util = require('util');
 
 let { eventsHandler } = require('./utils/eventsHandler');
+const Middleware = require('./middleware/Middleware');
 console.log(
   'mongodb+srv://papayask:' +
     process.env.MONGODB_PASSWORD +
@@ -107,6 +108,7 @@ function removeext(str) {
 // SAVE STREAM SESSIONS UID
 const streamSessions = {};
 exports.streamSessionsList = streamSessions;
+app.get('/token/user/',Middleware.getUser)
 app.get('/university', async (req, res, next) => {
   const universities = await University.find({});
   res.send(universities);
