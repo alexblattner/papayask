@@ -12,7 +12,6 @@ const getQuestions = async (user) => {
   const questions = await Question.find({
     $or: [{ sender: user._id }, { receiver: user._id }],
   });
-
   const sent = questions.filter(
     (q) => q.sender._id.toString() === user._id.toString()
   );
@@ -90,9 +89,16 @@ exports.createOrLogin = async (req, res, next) => {
     } else {
       doesUserExist.authTime = req.body.auth_time;
       await doesUserExist.save();
-      const questions = await getQuestions(doesUserExist, req);
-      doesUserExist.questions = questions;
-      return res.send({ ...doesUserExist._doc, questions });
+      const questions = await getQuestions(doesUserExist);
+      if(questions){
+        doesUserExist.questions = questions;
+        console.log(999,doesUserExist.questions)
+        let finalUser = JSON.parse(JSON.stringify(doesUserExist));
+        finalUser.questions = questions;
+        return res.send(finalUser);
+      }else{
+        return res.send([]);
+      }
     }
   } catch (e) {
     next(e);
