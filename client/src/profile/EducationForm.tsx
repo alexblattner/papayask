@@ -40,6 +40,7 @@ const EducationForm = ({
       !inputEducation.university.country
     );
   };
+  
 
   return (
     <>
