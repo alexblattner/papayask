@@ -28,7 +28,9 @@ export interface Experience {
 }
 
 interface EditProfileContextReturn {
+  name: string;
   title: string;
+  setName: React.Dispatch<React.SetStateAction<string>>;
   setTitle: React.Dispatch<React.SetStateAction<string>>;
   setEditProfileShown: React.Dispatch<React.SetStateAction<boolean>>;
   editProfileShown: boolean;
@@ -85,7 +87,9 @@ interface EditProfileContextReturn {
 }
 
 export const EditProfileContext = createContext<EditProfileContextReturn>({
+  name: '',
   title: '',
+  setName: () => {},
   setTitle: () => {},
   setEditProfileShown: () => {},
   editProfileShown: false,
@@ -171,6 +175,7 @@ export const EditProfileProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
+  const [name, setName] = useState<string>('');
   const [title, setTitle] = useState<string>('');
   const [image, setImage] = useState<string>('');
   const { user, updateUser } = useContext(AuthContext);
@@ -489,6 +494,7 @@ export const EditProfileProvider = ({
   const submit = async () => {
     try {
       await updateUser({
+        name,
         title,
         bio,
         skills,
@@ -516,6 +522,7 @@ export const EditProfileProvider = ({
       setSkills(user.skills);
       setEducation(user.education);
       setExperience(user.experience);
+      setName(user.name ?? '');
       setTitle(user.title ?? '');
       setLanguages(user.languages);
       setCountry(user.country);
@@ -556,6 +563,7 @@ export const EditProfileProvider = ({
 
     setProgress(progressSum > 100 ? 100 : progressSum);
   }, [
+    name,
     title,
     bio,
     skills,
@@ -567,7 +575,9 @@ export const EditProfileProvider = ({
   ]);
 
   const value: EditProfileContextReturn = {
+    name,
     title,
+    setName,
     setTitle,
     bio,
     setBio,

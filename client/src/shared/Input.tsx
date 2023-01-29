@@ -14,7 +14,7 @@ const StyledInput = styled.input<InputProps>`
   padding: 16px;
   font-size: 16px;
   font-weight: 500;
-  margin-bottom: ${(props) => props.mb || '30px'};
+  margin-bottom: ${(props) => props.mb || '10px'};
 
   &:focus {
     outline: none;
