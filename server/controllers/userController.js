@@ -106,7 +106,7 @@ exports.registerToken = async (req, res) => {
     if (!token || token === '') {
       return res.status(400).json({ message: 'Please provide device token' });
     }
-    const user = await User.findById(req.params.userId).select('+tokens');
+    const user = await User.findById(req.user._id).select('+tokens');
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -115,6 +115,8 @@ exports.registerToken = async (req, res) => {
       user.tokens.push(token);
       await user.save();
       return res.status(200).json({ message: 'Token register successfully' });
+    } else {
+      return res.status(200).json({ message: 'Token already registered' });
     }
   } catch (e) {
     return res.status(500).json({ error: e });
