@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
-  variant: 'primary' | 'secondary' | 'outline' | 'text';
+  variant: string;
   disabled?: boolean;
   children: React.ReactNode;
   width?: number | string;
@@ -9,15 +9,12 @@ interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
 
 const StyledButton = styled('button')<ButtonProps>`
   background-color: ${(props) =>
-    props.variant === 'primary'
-      ? props.theme.colors.primary
-      : props.variant === 'secondary'
-      ? props.theme.colors.primary_L2
-      : 'transparent'};
+    props.variant&&!props.variant.includes('outline')&&!props.variant.includes('text')? 'var(--'+props.variant+')'
+      :'transparent'};
   color: ${(props) =>
     props.variant === 'secondary' || props.variant === 'outline'
       ? props.theme.colors.primary
-      : props.variant === 'primary'
+      : props.variant.includes('primary')
       ? 'white'
       : 'black'};
   border: ${(props) =>

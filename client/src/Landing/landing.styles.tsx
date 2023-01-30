@@ -94,7 +94,70 @@ export const InfoSection = styled('div')`
     }
   }
 `;
+export const SignUpButton=styled('button')`
+  background-color: var(--primary-d1);
+  color: white;
+  border: none;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 8px;
+  padding: 8px 16px;
+  width: auto;
+  -webkit-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+	left: 50%;
+	position: relative;
+	transform: translateX(-50%);
+	padding: ;
+	padding: 20px 70px;
+	border-radius: 90px;
+	box-shadow: 0px 8px 12px rgba(var(--primary-numbers-d1),.3);
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
 
+  &:hover {
+    &:not(:disabled) {
+      opacity: 0.8;
+    }
+  }
+  img {
+    width: 24px;
+    margin-left: 8px;
+    margin-top: -4px;
+  }
+`
+export const LearnMore=styled('button')`
+  background-color: var(--primary-d1);
+  color: white;
+  border: none;margin-top:30px;
+  font-size: 30px;
+  font-weight: bold;
+  border-radius: 8px;
+  padding: 8px 16px;
+  width: auto;
+  -webkit-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+	left: 50%;
+	position: relative;
+	transform: translateX(-50%);
+	padding: ;
+	padding: 20px 70px;
+	border-radius: 90px;
+	box-shadow: 0px 8px 12px rgba(var(--primary-numbers-d1),.3);
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+    &:not(:disabled) {
+      opacity: 0.8;
+    }
+  }
+  img {
+    width: 24px;
+    margin-left: 8px;
+    margin-top: -4px;
+  }
+`
 export const FlexItem = styled('div')<{ reverse?: boolean }>`
   display: flex;
   align-items: center;
