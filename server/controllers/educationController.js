@@ -9,7 +9,10 @@ exports.create = async (education, userId) => {
   if (university._id) {
     uniId = university._id;
   } else {
-    const newUniversity = await universityController.create(university);
+    const newUniversity = await universityController.create({
+      name: university.name,
+      country: university.country,
+    });
     uniId = newUniversity._id;
   }
   const body = {

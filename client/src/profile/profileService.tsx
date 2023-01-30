@@ -393,9 +393,12 @@ export const EditProfileProvider = ({
       return;
     }
     let tempUniversity = inputEducation.university;
-    tempUniversity.logo = await getUniversityLogo(
-      inputEducation.university.name
-    );
+    if (tempUniversity._id) {
+      tempUniversity.logo = await getUniversityLogo(
+        inputEducation.university.name
+      );
+    }
+
     const newEducation: UserEducation = {
       university: tempUniversity,
       level: inputEducation.level,
