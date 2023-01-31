@@ -25,3 +25,14 @@ exports.create = async (education, userId) => {
     console.log(e);
   }
 };
+exports.search = async (searchText) => {
+  try {
+    const searchResults = await Education.find({
+      $match: { name: searchText },
+    });
+    console.log(searchText);
+    return searchResults;
+  } catch (e) {
+    return [];
+  }
+};
