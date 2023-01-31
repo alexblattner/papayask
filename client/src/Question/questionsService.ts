@@ -12,7 +12,7 @@ const useQuestionsService = () => {
   ) => {
     try {
       const res = await api.post(
-        '/question',
+        '/questions',
         {
           receiver: recieverId,
           description,
@@ -28,7 +28,7 @@ const useQuestionsService = () => {
   const rejectQuestion = async (questionId: string, reason: string) => {
     try {
       const res = await api.post(
-        `/question/update-status/${questionId}`,
+        `/questions/update-status/${questionId}`,
         { reason, action: 'rejected' },
       );
 

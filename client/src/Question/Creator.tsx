@@ -92,7 +92,7 @@ const Creator = (props: Props) => {
     }
     let finalInfo = { cost: props.user.request_settings.cost };
     try {
-      const res = await api.post('/pay', finalInfo, {
+      const res = await api.post('/questions/pay', finalInfo, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -109,7 +109,7 @@ const Creator = (props: Props) => {
       capture: data.orderID,
     };
     try {
-      const res = await api.post('/pay', info);
+      const res = await api.post('/questions/pay', info);
       if (res.status === 200) {
         sendRequest();
       }

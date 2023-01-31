@@ -68,17 +68,16 @@ exports.createOrLogin = async (req, res, next) => {
     const doesUserExist = await User.findOne({
       $or: [{ uid: req.body.uid }, { email: req.body.email }],
     });
-
     if (!doesUserExist) {
       const newUserOb = {
         uid: req.body.uid,
-        name: req.body.displayName,
+        name: req.body.name,
         email: req.body.email.toLowerCase(),
         confirmed: false,
         authTime: req.body.auth_time,
       };
-      if (req.body.photoURL) {
-        newUserOb.picture = req.body.photoURL;
+      if (req.body.photoUrl) {
+        newUserOb.picture = req.body.photoUrl;
       }
       const user = new User(newUserOb);
       const createdUser = await user.save();
@@ -90,13 +89,12 @@ exports.createOrLogin = async (req, res, next) => {
       doesUserExist.authTime = req.body.auth_time;
       await doesUserExist.save();
       const questions = await getQuestions(doesUserExist);
-      if(questions){
+      if (questions) {
         doesUserExist.questions = questions;
-        console.log(999,doesUserExist.questions)
         let finalUser = JSON.parse(JSON.stringify(doesUserExist));
         finalUser.questions = questions;
         return res.send(finalUser);
-      }else{
+      } else {
         return res.send([]);
       }
     }
