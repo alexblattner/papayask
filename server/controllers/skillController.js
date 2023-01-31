@@ -77,3 +77,21 @@ exports.update = async (skill) => {
   ).exec();
   return updateSkill;
 };
+exports.search = async (searchText) => {
+  try {
+    const searchResults = await Skill.aggregate([
+      {
+          $match: { name: {$regex: searchText }}
+      },
+      {
+          $group: {
+              _id: "$name",
+              count: { $sum: 1 }
+          }
+      }
+  ]);
+    return searchResults;
+  } catch (e) {
+    return [];
+  }
+};

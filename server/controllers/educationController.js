@@ -25,3 +25,22 @@ exports.create = async (education, userId) => {
     console.log(e);
   }
 };
+exports.search = async (searchText) => {
+  try {
+    const searchResults = await Education.aggregate([
+      {
+          $match: { name: {$regex: searchText }}
+      },
+      {
+          $group: {
+              _id: "$name",
+              count: { $sum: 1 }
+          }
+      }
+  ]);
+    console.log(searchText,searchResults);
+    return searchResults;
+  } catch (e) {
+    return [];
+  }
+};

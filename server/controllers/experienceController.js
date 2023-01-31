@@ -26,3 +26,21 @@ exports.create = async (experience, userId) => {
     console.log(e);
   }
 };
+exports.search = async (searchText) => {
+  try {
+    const searchResults = await Experiernce.aggregate([
+      {
+          $match: { name: {$regex: searchText }}
+      },
+      {
+          $group: {
+              _id: "$name",
+              count: { $sum: 1 }
+          }
+      }
+  ]);
+    return searchResults;
+  } catch (e) {
+    return [];
+  }
+};
