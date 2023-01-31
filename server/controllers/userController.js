@@ -154,8 +154,8 @@ exports.createOrLogin = async (req, res, next) => {
 
     if (!doesUserExist) {
       let name=""
-      if (req.body.displayName!=="null null") {
-        name=req.body.displayName
+      if (req.body.name!=="") {
+        name=req.body.bane
       }
       const newUserOb = {
         uid: req.body.uid,
@@ -164,8 +164,8 @@ exports.createOrLogin = async (req, res, next) => {
         confirmed: false,
         authTime: req.body.auth_time,
       };
-      if (req.body.photoURL) {
-        newUserOb.picture = req.body.photoURL;
+      if (req.body.photoUrl) {
+        newUserOb.picture = req.body.photoUrl;
       }
       const user = new User(newUserOb);
       const createdUser = await user.save();
