@@ -73,7 +73,7 @@ const Landing = () => {
       </FirstSection>
       <MainPage id="main">
         <InfoSection>
-          <img src={light} alt="light-bolb" />
+          
           <p>
             <span>Papayask </span>is a marketplace where the product is
             your knowledge and wisdom. This is how it works:
