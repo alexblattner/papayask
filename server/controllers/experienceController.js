@@ -26,3 +26,13 @@ exports.create = async (experience, userId) => {
     console.log(e);
   }
 };
+exports.search = async (searchText) => {
+  try {
+    const searchResults = await Experiernce.find({
+      $match: { name: searchText },
+    });
+    return searchResults;
+  } catch (e) {
+    return [];
+  }
+};
