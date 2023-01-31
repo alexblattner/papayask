@@ -242,94 +242,169 @@ exports.update = async (req, res) => {
     return res.status(500).json({ error: e });
   }
 };
-
+exports.searchAutomationResults = async (req, res) => {
+  const { search } = req.query;
+  const regex = new RegExp(escapeRegex(search));
+  console.log("search", search);
+    const educationSearchResults = await educationController.search(regex);
+    console.log("educationSearchResults", educationSearchResults);
+    const skillsSearchResults = await skillController.search(regex);
+    console.log("skillsSearchResults", skillsSearchResults);
+    const experienceSearchResults = await experienceController.search(regex);
+    console.log("experienceSearchResults", experienceSearchResults);
+    let results = educationSearchResults
+      .map((result) => result.name.toLowerCase())
+      .concat(skillsSearchResults.map((result) => result.name.toLowerCase()))
+      .concat(
+        experienceSearchResults.map((result) => result.name.toLowerCase())
+      );
+    const uniqueStrings = new Set(results);
+    const filteredResults = Array.from(uniqueStrings);
+    res.send(filteredResults);
+};
 exports.search = async (req, res, next) => {
-  console.log(req.query);
   const toallob = {}; //starting object for education, skill and experience to filter undesired data
+  const { search, budget, personal, education, experience } = req.query;
+
   if (req.query.personal) {
-    if (req.query.personal.country) {
+    if (personal.country) {
       //if country is present in query
       toallob.user.country = req.query.personal.country; //add country to user object
     }
-    if (req.query.personal.language) {
+    if (personal.language) {
       //if language is present in query
       toallob.user.language = req.query.personal.language; //add language to user object
     }
   }
-  let search = {};
-  if (req.query.search) {
-    const regex = new RegExp(escapeRegex(req.query.search), 'gi');
-    search = {
+  let searchFilter = {};
+  const basicFilter = {
+    $and: [
+      { verified: true },
+      {
+        $and: [
+          {
+            // request_settings: { $exists: true },
+            "request_settings.concurrent": { $exists: true },
+            // "request_settings.concurrent": { $ne: 0 },
+          },
+        ],
+      },
+    ],
+  };
+  if (search) {
+    const regex = new RegExp(escapeRegex(search), "gi");
+    searchFilter = {
       $or: [
         {
           $and: [
-            { 'experience.name': { $exists: true }, 'experience.name': regex },
+            {
+              "experience.name": { $exists: true },
+              "experience.name": regex,
+            },
           ],
         },
-        { $and: [{ 'skills.name': { $exists: true }, 'skills.name': regex }] },
+        {
+          $and: [{ "skills.name": { $exists: true }, "skills.name": regex }],
+        },
         {
           $and: [
-            { 'education.name': { $exists: true }, 'education.name': regex },
+            {
+              "education.name": { $exists: true },
+              "education.name": regex,
+            },
           ],
         },
       ],
     };
   }
-  if (req.query.budget) {
+  let budgetFilter = {};
+  if (budget && !(budget[0] == 0 && budget[1] == 1)) {
+    // if (budget[0] == 0 && budget[1] == 1) return;
+    budgetFilter = {
+      $and: [
+        { "request_settings.cost": { $gte: budget[0] } },
+        { "request_settings.cost": { $lte: budget[1] } },
+      ],
+    };
   }
-  if (req.query.education) {
+  let educationFilter = {};
+  if (education && education.name != "") {
+    const regex = new RegExp(escapeRegex(education), "gi");
+    educationFilter = {
+      $and: [
+        {
+          "education.name": { $exists: true },
+          "education.name": regex,
+        },
+      ],
+    };
   }
-  if (req.query.experience) {
+  let experienceFilter = {};
+  if (experience && experience.name != "") {
+    experienceFilter = {
+      $and: [
+        {
+          "experience.name": { $exists: true },
+          "experience.name": regex,
+        },
+      ],
+    };
   }
+
   const users = await User.aggregate([
     {
       $match: toallob,
     },
     {
       $lookup: {
-        from: 'experiences',
-        localField: 'experience',
-        foreignField: '_id',
-        as: 'experience',
+        from: "experiences",
+        localField: "experience",
+        foreignField: "_id",
+        as: "experience",
       },
     },
     {
       $lookup: {
-        from: 'educations',
-        let: { education: '$education' },
+        from: "educations",
+        let: { education: "$education" },
         pipeline: [
           {
             $match: {
               $expr: {
-                $in: ['$_id', '$$education'],
+                $in: ["$_id", "$$education"],
               },
             },
           },
           {
             $lookup: {
-              from: 'universities',
-              localField: 'university',
-              foreignField: '_id',
-              as: 'university',
+              from: "universities",
+              localField: "university",
+              foreignField: "_id",
+              as: "university",
             },
           },
           {
-            $unwind: '$university',
+            $unwind: "$university",
           },
         ],
-        as: 'education',
+        as: "education",
       },
     },
     {
       $lookup: {
-        from: 'skills',
-        localField: 'skills',
-        foreignField: '_id',
-        as: 'skills',
+        from: "skills",
+        localField: "skills",
+        foreignField: "_id",
+        as: "skills",
       },
     },
-    { $match: search },
+    { $match: searchFilter },
+    { $match: basicFilter },
+    { $match: budgetFilter },
+    { $match: experienceFilter },
+    { $match: educationFilter },
   ]).exec();
+  console.log(users);
   return res.send(users);
 };
 

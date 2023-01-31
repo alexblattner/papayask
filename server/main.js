@@ -4,6 +4,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const session = require('cookie-session');
+const userController = require('./controllers/userController');
 
 const notificationsRouter = require('./routers/notificationsRouter');
 const questionsRouter = require('./routers/questionsRouter');
@@ -187,12 +188,14 @@ app.get('/university/:search', async (req, res, next) => {
 // })
 
 app.get('/realtime-notifications/:id', eventsHandler);
-
+app.get("/search", userController.search);
+app.post("/search", userController.search);
+app.get("/searchauto", userController.searchAutomationResults);
+app.post("/searchauto", userController.searchAutomationResults);
 app.use('/notifications', notificationsRouter);
 app.use('/questions', questionsRouter);
 app.use('/note', notesRouter);
 app.use('/user', userRouter);
-
 app.get('/company/:search', async (req, res, next) => {
   const search = req.params.search;
   const companies = await Company.find({
