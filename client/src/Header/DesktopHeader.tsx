@@ -187,32 +187,32 @@ const DesktopHeader = (props: Props) => {
       <Link to="/">
         <FullLogo width={150} height={50} />
       </Link>
-      <form onSubmit={handleSearch} id="search-form">
-        <input
-          ref={inputRef}
-          type="text"
-          placeholder='Try "SEO", "Entrepreneurship" or "Hosting'
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setSearchValue(e.target.value)
-          }
-        />
-        <input type="submit" value="Search" />
-      </form>
-      <div ref={resultsRef}>
-        {searchOptions.map((op: string) => (
-          <div
-            onClick={() => {
-              searchEvent(op);
-            }}
-            style={{ color: "navy", fontSize: "18px" }}
-          >
-            <span tabIndex={0} className="focus-search">
-              {op}
-            </span>
-          </div>
-        ))}
+      <div style={{ position: "relative" }}>
+        <form onSubmit={handleSearch} id="search-form">
+          <input
+            ref={inputRef}
+            type="text"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setSearchValue(e.target.value)
+            }
+          />
+          <input type="submit" value="Search" />
+        </form>
+        <div style={{ position: "absolute" }} ref={resultsRef}>
+          {searchOptions.map((op: string) => (
+            <div
+              onClick={() => {
+                searchEvent(op);
+              }}
+              style={{ color: "navy", fontSize: "18px" }}
+            >
+              <span tabIndex={0} className="focus-search">
+                {op}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
-
       {user ? (
         <>
           <Container flex align="center" gap={16} ml="auto">
