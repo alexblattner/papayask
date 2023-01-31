@@ -6,7 +6,6 @@ import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import { analytics } from './firebase-auth';
 import { logEvent } from 'firebase/analytics';
 import ReactGA from 'react-ga';
-
 import './App.css';
 import { AuthContext } from './Auth/ContextProvider';
 import Header from './Header';
@@ -29,8 +28,10 @@ function App() {
   const user = useContext(AuthContext);
   const { toasts } = useContext(ToastsContext);
   useEffect(() => {
+    if(process.env.REACT_APP_ENV === 'production'){
       ReactGA.initialize('UA-252855513-1');
       ReactGA.pageview(window.location.pathname);
+    }
   }, []);
   return (
     <AuthContext.Provider value={user}>
