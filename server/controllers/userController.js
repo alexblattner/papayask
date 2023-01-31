@@ -244,22 +244,20 @@ exports.update = async (req, res) => {
 };
 exports.searchAutomationResults = async (req, res) => {
   const { search } = req.query;
-  const regex = new RegExp(escapeRegex(search));
-  console.log("search", search);
+  const regex = escapeRegex(search)
     const educationSearchResults = await educationController.search(regex);
-    console.log("educationSearchResults", educationSearchResults);
     const skillsSearchResults = await skillController.search(regex);
-    console.log("skillsSearchResults", skillsSearchResults);
     const experienceSearchResults = await experienceController.search(regex);
-    console.log("experienceSearchResults", experienceSearchResults);
     let results = educationSearchResults
-      .map((result) => result.name.toLowerCase())
-      .concat(skillsSearchResults.map((result) => result.name.toLowerCase()))
+      .concat(skillsSearchResults)
       .concat(
-        experienceSearchResults.map((result) => result.name.toLowerCase())
+        experienceSearchResults
       );
-    const uniqueStrings = new Set(results);
-    const filteredResults = Array.from(uniqueStrings);
+    results.sort(function (a, b) {
+      return a._id.localeCompare(b._id);
+    });
+
+    const filteredResults = results.map((result) => result._id);
     res.send(filteredResults);
 };
 exports.search = async (req, res, next) => {
