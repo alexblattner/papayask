@@ -7,6 +7,10 @@ import { Input } from '../shared/Input';
 import { Text } from '../shared/Text';
 import UniversitiesSelect from '../shared/UniversitiesSelect';
 import { Education } from './profileService';
+import SvgIcon from '../shared/SvgIcon';
+import { useEditProfile } from './profileService';
+import { AuthContext } from '../Auth/ContextProvider';
+import { useContext, useState } from 'react';
 
 interface Props {
   onAddEducation: (education: Education) => void;
@@ -29,6 +33,9 @@ const EducationForm = ({
   submitEducation,
   isLoading,
 }: Props) => {
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
+  const { deleteEducation, education } = useEditProfile();
+  const { updateUser } = useContext(AuthContext);
 
   const addEducationDisabled = () => {
     return (
@@ -40,11 +47,35 @@ const EducationForm = ({
       !inputEducation.university.country
     );
   };
-  
+
+  const deleteCurrentEducation = async () => {
+    setIsDeleting(true);
+    const educationIndex = education.findIndex(
+      (edu) =>
+        edu.name === inputEducation.name &&
+        edu.university.name === inputEducation.university.name
+    );
+    
+
+    const body = {
+      education: education.filter(
+        (edu) =>
+          edu.name !== inputEducation.name ||
+          edu.university.name !== inputEducation.university.name 
+      ),
+    };
+    if (educationIndex !== -1) {
+      deleteEducation(educationIndex);
+    }
+
+    await updateUser(body);
+    setIsDeleting(false);
+    closeForm && closeForm();
+  };
 
   return (
     <>
-      <Text fontSize={32} fontWeight={'bold'} mb={16} color = 'primary'>
+      <Text fontSize={32} fontWeight={'bold'} mb={16} color="primary">
         {type === 'Initial' ? '' : type} Education
       </Text>
       <Container flex dir="column">
@@ -111,6 +142,20 @@ const EducationForm = ({
         >
           {isLoading ? 'Please Wait...' : type === 'Edit' ? 'Update' : 'Add'}
         </Button>
+        <Container width="100%" height="16px" />
+        {type === 'Edit' ? (
+          <Button
+            variant="primary"
+            onClick={deleteCurrentEducation}
+            disabled={isDeleting}
+            color="red"
+          >
+            <Container flex gap={8} align="center" justify="center">
+              <SvgIcon src="delete" />
+              Delete Education
+            </Container>
+          </Button>
+        ) : null}
       </Container>
     </>
   );

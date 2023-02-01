@@ -1,4 +1,4 @@
-import React, {useEffect,useState} from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 import { Button } from '../shared/Button';
 import { Container } from '../shared/Container';
@@ -7,9 +7,12 @@ import { DateInput } from '../shared/DateInput';
 import { Input } from '../shared/Input';
 import { Text } from '../shared/Text';
 import { Experience } from './profileService';
-import axios from 'axios';
 import { Company } from '../models/User';
 import CompanySelect from '../shared/CompanySelect';
+import { useEditProfile } from './profileService';
+import { AuthContext } from '../Auth/ContextProvider';
+import SvgIcon from '../shared/SvgIcon';
+
 const StyledSelect = styled.select`
   margin-bottom: 30px;
   border: ${({ theme }) => `2px solid ${theme.colors.secondary_L1}`};
@@ -29,22 +32,23 @@ const StyledSelect = styled.select`
     display: none;
   }
 `;
-const CheckBox=styled.label`
-  margin-top: 10px;margin-left: 5px;
+const CheckBox = styled.label`
+  margin-top: 10px;
+  margin-left: 5px;
   margin-bottom: 30px;
-  input{
+  input {
     appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
     margin-right: 10px;
     width: 20px;
     height: 20px;
     border-radius: 5px;
-    margin-bottom:-4px;
+    margin-bottom: -4px;
     border: ${({ theme }) => `2px solid ${theme.colors.primary}`};
   }
   input:checked:before {
-    content: "";
+    content: '';
     width: 3px;
     height: 12px;
     border-radius: 2px;
@@ -56,7 +60,7 @@ const CheckBox=styled.label`
     margin-top: -9px;
   }
   input:checked:after {
-    content: "";
+    content: '';
     width: 7px;
     height: 3px;
     border-radius: 2px;
@@ -67,7 +71,7 @@ const CheckBox=styled.label`
     margin-left: -10px;
     margin-top: -5.75px;
   }
-  `
+`;
 const StyleOption = styled.option``;
 
 interface Props {
@@ -101,6 +105,9 @@ const ExperienceForm = ({
   submitExperience,
 }: Props) => {
   const typesOptions = ['Employee', 'Owner', 'FreeLancer'];
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
+  const { updateUser } = useContext(AuthContext);
+  const { deleteExperience, experience } = useEditProfile();
 
   const addExperienceDisabled = () => {
     return (
@@ -112,12 +119,34 @@ const ExperienceForm = ({
       !inputExperience.geographic_specialization
     );
   };
-  useEffect(() => {
-    console.log(863,inputExperience)
-  }, [inputExperience])
+
+  const deleteCurrentExperience = async () => {
+    setIsDeleting(true);
+    const experienceIndex = experience.findIndex(
+      (exp) =>
+        exp.name === inputExperience.name &&
+        exp.company.name === inputExperience.company.name
+    );
+
+    const newExp = experience.filter(
+      (exp) =>
+        exp.name !== inputExperience.name ||
+        exp.company.name !== inputExperience.company.name
+    );
+
+    const body = {
+      experience: newExp,
+    };
+    await updateUser(body);
+    if (experienceIndex !== -1) {
+      deleteExperience(experienceIndex);
+    }
+    setIsDeleting(false);
+    closeForm && closeForm();
+  };
   return (
     <>
-      <Text fontSize={32} fontWeight={'bold'} mb={16} color= 'var(--primary)'>
+      <Text fontSize={32} fontWeight={'bold'} mb={16} color="var(--primary)">
         {type === 'Initial' ? '' : type} Experience
       </Text>
       <Container flex dir="column">
@@ -128,7 +157,10 @@ const ExperienceForm = ({
           name="name"
           onChange={(e) => onChangeExperience('name', e)}
         />
-       <CompanySelect value={inputExperience.company.name} onChange = {onChangeExperienceCompany}/>
+        <CompanySelect
+          value={inputExperience.company.name}
+          onChange={onChangeExperienceCompany}
+        />
         <Container flex gap={12} align="center">
           <Container flex dir="column" width="100%">
             <Text fontWeight={'bold'} color="#8e8e8e" mb={6}>
@@ -168,11 +200,18 @@ const ExperienceForm = ({
             inputExperience={inputExperience}
           />
         </Container>
-        <CheckBox><input type="checkbox" onChange={()=>{
-            if(inputExperience.endDate){
-              onChangeExperience('endDate', '')
-            }
-          }} checked={!inputExperience.endDate} />I am currently working there</CheckBox>
+        <CheckBox>
+          <input
+            type="checkbox"
+            onChange={() => {
+              if (inputExperience.endDate) {
+                onChangeExperience('endDate', '');
+              }
+            }}
+            checked={!inputExperience.endDate}
+          />
+          I am currently working there
+        </CheckBox>
         {closeForm !== undefined && (
           <Button variant="outline" onClick={closeForm}>
             Cancel
@@ -189,6 +228,20 @@ const ExperienceForm = ({
         >
           {isLoading ? 'Please Wait...' : type === 'Edit' ? 'Update' : 'Add'}
         </Button>
+        <Container width="100%" height="16px" />
+        {type === 'Edit' ? (
+          <Button
+            variant="primary"
+            onClick={deleteCurrentExperience}
+            disabled={isDeleting}
+            color="red"
+          >
+            <Container flex gap={8} align="center" justify="center">
+              <SvgIcon src="delete" />
+              Delete Experience
+            </Container>
+          </Button>
+        ) : null}
       </Container>
     </>
   );

@@ -54,6 +54,8 @@ interface EditProfileContextReturn {
   inputExperience: Experience;
   submit: () => Promise<void>;
   addEducation: (education: Education) => void;
+  deleteEducation: (index: number) => void;
+  deleteExperience: (index: number) => void;
   addExperience: (experience: Experience) => void;
   removeEducation: (index: number) => void;
   removeExperience: (index: number) => void;
@@ -129,7 +131,8 @@ export const EditProfileContext = createContext<EditProfileContextReturn>({
     type: '',
     geographic_specialization: '',
   },
-
+  deleteEducation: (index: number) => {},
+  deleteExperience: (index: number) => {},
   submit: async () => {},
   addEducation: () => {},
   addExperience: () => {},
@@ -416,6 +419,18 @@ export const EditProfileProvider = ({
     });
   };
 
+  const deleteEducation = (index: number) => {
+    const newEducation = [...education];
+    newEducation.splice(index, 1);
+    setEducation(newEducation);
+  };
+
+  const deleteExperience = (index: number) => {
+    const newExperience = [...experience];
+    newExperience.splice(index, 1);
+    setExperience(newExperience);
+  };
+
   const addExperience = (inputExperience: Experience) => {
     if (!inputExperience.startDate) {
       return;
@@ -624,6 +639,8 @@ export const EditProfileProvider = ({
     setCurrentSkill,
     inputSkillName,
     setInputSkillName,
+    deleteEducation,
+    deleteExperience,
   };
   return (
     <EditProfileContext.Provider value={value}>
