@@ -68,7 +68,7 @@ const RequestSettingsModal = (props: Props) => {
     }
   }, [user]);
   return (
-    <Modal setShowModal={props.setShowRequestSettingsModal}>
+    <Modal setShowModal={props.setShowRequestSettingsModal} closeButton = {true}>
       <Text fontSize={36} fontWeight={'bold'} align="center" mb={32}>
         Questios Settings
       </Text>

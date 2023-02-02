@@ -28,7 +28,7 @@ const AdvisorWarning = (props: Props) => {
     props.setShowProfileSetup(false);
   };
   return (
-    <Modal setShowModal={props.setAdvisorWarning} size="sm">
+    <Modal setShowModal={props.setAdvisorWarning} size="sm" closeButton = {true}>
       <Container flex dir="column" align="center">
         <Container mb={36}>
           <Text fontSize={32} fontWeight="bold" color="primary" align="center">

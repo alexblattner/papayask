@@ -8,9 +8,19 @@ import { Text } from '../shared/Text';
 import UniversitiesSelect from '../shared/UniversitiesSelect';
 import { Education } from './profileService';
 import SvgIcon from '../shared/SvgIcon';
-import { useEditProfile } from './profileService';
-import { AuthContext } from '../Auth/ContextProvider';
-import { useContext, useState } from 'react';
+
+import styled from 'styled-components';
+
+const CloseButton = styled.div`
+  background-color: ${(props) => props.theme.colors.primary};
+  cursor: pointer;
+  font-weight: bold;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+`;
 
 interface Props {
   onAddEducation: (education: Education) => void;
@@ -21,6 +31,8 @@ interface Props {
   closeForm?: () => void;
   submitEducation?: () => void;
   isLoading?: boolean;
+  isDeleting?: boolean;
+  deleteCurrentEducation?: () => void;
 }
 
 const EducationForm = ({
@@ -32,11 +44,9 @@ const EducationForm = ({
   closeForm,
   submitEducation,
   isLoading,
+  isDeleting,
+  deleteCurrentEducation,
 }: Props) => {
-  const [isDeleting, setIsDeleting] = useState<boolean>(false);
-  const { deleteEducation, education } = useEditProfile();
-  const { updateUser } = useContext(AuthContext);
-
   const addEducationDisabled = () => {
     return (
       isLoading ||
@@ -48,36 +58,42 @@ const EducationForm = ({
     );
   };
 
-  const deleteCurrentEducation = async () => {
-    setIsDeleting(true);
-    const educationIndex = education.findIndex(
-      (edu) =>
-        edu.name === inputEducation.name &&
-        edu.university.name === inputEducation.university.name
-    );
-    
-
-    const body = {
-      education: education.filter(
-        (edu) =>
-          edu.name !== inputEducation.name ||
-          edu.university.name !== inputEducation.university.name 
-      ),
-    };
-    if (educationIndex !== -1) {
-      deleteEducation(educationIndex);
+  const closeModal = () => {
+    if (closeForm) {
+      closeForm();
     }
-
-    await updateUser(body);
-    setIsDeleting(false);
-    closeForm && closeForm();
   };
 
   return (
     <>
-      <Text fontSize={32} fontWeight={'bold'} mb={16} color="primary">
-        {type === 'Initial' ? '' : type} Education
-      </Text>
+      <Container
+        flex
+        width="100%"
+        justify="space-between"
+        align="center"
+        mb={24}
+      >
+        <Text fontSize={32} fontWeight={'bold'} mb={16} color="primary">
+          {type === 'Initial' ? '' : type} Education
+        </Text>
+        <Container flex align="center">
+          {type === 'Edit' ? (
+            <Button
+              variant="text"
+              onClick={deleteCurrentEducation}
+              disabled={isDeleting}
+              color="red"
+            >
+              <Container flex gap={8} align="center" justify="center">
+                <SvgIcon src="delete" color="primary" />
+              </Container>
+            </Button>
+          ) : null}
+          <CloseButton onClick={closeModal}>
+            <SvgIcon src="close" color="white" size={12} />
+          </CloseButton>
+        </Container>
+      </Container>
       <Container flex dir="column">
         <Container flex gap={8}>
           <Input
@@ -125,12 +141,7 @@ const EducationForm = ({
             inputEducation={inputEducation}
           />
         </Container>
-        {closeForm !== undefined && (
-          <Button variant="outline" onClick={closeForm}>
-            Cancel
-          </Button>
-        )}
-        <Container width="100%" height="16px" />
+
         <Button
           variant="primary"
           onClick={
@@ -142,20 +153,6 @@ const EducationForm = ({
         >
           {isLoading ? 'Please Wait...' : type === 'Edit' ? 'Update' : 'Add'}
         </Button>
-        <Container width="100%" height="16px" />
-        {type === 'Edit' ? (
-          <Button
-            variant="primary"
-            onClick={deleteCurrentEducation}
-            disabled={isDeleting}
-            color="red"
-          >
-            <Container flex gap={8} align="center" justify="center">
-              <SvgIcon src="delete" />
-              Delete Education
-            </Container>
-          </Button>
-        ) : null}
       </Container>
     </>
   );

@@ -65,6 +65,7 @@ const CloseButton = styled.div`
 interface Props {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   children: React.ReactNode;
+  closeButton: boolean;
   fullScreen?: boolean;
   size?: 'sm' | 'normal';
 }
@@ -89,9 +90,9 @@ const Modal = (props: Props) => {
         fullscreen={props.fullScreen}
         size={props.size}
       >
-        <CloseButton onClick={() => props.setShowModal(false)}>
+      { props.closeButton ? <CloseButton onClick={() => props.setShowModal(false)}>
           <SvgIcon src="close" color="white" size={12}/>
-        </CloseButton>
+        </CloseButton> : null}
         {props.children}
       </StyledModal>
     </BackDrop>

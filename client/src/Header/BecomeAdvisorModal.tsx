@@ -8,7 +8,6 @@ import { AuthContext } from '../Auth/ContextProvider';
 import { Container } from '../shared/Container';
 import { Button } from '../shared/Button';
 import { AdvisorStatus } from '../models/User';
-import api from '../utils/api';
 interface Props {
   setShowBecomeAdvisorModal: React.Dispatch<React.SetStateAction<boolean>>;
   setShowProfileSetup: React.Dispatch<React.SetStateAction<boolean>>;
@@ -24,7 +23,7 @@ const BecomeAdvisorModal = (props: Props) => {
   const { user } = useContext(AuthContext);
 
   return (
-    <Modal setShowModal={props.setShowBecomeAdvisorModal} size="sm">
+    <Modal setShowModal={props.setShowBecomeAdvisorModal} size="sm" closeButton = {true}>
       {!user?.advisorStatus ? (
         <Container flex dir="column" align="center">
           <Container mb={36}>

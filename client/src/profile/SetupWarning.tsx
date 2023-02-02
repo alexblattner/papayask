@@ -18,7 +18,7 @@ interface Props {
 const SetupWarning = (props: Props) => {
   const { progress, submit } = useEditProfile();
   return (
-    <Modal setShowModal={props.setShowWarning}>
+    <Modal setShowModal={props.setShowWarning} closeButton = {true}>
       <Container px={48} py={36}>
         <Text
           fontSize={48}

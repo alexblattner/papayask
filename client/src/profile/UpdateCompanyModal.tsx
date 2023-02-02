@@ -204,7 +204,7 @@ const UpdateCompanyModal = (props: Props) => {
   }, [props.company]);
 
   return (
-    <Modal setShowModal={props.setShowModal}>
+    <Modal setShowModal={props.setShowModal} closeButton = {true}>
       <Text fontSize={32} fontWeight="bold" mb={32}>
         {props.company.name}
       </Text>

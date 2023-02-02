@@ -25,7 +25,7 @@ const SkillsModal = (props: Props) => {
   };
 
   return (
-    <Modal setShowModal={props.setShowModal}>
+    <Modal setShowModal={props.setShowModal} closeButton = {true}>
       <Container flex dir="column" width="100%" pl={40} pt={20}>
         <SkillsForm
           setSkills={setSkills}

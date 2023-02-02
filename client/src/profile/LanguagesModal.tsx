@@ -46,7 +46,7 @@ const LanguagesModal = (props: Props) => {
   };
 
   return (
-    <Modal setShowModal={props.setShowModal}>
+    <Modal setShowModal={props.setShowModal} closeButton = {true}>
       <Text fontSize={32} fontWeight="bold">
         Languages
       </Text>

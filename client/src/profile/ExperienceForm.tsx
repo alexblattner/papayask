@@ -9,9 +9,18 @@ import { Text } from '../shared/Text';
 import { Experience } from './profileService';
 import { Company } from '../models/User';
 import CompanySelect from '../shared/CompanySelect';
-import { useEditProfile } from './profileService';
-import { AuthContext } from '../Auth/ContextProvider';
 import SvgIcon from '../shared/SvgIcon';
+
+const CloseButton = styled.div`
+  background-color: ${(props) => props.theme.colors.primary};
+  cursor: pointer;
+  font-weight: bold;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+`;
 
 const StyledSelect = styled.select`
   margin-bottom: 30px;
@@ -91,6 +100,7 @@ interface Props {
   closeForm?: () => void;
   submitExperience?: () => void;
   isLoading?: boolean;
+  deleteCurrentExperience?: () => void;
 }
 
 const ExperienceForm = ({
@@ -103,11 +113,10 @@ const ExperienceForm = ({
   closeForm,
   isLoading,
   submitExperience,
+  deleteCurrentExperience,
 }: Props) => {
   const typesOptions = ['Employee', 'Owner', 'FreeLancer'];
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
-  const { updateUser } = useContext(AuthContext);
-  const { deleteExperience, experience } = useEditProfile();
 
   const addExperienceDisabled = () => {
     return (
@@ -120,35 +129,42 @@ const ExperienceForm = ({
     );
   };
 
-  const deleteCurrentExperience = async () => {
-    setIsDeleting(true);
-    const experienceIndex = experience.findIndex(
-      (exp) =>
-        exp.name === inputExperience.name &&
-        exp.company.name === inputExperience.company.name
-    );
-
-    const newExp = experience.filter(
-      (exp) =>
-        exp.name !== inputExperience.name ||
-        exp.company.name !== inputExperience.company.name
-    );
-
-    const body = {
-      experience: newExp,
-    };
-    await updateUser(body);
-    if (experienceIndex !== -1) {
-      deleteExperience(experienceIndex);
+  const closeModal = () => {
+    if (closeForm) {
+      closeForm();
     }
-    setIsDeleting(false);
-    closeForm && closeForm();
   };
+
   return (
     <>
-      <Text fontSize={32} fontWeight={'bold'} mb={16} color="var(--primary)">
-        {type === 'Initial' ? '' : type} Experience
-      </Text>
+      <Container
+        flex
+        width="100%"
+        justify="space-between"
+        align="center"
+        mb={24}
+      >
+        <Text fontSize={32} fontWeight={'bold'} mb={16} color="var(--primary)">
+          {type === 'Initial' ? '' : type} Experience
+        </Text>
+        <Container flex align="center">
+          {type === 'Edit' ? (
+            <Button
+              variant="text"
+              onClick={deleteCurrentExperience}
+              disabled={isDeleting}
+              color="red"
+            >
+              <Container flex gap={8} align="center" justify="center">
+                <SvgIcon src="delete" color="primary" />
+              </Container>
+            </Button>
+          ) : null}
+          <CloseButton onClick={closeModal}>
+            <SvgIcon src="close" color="white" size={12} />
+          </CloseButton>
+        </Container>
+      </Container>
       <Container flex dir="column">
         <Input
           type="text"
@@ -212,13 +228,6 @@ const ExperienceForm = ({
           />
           I am currently working there
         </CheckBox>
-        {closeForm !== undefined && (
-          <Button variant="outline" onClick={closeForm}>
-            Cancel
-          </Button>
-        )}
-        <Container width="100%" height="16px" />
-
         <Button
           variant="primary"
           onClick={
@@ -228,20 +237,7 @@ const ExperienceForm = ({
         >
           {isLoading ? 'Please Wait...' : type === 'Edit' ? 'Update' : 'Add'}
         </Button>
-        <Container width="100%" height="16px" />
-        {type === 'Edit' ? (
-          <Button
-            variant="primary"
-            onClick={deleteCurrentExperience}
-            disabled={isDeleting}
-            color="red"
-          >
-            <Container flex gap={8} align="center" justify="center">
-              <SvgIcon src="delete" />
-              Delete Experience
-            </Container>
-          </Button>
-        ) : null}
+       
       </Container>
     </>
   );
