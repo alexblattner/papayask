@@ -58,8 +58,10 @@ const Landing = () => {
           <p>
             {url[0]=="1"?<>Share your knowledge
             {width > 600 && <br />} and wisdom to get paid</>:(url[0]=="2"?<>Share your expertise
-            {width > 600 && <br />} and get paid</>:<>Answer written
-            {width > 600 && <br />} questions to get paid</>)}
+            {width > 600 && <br />} and get paid</>:(url[0]=="3"?<>Answer written
+            {width > 600 && <br />} questions to get paid</>:(url[0]=="4"?<>Get paid to
+            {width > 600 && <br />} share your knowledge and wisdom</>:<>Get paid at your
+            {width > 600 && <br />} rate comfortably to answer</>)))}
           </p>
           <a href="#main">
             {' '}
