@@ -5,11 +5,12 @@ const Purchase = require('../models/purchase');
 const notificationsController = require('./notificationsController');
 const { createOrder, captureOrder } = require('../utils/paypal');
 const { sendEventToClient } = require('../utils/eventsHandler');
+const { sendPushNotification } = require('../utils/sendPushNotification');
 
 exports.getById = async (req, res, next) => {
   const id = req.params.id;
   try {
-    const question = await Question.findById(id)
+    const question = await Question.findById(id);
     if (!question) {
       return res.status(404).json({
         status: 'fail',
@@ -19,16 +20,16 @@ exports.getById = async (req, res, next) => {
       question.receiver._id.toString() !== req.user._id.toString() &&
       question.sender._id.toString() !== req.user._id.toString()
     ) {
-      console.log('Unauthorized',question.receiver.toString())
-      console.log('Unauthorized', req.user._id.toString())
-      console.log('Unauthorized', question.sender.toString())
+      console.log('Unauthorized', question.receiver.toString());
+      console.log('Unauthorized', req.user._id.toString());
+      console.log('Unauthorized', question.sender.toString());
       console.log('Unauthorized', req.user._id.toString());
       return res.status(401).json({
         status: 'fail',
         message: 'Unauthorized',
       });
     } else {
-      console.log('question')
+      console.log('question');
       return res.send(question);
     }
   } catch (error) {
@@ -39,7 +40,7 @@ exports.getById = async (req, res, next) => {
 exports.create = async (req, res, next) => {
   try {
     const { description, receiver } = req.body;
-    const receiverUser = await User.findById(receiver);
+    const receiverUser = await User.findById(receiver).select('+tokens');
     if (!receiverUser) {
       return res.status(404).json({
         status: 'fail',
@@ -61,8 +62,16 @@ exports.create = async (req, res, next) => {
     });
     await question.save();
 
-    question = await Question.findById(question._id)
+    question = await Question.findById(question._id);
     sendEventToClient(receiver, question, 'question');
+    sendPushNotification(
+      receiverUser.tokens,
+      {
+        question,
+        senderName: req.user.name,
+      },
+      'question'
+    );
     return res.send(question);
   } catch (err) {
     console.log(err);
@@ -115,7 +124,8 @@ exports.updateStatus = async (req, res, next) => {
   const { id } = req.params;
   const { action, reason } = req.body;
   try {
-    const question = await Question.findById(id)
+    const question = await Question.findById(id);
+    const receiverUser = await User.findById(question.sender).select('+tokens');
 
     question.status.action = action;
     question.status.reason = reason;
@@ -138,6 +148,10 @@ exports.updateStatus = async (req, res, next) => {
       await notificationsController.create(notification);
 
       sendEventToClient(question.receiver, notification, 'notification');
+      sendPushNotification(receiverUser.tokens, {
+        question,
+        senderName: req.user.name,
+      }, 'reject')
     }
     await question.save();
     res.send(question);
@@ -149,6 +163,7 @@ exports.updateStatus = async (req, res, next) => {
 exports.finish = async (req, res, next) => {
   const { questionId } = req.body;
   const question = await Question.findById(questionId);
+  const receiverUser = await User.findById(question.sender).select('+tokens');
   if (!question) {
     return res.status(404).json({
       status: 'fail',
@@ -182,6 +197,10 @@ exports.finish = async (req, res, next) => {
       await notificationsController.create(notification);
 
       sendEventToClient(question.receiver, notification, 'notification');
+      sendPushNotification(receiverUser.tokens, {
+        question,
+        senderName: req.user.name,
+      }, 'answer')
       return res.send('done');
     } else {
       return res

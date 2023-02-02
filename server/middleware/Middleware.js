@@ -11,7 +11,6 @@ class Middleware {
       const decoded = await admin.auth().verifyIdToken(token);
       const { uid } = decoded;
       let user = await User.findOne({ uid });
-      
       req.user = user;
       if (decoded) {
         if (req.body) {
