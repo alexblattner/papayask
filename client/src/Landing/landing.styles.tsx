@@ -177,7 +177,13 @@ export const FlexItem = styled('div')<{ reverse?: boolean }>`
     color: #004d9d;
     font-size: 4vw;
   }
-
+  li{
+    font-size: 4vw;
+    color: #004d9d;
+  }
+  b{
+    font-family: Greycliff CF Bold;text-decoration: underline;
+  }
   img {
     width: 30vw;
   }
@@ -196,6 +202,10 @@ export const FlexItem = styled('div')<{ reverse?: boolean }>`
     p {
       color: #004d9d;
       font-size: 1.5vw;
+    }
+    li{
+      font-size: 1.5vw;
+      color: #004d9d;
     }
   }
 `;

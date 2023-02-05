@@ -120,7 +120,7 @@ const Landing = () => {
           <FlexItem reverse={true}>
             <img src={money} alt="question" />
             <FlexItemImage>
-              <h3>5. Get compensation to your service</h3>
+              <h3>5. Get paid for your service{url[3]=="1"?"":" (we take 20%)"}</h3>
               <img style={width>600?{width:"38vw"}:{width:'50vw',marginLeft: '50%',transform: 'translateX(-50%)'}} src={getpaid} alt="Get paid" />
             </FlexItemImage>
           </FlexItem>
@@ -149,7 +149,7 @@ const Landing = () => {
           <FlexItem >
             <img src={money} alt="Money" />
             <FlexItemImage>
-              <h3>4. Get paid{url[3]=="1"?"":" (We take a 20% commission)"}</h3>
+              <h3>4. Get paid{url[3]=="1"?"":" (we take a 20% commission)"}</h3>
               <img style={width>600?{width:"38vw"}:{width:'50vw'}} src={getpaid} alt="Get paid" />
             </FlexItemImage>
           </FlexItem>
