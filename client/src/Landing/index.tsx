@@ -58,10 +58,9 @@ const Landing = () => {
           <p>
             {url[0]=="1"?<>Share your knowledge
             {width > 600 && <br />} and wisdom to get paid</>:(url[0]=="2"?<>Share your expertise
-            {width > 600 && <br />} and get paid</>:(url[0]=="3"?<>Answer written
-            {width > 600 && <br />} questions to get paid</>:(url[0]=="4"?<>Get paid to
+            {width > 600 && <br />} and get paid</>:(url[0]=="3"?<>Get paid to
             {width > 600 && <br />} share your knowledge and wisdom</>:<>Get paid at your
-            {width > 600 && <br />} rate comfortably to answer</>)))}
+            {width > 600 && <br />} rate comfortably to answer</>))}
           </p>
           <a href="#main">
             {' '}
@@ -150,7 +149,7 @@ const Landing = () => {
           <FlexItem >
             <img src={money} alt="Money" />
             <FlexItemImage>
-              <h3>4. Get paid</h3>
+              <h3>4. Get paid{url[3]=="1"?"":" (We take a 20% commission)"}</h3>
               <img style={width>600?{width:"38vw"}:{width:'50vw'}} src={getpaid} alt="Get paid" />
             </FlexItemImage>
           </FlexItem>
@@ -160,7 +159,8 @@ const Landing = () => {
           <FlexItem>
             <img src={cogs} alt="cogs" />
             <div>
-              <h2>Why we chose this process</h2>
+              <h2>Why this process</h2>
+              {url[2]=="1"?
               <p>
                 We wanted to increase the variety of experts available on the
                 platform by minimizing the time commitment and increasing the
@@ -170,31 +170,52 @@ const Landing = () => {
                 of the format is that it is less expensive than a regular
                 consultation making the process cheaper and more
                 straightforward.
-              </p>
+              </p>:<ul>
+                <li><b>Flexible and comfortable:</b> You don't need to be available on the platform
+                   at all times. Just answer when you can from anywhere.</li>
+                <li><b>Easy to use:</b> Answer the same way you would answer emails. 
+                The format is the same.
+</li><li><b>Less time consuming:</b> You don't need to make time in the day for a video call 
+and answering a single question is less time consuming.
+</li><li><b>Choose what you answer:</b> If someone asks you something you thinking doesn't fit you,
+ you can refuse to answer. The buyer will be refunded however.
+</li>
+              </ul>}
             </div>
           </FlexItem>
           <FlexItem reverse={true}>
             <img src={lock} alt="lock" />
             <div>
               <h2>Security</h2>
+              {url[2]=="1"?
               <p>
                 Papayask ensures that all profiles are truthful by verifying all
                 of them before they can receive questions. It is a one time
                 process that we deem necessary. We also ensure that all payments
                 are safe by using https and the PayPal APIs.
-              </p>
+              </p>:<ul>
+                <li><b>Secured payments:</b> All payments are done through PayPal's API. PayPal's security widstood the test of time, 
+                therefore our payment process is secure.</li>
+                <li><b>Verified profiles:</b> All profiles are verified by Papayask before 
+                they can receive questions. This ensures that all experts are authentic and accurate to the client's needs.</li>
+                <li><b>Encrypted calls:</b> We use HTTPS for all our API calls and more.</li>
+              </ul>}
             </div>
           </FlexItem>
           <FlexItem>
             <img src={info} alt="info" />
             <div>
               <h2>The current situation</h2>
+              {url[2]=="1"?
               <p>
                 Before making the services available, we need to have a starting
                 amount of verified experts to show. For this reason, we are
                 showing a temporary bare bones version of the platform. Once we
                 are ready, we will notify all experts.
-              </p>
+              </p>:<p>
+              We are gathering experts before offering services. Please Sign Up and
+               fill up your profile. We will update you as soon as we are ready.
+              </p>}
             </div>
           </FlexItem>
             <SignUpButton onClick={openSignUp}>
