@@ -151,18 +151,20 @@ const ProfileSetupFooter = ({
         />
       ) : null}
 
-      <Button
-        variant="primary"
-        onClick={() => submitProfile('save')}
-        disabled={isSaving}
-      >
-        <Container flex gap={12} align="center">
-          <Text fontWeight="bold" color="white" fontSize={16}>
-            SAVE PROGRESS
-          </Text>
-          {advisor ? <Text color="white">({progress}% COMPLETE)</Text> : null}
-        </Container>
-      </Button>
+      {type !== 'edit-one' && (
+        <Button
+          variant="primary"
+          onClick={() => submitProfile('save')}
+          disabled={isSaving}
+        >
+          <Container flex gap={12} align="center">
+            <Text fontWeight="bold" color="white" fontSize={16}>
+              SAVE PROGRESS
+            </Text>
+            {advisor ? <Text color="white">({progress}% COMPLETE)</Text> : null}
+          </Container>
+        </Button>
+      )}
 
       <Container ml={width > 768 ? 'auto' : 0} flex gap={12} align="center">
         <Button variant="outline" onClick={() => setShowProfileSetup(false)}>
