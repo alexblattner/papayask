@@ -210,7 +210,6 @@ exports.update = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-
     const {
       bio,
       experience,
@@ -347,7 +346,6 @@ exports.update = async (req, res) => {
 };
 
 exports.search = async (req, res, next) => {
-  console.log(req.query);
   const toallob = {}; //starting object for education, skill and experience to filter undesired data
   if (req.query.personal) {
     if (req.query.personal.country) {
