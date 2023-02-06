@@ -23,6 +23,7 @@ exports.delete = async (req, res) => {
 
 
 exports.create= async (req, res, next) => {
+  console.log(req.body);
   const question = await Question.findById(req.body.questionId).exec();
   if (!question) return res.sendStatus(404)
   if (question.receiver._id.toString() == req.user._id.toString()) {

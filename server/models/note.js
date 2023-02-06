@@ -6,6 +6,7 @@ const mongoose = require('mongoose'),
     coordinates: { type: Schema.Types.Mixed },
     replyTo: { type: Schema.Types.ObjectId, ref: "Note" },
     question: { type: Schema.Types.ObjectId, ref: "Question", required: true },
+    type: { type: String, enum: ['clarification', 'refusal', 'answer','acceptance'], default: 'answer' },
   }, {
     timestamps: true
   });

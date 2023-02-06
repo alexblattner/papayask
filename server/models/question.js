@@ -4,6 +4,7 @@ const mongoose = require('mongoose'),
     {
       sender: { type: Schema.Types.ObjectId, ref: 'User' },
       receiver: { type: Schema.Types.ObjectId, ref: 'User' },
+      title: { type: String, required: true },
       description: { type: Schema.Types.Mixed, required: true },
       files: [{ type: Schema.Types.ObjectId, ref: 'File' }],
       endAnswerTime: { type: Date, required: true },
