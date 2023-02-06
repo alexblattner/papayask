@@ -29,7 +29,7 @@ interface ProfileSetupProps {
   setShowProfileSetup: React.Dispatch<React.SetStateAction<boolean>>;
   type: 'initial' | 'edit-all' | 'edit-one';
   initialStep?: number | null;
-  advisor: AdvisorStatus|boolean;
+  advisor: AdvisorStatus | boolean;
 }
 
 const ProfileSetup = ({

@@ -23,7 +23,7 @@ const CloseButton = styled.div`
 `;
 
 const StyledSelect = styled.select`
-  margin-bottom: 30px;
+  margin-bottom: 10px;
   border: ${({ theme }) => `2px solid ${theme.colors.secondary_L1}`};
   border-radius: 8px;
   padding: 3px 12px;
@@ -160,9 +160,11 @@ const ExperienceForm = ({
               </Container>
             </Button>
           ) : null}
-          <CloseButton onClick={closeModal}>
-            <SvgIcon src="close" color="white" size={12} />
-          </CloseButton>
+          {type === 'Add' || type === 'Edit' ? (
+            <CloseButton onClick={closeModal}>
+              <SvgIcon src="close" color="white" size={12} />
+            </CloseButton>
+          ) : null}
         </Container>
       </Container>
       <Container flex dir="column">
@@ -237,7 +239,6 @@ const ExperienceForm = ({
         >
           {isLoading ? 'Please Wait...' : type === 'Edit' ? 'Update' : 'Add'}
         </Button>
-       
       </Container>
     </>
   );

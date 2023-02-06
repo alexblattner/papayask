@@ -153,9 +153,9 @@ exports.createOrLogin = async (req, res, next) => {
       });
 
     if (!doesUserExist) {
-      let name=""
-      if (req.body.name!=="") {
-        name=req.body.bane
+      let name = '';
+      if (req.body.name !== '') {
+        name = req.body.bane;
       }
       const newUserOb = {
         uid: req.body.uid,
@@ -210,7 +210,6 @@ exports.update = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-
 
     const {
       bio,
@@ -438,9 +437,7 @@ exports.search = async (req, res, next) => {
   return res.send(users);
 };
 
-exports.becomeAdvisor = async (req, res, next) => {
-  
-};
+exports.becomeAdvisor = async (req, res, next) => {};
 
 exports.apply = async (req, res, next) => {
   const user = await User.findById(req.user._id).populate('skills');
@@ -465,17 +462,28 @@ exports.apply = async (req, res, next) => {
         completion += 5;
       }
     }
+
     for (let i = 0; i < user.experience.length; i++) {
       completion += 5;
     }
+
     for (let i = 0; i < user.education.length; i++) {
       completion += 5;
     }
-    if(completion >= 75) {
+
+    if (user.languages) {
+      completion += 5;
+    }
+
+    if (user.country) {
+      completion += 5;
+    }
+
+    if (completion >= 75) {
       user.advisorStatus = 'pending';
       user.save();
       return res.status(200).json({ message: 'Application sent successfully' });
-    }else {
+    } else {
       return res.status(400).json({ message: 'Application failed' });
     }
   } else {

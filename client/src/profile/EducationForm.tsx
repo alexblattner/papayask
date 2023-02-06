@@ -89,9 +89,11 @@ const EducationForm = ({
               </Container>
             </Button>
           ) : null}
-          <CloseButton onClick={closeModal}>
-            <SvgIcon src="close" color="white" size={12} />
-          </CloseButton>
+          {type === 'Add' || type === 'Edit' ? (
+            <CloseButton onClick={closeModal}>
+              <SvgIcon src="close" color="white" size={12} />
+            </CloseButton>
+          ) : null}
         </Container>
       </Container>
       <Container flex dir="column">

@@ -190,7 +190,7 @@ const ProfileSetupFooter = ({
             onClick={() => submitProfile('submit')}
             disabled={isLoading || isSaving}
           >
-            {isLoading
+            {isLoading || isSaving
               ? 'Please Wait...'
               : !advisor
               ? 'Save'

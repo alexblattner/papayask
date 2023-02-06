@@ -56,6 +56,8 @@ const UniversitiesSelect = (props: Props) => {
       throw error;
     }
   }
+
+  
   return (
     <Container position="relative">
       <Input

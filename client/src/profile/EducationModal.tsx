@@ -43,6 +43,7 @@ const EducationModal = (props: Props) => {
     name: string,
     value: string | University | Date
   ) => {
+
     if (value instanceof Object && !(value instanceof Date)) {
       setInputEducation({
         ...inputEducation,
@@ -140,7 +141,7 @@ const EducationModal = (props: Props) => {
           type="delete"
         />
       )}
-      <Modal setShowModal={props.setShowModal} closeButton = {false}>
+      <Modal setShowModal={props.setShowModal} closeButton={false}>
         <EducationForm
           onChangeEducation={onChangeEducation}
           inputEducation={inputEducation}

@@ -525,10 +525,14 @@ export const EditProfileProvider = ({
   };
 
   const becomeAdvisor = async () => {
-    return await api({
-      method: 'post',
-      url: `confirmation-application`,
-    });
+    try {
+      await api({
+        method: 'post',
+        url: `confirmation-application`,
+      });
+    } catch (error) {
+      console.log({ error });
+    }
   };
 
   useEffect(() => {

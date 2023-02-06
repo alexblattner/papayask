@@ -23,7 +23,11 @@ const BecomeAdvisorModal = (props: Props) => {
   const { user } = useContext(AuthContext);
 
   return (
-    <Modal setShowModal={props.setShowBecomeAdvisorModal} size="sm" closeButton = {true}>
+    <Modal
+      setShowModal={props.setShowBecomeAdvisorModal}
+      size="sm"
+      closeButton={true}
+    >
       {!user?.advisorStatus ? (
         <Container flex dir="column" align="center">
           <Container mb={36}>
@@ -112,6 +116,7 @@ const BecomeAdvisorModal = (props: Props) => {
           variant="primary"
           onClick={() => {
             props.setShowBecomeAdvisorModal(false);
+            props.setIsAdvisor(true);
             props.setShowProfileSetup(true);
           }}
         >

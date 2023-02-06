@@ -23,7 +23,7 @@ const CountriesSelect = (props: Props) => {
   const { value, onChange, inputName } = props;
 
   useEffect(() => {
-    if (value.length > 0 && focused) {
+    if (value?.length > 0 && focused) {
       if (props.options) {
         setSuggestions(props.options);
       } else {
@@ -55,11 +55,11 @@ const CountriesSelect = (props: Props) => {
   }, [value, focused]);
 
   return (
-    <Container position="relative" width='100%'>
+    <Container position="relative" width="100%">
       <Input
         type="text"
         value={value}
-        label='Country'
+        label="Country"
         name={inputName}
         width={props.width || '100%'}
         onChange={(e) => onChange(e.target.value)}
