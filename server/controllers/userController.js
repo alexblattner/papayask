@@ -2,6 +2,7 @@ const User = require('../models/user');
 const experienceController = require('./experienceController');
 const educationController = require('./educationController');
 const skillController = require('./skillController');
+const questionsController = require('./questionController');
 const Question = require('../models/question');
 
 function escapeRegex(text) {
@@ -49,6 +50,10 @@ exports.getAllAdvisors = async (req, res, next) => {
 exports.getById = async (req, res, next) => {
   try {
     let udata = await User.findById(req.params.userId);
+    const newQuestionsCount = await questionsController.newRequestsCount(
+      req.params.userId
+    );
+    udata.newQuestionsCount = newQuestionsCount;
     return res.send(udata);
   } catch (err) {
     return new Error(err);
@@ -87,6 +92,10 @@ exports.createOrLogin = async (req, res, next) => {
       return res.send(createdUser);
     } else {
       doesUserExist.authTime = req.body.auth_time;
+      const newQuestionsCount = await questionsController.newRequestsCount(
+        doesUserExist._id
+      );
+      doesUserExist.newQuestionsCount = newQuestionsCount;
       await doesUserExist.save();
       const questions = await getQuestions(doesUserExist);
       if (questions) {
@@ -242,21 +251,19 @@ exports.update = async (req, res) => {
 };
 exports.searchAutomationResults = async (req, res) => {
   const { search } = req.query;
-  const regex = escapeRegex(search)
-    const educationSearchResults = await educationController.search(regex);
-    const skillsSearchResults = await skillController.search(regex);
-    const experienceSearchResults = await experienceController.search(regex);
-    let results = educationSearchResults
-      .concat(skillsSearchResults)
-      .concat(
-        experienceSearchResults
-      );
-    results.sort(function (a, b) {
-      return a._id.localeCompare(b._id);
-    });
+  const regex = escapeRegex(search);
+  const educationSearchResults = await educationController.search(regex);
+  const skillsSearchResults = await skillController.search(regex);
+  const experienceSearchResults = await experienceController.search(regex);
+  let results = educationSearchResults
+    .concat(skillsSearchResults)
+    .concat(experienceSearchResults);
+  results.sort(function (a, b) {
+    return a._id.localeCompare(b._id);
+  });
 
-    const filteredResults = results.map((result) => result._id);
-    res.send(filteredResults);
+  const filteredResults = results.map((result) => result._id);
+  res.send(filteredResults);
 };
 exports.search = async (req, res, next) => {
   const toallob = {}; //starting object for education, skill and experience to filter undesired data
@@ -280,7 +287,7 @@ exports.search = async (req, res, next) => {
         $and: [
           {
             // request_settings: { $exists: true },
-            "request_settings.concurrent": { $exists: true },
+            'request_settings.concurrent': { $exists: true },
             // "request_settings.concurrent": { $ne: 0 },
           },
         ],
@@ -288,25 +295,25 @@ exports.search = async (req, res, next) => {
     ],
   };
   if (search) {
-    const regex = new RegExp(escapeRegex(search), "gi");
+    const regex = new RegExp(escapeRegex(search), 'gi');
     searchFilter = {
       $or: [
         {
           $and: [
             {
-              "experience.name": { $exists: true },
-              "experience.name": regex,
+              'experience.name': { $exists: true },
+              'experience.name': regex,
             },
           ],
         },
         {
-          $and: [{ "skills.name": { $exists: true }, "skills.name": regex }],
+          $and: [{ 'skills.name': { $exists: true }, 'skills.name': regex }],
         },
         {
           $and: [
             {
-              "education.name": { $exists: true },
-              "education.name": regex,
+              'education.name': { $exists: true },
+              'education.name': regex,
             },
           ],
         },
@@ -318,30 +325,30 @@ exports.search = async (req, res, next) => {
     // if (budget[0] == 0 && budget[1] == 1) return;
     budgetFilter = {
       $and: [
-        { "request_settings.cost": { $gte: budget[0] } },
-        { "request_settings.cost": { $lte: budget[1] } },
+        { 'request_settings.cost': { $gte: budget[0] } },
+        { 'request_settings.cost': { $lte: budget[1] } },
       ],
     };
   }
   let educationFilter = {};
-  if (education && education.name != "") {
-    const regex = new RegExp(escapeRegex(education), "gi");
+  if (education && education.name != '') {
+    const regex = new RegExp(escapeRegex(education), 'gi');
     educationFilter = {
       $and: [
         {
-          "education.name": { $exists: true },
-          "education.name": regex,
+          'education.name': { $exists: true },
+          'education.name': regex,
         },
       ],
     };
   }
   let experienceFilter = {};
-  if (experience && experience.name != "") {
+  if (experience && experience.name != '') {
     experienceFilter = {
       $and: [
         {
-          "experience.name": { $exists: true },
-          "experience.name": regex,
+          'experience.name': { $exists: true },
+          'experience.name': regex,
         },
       ],
     };
@@ -353,45 +360,45 @@ exports.search = async (req, res, next) => {
     },
     {
       $lookup: {
-        from: "experiences",
-        localField: "experience",
-        foreignField: "_id",
-        as: "experience",
+        from: 'experiences',
+        localField: 'experience',
+        foreignField: '_id',
+        as: 'experience',
       },
     },
     {
       $lookup: {
-        from: "educations",
-        let: { education: "$education" },
+        from: 'educations',
+        let: { education: '$education' },
         pipeline: [
           {
             $match: {
               $expr: {
-                $in: ["$_id", "$$education"],
+                $in: ['$_id', '$$education'],
               },
             },
           },
           {
             $lookup: {
-              from: "universities",
-              localField: "university",
-              foreignField: "_id",
-              as: "university",
+              from: 'universities',
+              localField: 'university',
+              foreignField: '_id',
+              as: 'university',
             },
           },
           {
-            $unwind: "$university",
+            $unwind: '$university',
           },
         ],
-        as: "education",
+        as: 'education',
       },
     },
     {
       $lookup: {
-        from: "skills",
-        localField: "skills",
-        foreignField: "_id",
-        as: "skills",
+        from: 'skills',
+        localField: 'skills',
+        foreignField: '_id',
+        as: 'skills',
       },
     },
     { $match: searchFilter },

@@ -148,10 +148,14 @@ exports.updateStatus = async (req, res, next) => {
       await notificationsController.create(notification);
 
       sendEventToClient(question.receiver, notification, 'notification');
-      sendPushNotification(receiverUser.tokens, {
-        question,
-        senderName: req.user.name,
-      }, 'reject')
+      sendPushNotification(
+        receiverUser.tokens,
+        {
+          question,
+          senderName: req.user.name,
+        },
+        'reject'
+      );
     }
     await question.save();
     res.send(question);
@@ -197,10 +201,14 @@ exports.finish = async (req, res, next) => {
       await notificationsController.create(notification);
 
       sendEventToClient(question.receiver, notification, 'notification');
-      sendPushNotification(receiverUser.tokens, {
-        question,
-        senderName: req.user.name,
-      }, 'answer')
+      sendPushNotification(
+        receiverUser.tokens,
+        {
+          question,
+          senderName: req.user.name,
+        },
+        'answer'
+      );
       return res.send('done');
     } else {
       return res
@@ -208,4 +216,12 @@ exports.finish = async (req, res, next) => {
         .json({ error: 'You have to add at least one note' });
     }
   }
+};
+
+exports.newRequestsCount = async (userId) => {
+  const questions = await Question.find({
+    receiver: { _id: userId },
+    'status.action': 'pending',
+  });
+  return questions.length;
 };

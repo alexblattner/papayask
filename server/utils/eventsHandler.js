@@ -27,7 +27,7 @@ exports.sendEventToClient = (clientId, object, type) => {
   data = {
     type,
     object,
-  }
+  };
   const client = clients.find((client) => client.id === clientId.toString());
   if (client) {
     client.res.write(`data: ${JSON.stringify(data)}\n\n`);
