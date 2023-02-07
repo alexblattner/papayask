@@ -38,8 +38,9 @@ exports.getById = async (req, res, next) => {
 };
 
 exports.create = async (req, res, next) => {
+  console.log(req.body);
   try {
-    const { description, receiver } = req.body;
+    const { description, receiver, title } = req.body;
     const receiverUser = await User.findById(receiver).select('+tokens');
     if (!receiverUser) {
       return res.status(404).json({
@@ -57,6 +58,7 @@ exports.create = async (req, res, next) => {
     let question = new Question({
       description,
       receiver,
+      title,
       sender: req.user._id,
       endAnswerTime,
     });
