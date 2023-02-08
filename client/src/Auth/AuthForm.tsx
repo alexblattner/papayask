@@ -5,7 +5,7 @@ import { auth } from '../firebase-auth';
 import { AuthContext } from './ContextProvider';
 import { Navigate } from 'react-router-dom';
 import './Auth.css';
-import api from '../utils/api';
+import ReactFacebookPixel from 'react-facebook-pixel';
 import SvgIcon from '../shared/SvgIcon';
 import googleSvg from './google.svg';
 interface Props {
@@ -28,6 +28,10 @@ const AuthForm = (props: Props) => {
       .then(async (userCred: any) => {
         if (userCred) {
           window.localStorage.setItem('auth', 'true');
+          ReactFacebookPixel.trackCustom( 'Login', {
+            provider: 'google',
+            email: userCred.user.email,
+          });
         }
       })
       .catch((error) => {
@@ -40,6 +44,10 @@ const AuthForm = (props: Props) => {
       .then(async (userCred: any) => {
         if (userCred) {
           window.localStorage.setItem('auth', 'true');
+          ReactFacebookPixel.trackCustom('Login', {
+            provider: 'facebook',
+            email: userCred.user.email,
+          });
         }
       })
       .catch((err) => {
@@ -52,7 +60,6 @@ const AuthForm = (props: Props) => {
   };
   const emailPassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('emailPassword', e);
 
     let email = (
       (e.target as HTMLInputElement).querySelector(
@@ -80,6 +87,10 @@ const AuthForm = (props: Props) => {
         .then(async (userCred: any) => {
           if (userCred) {
             window.localStorage.setItem('auth', 'true');
+            ReactFacebookPixel.trackCustom('Login', {
+              provider: 'email',
+              email: userCred.user.email,
+            });
           }
         })
         .catch((err: any) => {
@@ -97,6 +108,10 @@ const AuthForm = (props: Props) => {
               window.localStorage.setItem('auth', 'true');
               window.localStorage.setItem('firstName', firstName);
               window.localStorage.setItem('lastName', lastName);
+              ReactFacebookPixel.trackCustom('Signup', {
+                provider: 'email',
+                email: userCred.user.email,
+              });
             }
           })
           .catch((err: any) => {

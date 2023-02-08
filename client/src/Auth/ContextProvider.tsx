@@ -2,6 +2,7 @@ import { useEffect, useState, createContext } from 'react';
 import { auth } from '../firebase-auth';
 import api, { setTokenForAPI } from '../utils/api';
 import { UserProps } from '../models/User';
+import ReactFacebookPixel from 'react-facebook-pixel';
 
 interface AuthContextReturn {
   user: UserProps | null | undefined;
@@ -97,6 +98,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser({
         id: res.data.user._id,
         ...res.data.user,
+      });
+      ReactFacebookPixel.track('profile_updated', {
+        email: res.data.user.email,
       });
     } catch (error) {
       console.log(error);

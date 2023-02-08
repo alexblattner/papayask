@@ -5,6 +5,7 @@ import styled, { ThemeProvider } from 'styled-components';
 import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import { analytics } from './firebase-auth';
 import { logEvent } from 'firebase/analytics';
+import ReactPixel from 'react-facebook-pixel';
 import ReactGA from 'react-ga';
 import './App.css';
 import { AuthContext } from './Auth/ContextProvider';
@@ -28,9 +29,12 @@ function App() {
   const user = useContext(AuthContext);
   const { toasts } = useContext(ToastsContext);
   useEffect(() => {
-    if(process.env.REACT_APP_ENV === 'production'){
+    if (process.env.REACT_APP_ENV === 'production') {
       ReactGA.initialize('UA-252855513-1');
       ReactGA.pageview(window.location.pathname);
+      ReactPixel.init('324752472853530');
+      ReactPixel.pageView(); // For tracking page view
+      // ReactPixel.trackSingleCustom('324752472853530', 'thing', 1); // For tracking custom events.
     }
   }, []);
   return (
