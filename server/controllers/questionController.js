@@ -38,7 +38,6 @@ exports.getById = async (req, res, next) => {
 };
 
 exports.create = async (req, res, next) => {
-  console.log(req.body);
   try {
     const { description, receiver, title } = req.body;
     const receiverUser = await User.findById(receiver).select('+tokens');
