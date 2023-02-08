@@ -91,7 +91,7 @@ const EducationForm = ({
           ) : null}
           {type === 'Add' || type === 'Edit' ? (
             <CloseButton onClick={closeModal}>
-              <SvgIcon src="close" color="white" size={12} />
+              <SvgIcon src="x" color="white" size={12} />
             </CloseButton>
           ) : null}
         </Container>

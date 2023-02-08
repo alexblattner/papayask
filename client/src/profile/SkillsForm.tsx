@@ -274,7 +274,7 @@ const SkillsForm = (props: Props) => {
                   </Text>
                   {selectedExperienceIndexes.includes(i) ? (
                     <Container position="absolute" right="12px" top="14px">
-                      <SvgIcon src="check" size={24} color="primary" />
+                      <SvgIcon src="v" size={24} color="primary" />
                     </Container>
                   ) : null}
                 </Row>
@@ -322,7 +322,7 @@ const SkillsForm = (props: Props) => {
                   </Text>
                   {selectedEducationIndexes.includes(i) ? (
                     <Container position="absolute" right="12px" top="14px">
-                      <SvgIcon src="check" size={24} color="primary" />
+                      <SvgIcon src="v" size={24} color="primary" />
                     </Container>
                   ) : null}
                 </Row>

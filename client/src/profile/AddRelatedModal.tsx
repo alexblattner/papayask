@@ -84,7 +84,7 @@ const AddRelatedModal = (props: Props) => {
                   </Text>
                 </div>
                 <CheckIcon selected={educationIndexSelected.includes(i)}>
-                  <SvgIcon src="check" size={30} />
+                  <SvgIcon src="v" size={30} />
                 </CheckIcon>
               </ListItem>
             ))}
@@ -104,7 +104,7 @@ const AddRelatedModal = (props: Props) => {
                   </Container>
                 </div>
                 <CheckIcon selected={experienceIndexSelected.includes(i)}>
-                  <SvgIcon src="check" size={30} />
+                  <SvgIcon src="v" size={30} />
                 </CheckIcon>
               </ListItem>
             ))}

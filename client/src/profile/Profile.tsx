@@ -438,7 +438,7 @@ const Profile = () => {
                     <WarningContainer
                       onClick={() => setCurrentCompanyEdit(exp.company)}
                     >
-                      <SvgIcon src="warning" size={16} color="red" />
+                      <SvgIcon src="exclamation_mark" size={16} color="red" />
                       <Tooltip>Please add company info</Tooltip>
                     </WarningContainer>
                   )}

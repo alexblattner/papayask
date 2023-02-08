@@ -19,7 +19,7 @@ import {
 } from './landing.styles';
 import arrow from './assets/arrow_down.svg';
 import arrow_side from './assets/arrow.svg';
-import lock from './assets/lock.svg';
+import lock from './assets/Lock.svg';
 import lightbulb from './assets/lightbulb.svg';
 import experience from './assets/experience.png';
 import search_img from './assets/search_img.svg';

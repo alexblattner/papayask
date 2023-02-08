@@ -91,7 +91,7 @@ const Modal = (props: Props) => {
         size={props.size}
       >
       { props.closeButton ? <CloseButton onClick={() => props.setShowModal(false)}>
-          <SvgIcon src="close" color="white" size={12}/>
+          <SvgIcon src="x" color="white" size={12}/>
         </CloseButton> : null}
         {props.children}
       </StyledModal>
