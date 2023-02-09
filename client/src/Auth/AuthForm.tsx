@@ -29,6 +29,9 @@ const AuthForm = (props: Props) => {
       .then(async (userCred: any) => {
         if (userCred) {
           window.localStorage.setItem('auth', 'true');
+          if(userCred.additionalUserInfo.isNewUser)
+          ReactFacebookPixel.trackSingleCustom('SignUp',userCred.user.email);
+          else
           ReactFacebookPixel.trackSingleCustom('Login',userCred.user.email);
           LinkedInTag.init('5072817', 'dc', false);
           LinkedInTag.track('12336353');
@@ -44,6 +47,9 @@ const AuthForm = (props: Props) => {
       .then(async (userCred: any) => {
         if (userCred) {
           window.localStorage.setItem('auth', 'true');
+          if(userCred.additionalUserInfo.isNewUser)
+          ReactFacebookPixel.trackSingleCustom('SignUp',userCred.user.email);
+          else
           ReactFacebookPixel.trackSingleCustom('Login',userCred.user.email);
           LinkedInTag.init('5072817', 'dc', false);
           LinkedInTag.track('12336353');
@@ -107,7 +113,7 @@ const AuthForm = (props: Props) => {
               window.localStorage.setItem('auth', 'true');
               window.localStorage.setItem('firstName', firstName);
               window.localStorage.setItem('lastName', lastName);
-              ReactFacebookPixel.trackSingleCustom('Login',userCred.user.email);
+              ReactFacebookPixel.trackSingleCustom('SignUp',userCred.user.email);
               LinkedInTag.init('5072817', 'dc', false);
               LinkedInTag.track('12336353');
             }
