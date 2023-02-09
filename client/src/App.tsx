@@ -3,8 +3,7 @@ import { useContext, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import styled, { ThemeProvider } from 'styled-components';
 import { PayPalScriptProvider } from '@paypal/react-paypal-js';
-import { analytics } from './firebase-auth';
-import { logEvent } from 'firebase/analytics';
+import LogRocket from 'logrocket';
 import ReactPixel from 'react-facebook-pixel';
 import ReactGA from 'react-ga';
 import './App.css';
@@ -34,7 +33,7 @@ function App() {
       ReactGA.pageview(window.location.pathname);
       ReactPixel.init('324752472853530');
       ReactPixel.pageView(); // For tracking page view
-      // ReactPixel.trackSingleCustom('324752472853530', 'thing', 1); // For tracking custom events.
+      LogRocket.init('n4odyt/papayask');
     }
   }, []);
   return (
