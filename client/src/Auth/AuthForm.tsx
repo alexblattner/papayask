@@ -4,6 +4,7 @@ import 'firebase/compat/auth';
 import { auth } from '../firebase-auth';
 import { AuthContext } from './ContextProvider';
 import { Navigate } from 'react-router-dom';
+import LinkedInTag from 'react-linkedin-insight';
 import './Auth.css';
 import ReactFacebookPixel from 'react-facebook-pixel';
 import SvgIcon from '../shared/SvgIcon';
@@ -32,6 +33,8 @@ const AuthForm = (props: Props) => {
             provider: 'google',
             email: userCred.user.email,
           });
+          LinkedInTag.init('5072817', 'dc', false);
+          LinkedInTag.track('12336353');
         }
       })
       .catch((error) => {
@@ -48,6 +51,8 @@ const AuthForm = (props: Props) => {
             provider: 'facebook',
             email: userCred.user.email,
           });
+          LinkedInTag.init('5072817', 'dc', false);
+          LinkedInTag.track('12336353');
         }
       })
       .catch((err) => {
@@ -91,6 +96,8 @@ const AuthForm = (props: Props) => {
               provider: 'email',
               email: userCred.user.email,
             });
+            LinkedInTag.init('5072817', 'dc', false);
+            LinkedInTag.track('12336353');
           }
         })
         .catch((err: any) => {
@@ -112,6 +119,8 @@ const AuthForm = (props: Props) => {
                 provider: 'email',
                 email: userCred.user.email,
               });
+              LinkedInTag.init('5072817', 'dc', false);
+              LinkedInTag.track('12336353');
             }
           })
           .catch((err: any) => {
