@@ -22,7 +22,7 @@ import arrow_side from './assets/arrow.svg';
 import lock from './assets/Lock.svg';
 import lightbulb from './assets/lightbulb.svg';
 import experience from './assets/experience.png';
-import search_img from './assets/search_img.svg';
+import search_img from './assets/search_img.png';
 import money_img from './assets/money_img.svg';
 import question_img from './assets/question_img.svg';
 import getpaid from './assets/getpaid.png';
