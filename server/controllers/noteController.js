@@ -56,7 +56,9 @@ exports.create= async (req, res, next) => {
           question.markModified('status');
         }
         await question.save();
-        return res.send(data);
+        const finaldata=data;
+        finaldata.user=req.user;
+        return res.send(finaldata);
       })
     }
   } else if(question.sender._id.toString() == req.user._id.toString()){
