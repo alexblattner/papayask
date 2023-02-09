@@ -29,10 +29,7 @@ const AuthForm = (props: Props) => {
       .then(async (userCred: any) => {
         if (userCred) {
           window.localStorage.setItem('auth', 'true');
-          ReactFacebookPixel.trackCustom( 'Login', {
-            provider: 'google',
-            email: userCred.user.email,
-          });
+          ReactFacebookPixel.trackSingleCustom('Login',userCred.user.email);
           LinkedInTag.init('5072817', 'dc', false);
           LinkedInTag.track('12336353');
         }
@@ -47,10 +44,7 @@ const AuthForm = (props: Props) => {
       .then(async (userCred: any) => {
         if (userCred) {
           window.localStorage.setItem('auth', 'true');
-          ReactFacebookPixel.trackCustom('Login', {
-            provider: 'facebook',
-            email: userCred.user.email,
-          });
+          ReactFacebookPixel.trackSingleCustom('Login',userCred.user.email);
           LinkedInTag.init('5072817', 'dc', false);
           LinkedInTag.track('12336353');
         }
@@ -92,10 +86,8 @@ const AuthForm = (props: Props) => {
         .then(async (userCred: any) => {
           if (userCred) {
             window.localStorage.setItem('auth', 'true');
-            ReactFacebookPixel.trackCustom('Login', {
-              provider: 'email',
-              email: userCred.user.email,
-            });
+            
+            ReactFacebookPixel.trackSingleCustom('Login',userCred.user.email);
             LinkedInTag.init('5072817', 'dc', false);
             LinkedInTag.track('12336353');
           }
@@ -115,10 +107,7 @@ const AuthForm = (props: Props) => {
               window.localStorage.setItem('auth', 'true');
               window.localStorage.setItem('firstName', firstName);
               window.localStorage.setItem('lastName', lastName);
-              ReactFacebookPixel.trackCustom('Signup', {
-                provider: 'email',
-                email: userCred.user.email,
-              });
+              ReactFacebookPixel.trackSingleCustom('Login',userCred.user.email);
               LinkedInTag.init('5072817', 'dc', false);
               LinkedInTag.track('12336353');
             }
