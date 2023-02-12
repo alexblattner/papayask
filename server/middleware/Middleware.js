@@ -4,11 +4,24 @@ const User = require('../models/user');
 class Middleware {
   async decodeToken(req, res, next) {
     if (!req.headers.authorization) {
-      return res.status(401).json({ error: 'Unauthorized' });
+      const sessionCookie = req.cookies.__session;
+      if (!sessionCookie) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
     }
-    const token = req.headers.authorization.split(' ')[1];
+    let token;
+    if (req.headers.authorization) {
+      token = req.headers.authorization.split(' ')[1];
+    } else {
+      token = req.cookies.__session;
+    }
     try {
-      const decoded = await admin.auth().verifyIdToken(token);
+      let decoded;
+      if (req.cookies.__session) {
+        decoded = await admin.auth().verifySessionCookie(token, true);
+      } else {
+        decoded = await admin.auth().verifyIdToken(token);
+      }
       const { uid } = decoded;
       let user = await User.findOne({ uid });
       req.user = user;
@@ -25,11 +38,19 @@ class Middleware {
     }
   }
   async getUser(req, res, next) {
-    console.log('getUser');
     if (!req.headers.authorization) {
-      return res.status(401).json({ error: 'Unauthorized' });
+      console.log('sessionCookie', req.cookies);
+      const sessionCookie = req.cookies.__session;
+      if (!sessionCookie) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
     }
-    const token = req.headers.authorization.split(' ')[1];
+    let token;
+    if (req.headers.authorization) {
+      token = req.headers.authorization.split(' ')[1];
+    } else {
+      token = req.cookies.__session;
+    }
     try {
       const decoded = await admin.auth().verifyIdToken(token);
       const { uid } = decoded;

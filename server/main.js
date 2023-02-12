@@ -10,6 +10,7 @@ const notificationsRouter = require('./routers/notificationsRouter');
 const questionsRouter = require('./routers/questionsRouter');
 const notesRouter = require('./routers/notesRouter');
 const userRouter = require('./routers/userRouter');
+const fbAuthRouter = require('./routers/fbAuthRouter');
 
 const University = require('./models/university');
 const Company = require('./models/company');
@@ -18,8 +19,6 @@ const cloudinary = require('./utils/cloudinary');
 
 var app = express();
 const mongoose = require('mongoose');
-const fs = require('fs');
-const util = require('util');
 
 let { eventsHandler } = require('./utils/eventsHandler');
 const Middleware = require('./middleware/Middleware');
@@ -68,20 +67,28 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(cookieParser());
+const domain =
+  process.env.NODE_ENV == 'development' ? 'localhost:3000' : 'papayask.com';
+
+app.use(
+  session({
+    name: 'session',
+    keys: ['key1', 'key2'],
+    maxAge: 24 * 60 * 60 * 1000 * 365,
+    domain: domain,
+  })
+);
 app.use(
   cors({
     origin: origin,
+    credentials: true,
   })
 );
-const domain =
-  process.env.NODE_ENV == 'development'
-    ? 'localhost:3000'
-    : process.env.NODE_ENV == 'production'
-    ? 'snipcritics.com'
-    : 'scbackend.com';
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(cookieParser());
+
 mongoose.connect(
   'mongodb+srv://papayask:' +
     process.env.MONGODB_PASSWORD +
@@ -109,7 +116,7 @@ function removeext(str) {
 // SAVE STREAM SESSIONS UID
 const streamSessions = {};
 exports.streamSessionsList = streamSessions;
-app.get('/token/user/',Middleware.getUser)
+app.get('/token/user/', Middleware.getUser);
 app.get('/university', async (req, res, next) => {
   const universities = await University.find({});
   res.send(universities);
@@ -188,14 +195,15 @@ app.get('/university/:search', async (req, res, next) => {
 // })
 
 app.get('/realtime-notifications/:id', eventsHandler);
-app.get("/search", userController.search);
-app.post("/search", userController.search);
-app.get("/searchauto", userController.searchAutomationResults);
-app.post("/searchauto", userController.searchAutomationResults);
+app.get('/search', userController.search);
+app.post('/search', userController.search);
+app.get('/searchauto', userController.searchAutomationResults);
+app.post('/searchauto', userController.searchAutomationResults);
 app.use('/notifications', notificationsRouter);
 app.use('/questions', questionsRouter);
 app.use('/note', notesRouter);
 app.use('/user', userRouter);
+app.use('/firebase', fbAuthRouter);
 app.get('/company/:search', async (req, res, next) => {
   const search = req.params.search;
   const companies = await Company.find({
