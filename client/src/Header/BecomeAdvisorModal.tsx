@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import Modal from '../shared/Modal';
@@ -18,10 +18,68 @@ const StyledSpan = styled.span`
   font-weight: bold;
 `;
 
+const SuggestionsList = styled.ul`
+  width: 100%;
+`;
+
+const ListItem = styled.li`
+  margin-bottom: 8px;
+  text-align: start;
+
+  ::marker {
+    color: ${(props) => props.theme.colors.primary};
+  }
+`;
+
 const BecomeAdvisorModal = (props: Props) => {
+  const [suggestions, setSuggestions] = useState<string[]>([]);
   const { progress } = useContext(EditProfileContext);
   const { user } = useContext(AuthContext);
 
+  useEffect(() => {
+    const newSuggestions: string[] = [];
+    if (!user) return;
+    if (!user.picture || user.picture === '') {
+      newSuggestions.push('Add a profile image (required)');
+    }
+    if (user.title === '') {
+      newSuggestions.push('Add a title');
+    }
+
+    if (user.bio === '') {
+      newSuggestions.push('Add a bio');
+    }
+    if (user.skills.length === 0) {
+      newSuggestions.push(
+        'Add skills and connect them to your experience and education'
+      );
+    } else {
+      const skillsWithoutExperienceOrEducation = user.skills.filter(
+        (skill) =>
+          skill.experiences.length === 0 || skill.educations.length === 0
+      );
+      if (skillsWithoutExperienceOrEducation.length > 0) {
+        newSuggestions.push(
+          'Connect your skills to your experience and education'
+        );
+      }
+    }
+    if (user.education.length === 0) {
+      newSuggestions.push('Add your education');
+    }
+    if (user.experience.length === 0) {
+      newSuggestions.push('Add your experience');
+    }
+
+    if (user.country === '') {
+      newSuggestions.push('Add your country');
+    }
+    if (user.languages.length === 0) {
+      newSuggestions.push('Add your languages');
+    }
+    setSuggestions(newSuggestions);
+  }, []);
+  console.log(suggestions);
   return (
     <Modal
       setShowModal={props.setShowBecomeAdvisorModal}
@@ -65,9 +123,16 @@ const BecomeAdvisorModal = (props: Props) => {
           )}
 
           {progress < 75 ? (
-            <Text fontSize={24} color="primary">
-              Current progress: <StyledSpan>{progress}%</StyledSpan>
-            </Text>
+            <>
+              <Text fontSize={24} color="primary">
+                Current progress: <StyledSpan>{progress}%</StyledSpan>
+              </Text>
+              <SuggestionsList>
+                {suggestions.map((suggestion, index) => (
+                  <ListItem key={index}>{suggestion}</ListItem>
+                ))}
+              </SuggestionsList>
+            </>
           ) : (
             <Text fontSize={18} mb={24} align="justify">
               We appreciate your patience as we review your information and make

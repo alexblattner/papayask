@@ -555,20 +555,20 @@ export const EditProfileProvider = ({
 
   useEffect(() => {
     setProgress(0);
-    const titleProgress = title ? 5 : 0;
-    const bioProgress = bio ? 15 : 0;
+    const titleProgress = title ? 7 : 0;
+    const bioProgress = bio ? 17 : 0;
     const skillsProgress = skills.reduce((acc, skill) => {
       if (skill.educations.length > 0 || skill.experiences.length > 0) {
-        return acc + 10;
+        return acc + 12;
       } else {
-        return acc + 5;
+        return acc + 7;
       }
     }, 0);
-    const educationProgress = education.length * 5;
-    const experienceProgress = experience.length * 5;
-    const languagesProgress = languages.length > 0 ? 5 : 0;
-    const countryProgress = country ? 5 : 0;
-    const pictureProgress = cloudinaryImageId ? 15 : 0;
+    const educationProgress = education.length * 7;
+    const experienceProgress = experience.length * 7;
+    const languagesProgress = languages.length > 0 ? 7 : 0;
+    const countryProgress = country ? 7 : 0;
+    const pictureProgress = cloudinaryImageId ? 17 : 0;
 
     const progressSum =
       titleProgress +
