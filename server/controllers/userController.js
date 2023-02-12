@@ -442,39 +442,39 @@ exports.apply = async (req, res, next) => {
   if (user) {
     let completion = 0;
     if (user.title) {
-      completion += 5;
+      completion += 7;
     }
     if (user.bio) {
-      completion += 15;
+      completion += 17;
     }
     if (user.picture) {
-      completion += 15;
+      completion += 17;
     }
     for (let i = 0; i < user.skills.length; i++) {
       if (
         user.skills[i].experiences.length > 0 ||
         user.skills[i].educations.length > 0
       ) {
-        completion += 10;
+        completion += 12;
       } else {
-        completion += 5;
+        completion += 7;
       }
     }
 
     for (let i = 0; i < user.experience.length; i++) {
-      completion += 5;
+      completion += 7;
     }
 
     for (let i = 0; i < user.education.length; i++) {
-      completion += 5;
+      completion += 7;
     }
 
     if (user.languages) {
-      completion += 5;
+      completion += 7;
     }
 
     if (user.country) {
-      completion += 5;
+      completion += 7;
     }
 
     if (completion >= 75) {
