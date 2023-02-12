@@ -28,21 +28,6 @@ exports.create= async (req, res, next) => {
   const question = await Question.findById(req.body.questionId).exec();
   if (!question) return res.sendStatus(404)
   if (question.receiver._id.toString() == req.user._id.toString()) {
-    const preNotes= await Note.find({question:req.body.questionId}).sort('createdAt').exec();
-    let finish=false;
-    if(req.body.type!='clarification'){
-      if(preNotes.length>0){
-        const preNote=preNotes[preNotes.length-1];
-        if(preNote.user.toString()==req.user._id.toString()){
-          return res.sendStatus(403);
-        }
-        if(preNote.type=="answer"){
-          finish=true;
-        }
-      }else{
-        finish=true;
-      }
-    }
     let content= Array.isArray(req.body.content) ? req.body.content[0] : req.body.content;
     let submission={
       user: req.user._id,
@@ -61,23 +46,40 @@ exports.create= async (req, res, next) => {
           }
         }
         question.notes.push(data._id);
-        console.log(req.body.type,finish);
-        if(req.body.type=="answer"&&finish){
-          console.log("finish");
+        if(req.body.type=="answer"){
           question.status.done=true;
           question.markModified('status');
         }else if(req.body.type=="refusal"){
-          console.log("refusal");
           question.status.done=true;
           question.status.action="rejected";
           question.status.reason=req.body.content;
           question.markModified('status');
         }
         await question.save();
-        return res.send(data);
+        const finaldata=data;
+        finaldata.user=req.user;
+        return res.send(finaldata);
       })
     }
-  } else {
+  } else if(question.sender._id.toString() == req.user._id.toString()){
+    let submission={
+      user: req.user._id,
+      question: req.body.questionId,
+      content: req.body.content,
+      type: req.body.type,
+    }
+    const preNotes= await Note.find({question:req.body.questionId}).sort('createdAt').exec();
+    if(!(preNotes.length>0&&preNotes[preNotes.length-1].user.toString()==req.user._id.toString())){
+      if(req.body.coordinates) submission.coordinates=req.body.coordinates;
+      await Note.create(submission).then(async(data) => {
+        question.notes.push(data._id);
+        await question.save();
+        const finaldata=data;
+        finaldata.user=req.user;
+        return res.send(finaldata);
+      })
+    }
+  }else {
     return res.sendStatus(403);
   }
 }
