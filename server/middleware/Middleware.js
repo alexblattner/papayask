@@ -29,6 +29,7 @@ class Middleware {
         if (req.body) {
           req.body.auth_time = decoded.auth_time;
         }
+
         return next();
       }
       return res.status(401).send('Unauthorized');
@@ -39,7 +40,6 @@ class Middleware {
   }
   async getUser(req, res, next) {
     if (!req.headers.authorization) {
-      console.log('sessionCookie', req.cookies);
       const sessionCookie = req.cookies.__session;
       if (!sessionCookie) {
         return res.status(401).json({ error: 'Unauthorized' });
@@ -52,7 +52,12 @@ class Middleware {
       token = req.cookies.__session;
     }
     try {
-      const decoded = await admin.auth().verifyIdToken(token);
+      let decoded;
+      if (req.cookies.__session) {
+        decoded = await admin.auth().verifySessionCookie(token, true);
+      } else {
+        decoded = await admin.auth().verifyIdToken(token);
+      }
       const { uid } = decoded;
       let user = await User.findOne({ uid });
       return res.send(user);
