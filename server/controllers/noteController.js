@@ -4,7 +4,7 @@ const { log } = require("console");
 
 
 exports.edit= async (req, res, next) => {
-  const note= await Note.findById(req.body.id).exec();
+  const note= await Note.findOne({_id:req.body.id,user:req.user._id}).exec();
   if (note && note.user.toString() == req.user._id.toString()) {
     await note.update({ content: req.body.content });
     return res.send(note);
@@ -24,7 +24,6 @@ exports.delete = async (req, res) => {
 
 
 exports.create= async (req, res, next) => {
-  console.log(req.body);
   const question = await Question.findById(req.body.questionId).exec();
   if (!question) return res.sendStatus(404)
   if (question.receiver._id.toString() == req.user._id.toString()) {
@@ -38,6 +37,7 @@ exports.create= async (req, res, next) => {
     if(req.body.coordinates) submission.coordinates=req.body.coordinates;
     if(question.status?.done!=true){
       await Note.create(submission).then(async(data) => {
+        console.log(333333333,data);
         if(!question.status||!question.status.action||question.status.action=="pending"){//notifies that the question has been accepted
           if(question.status){
             question.status.action="accepted";
