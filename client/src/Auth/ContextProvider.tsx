@@ -59,7 +59,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           : window.localStorage.getItem('firstName') +
             ' ' +
             window.localStorage.getItem('lastName');
-
         const token = await user.getIdToken();
         register(token, {
           email: user.email,

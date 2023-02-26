@@ -234,7 +234,7 @@ and answering a single question is less time consuming.
           </div>
           <div>
             <img src={letter} alt="letter" />
-            <p>Papayask@info.com</p>
+            <p>main@papayask.com</p>
           </div>
         </Footer>
         <p

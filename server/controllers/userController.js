@@ -155,7 +155,10 @@ exports.createOrLogin = async (req, res, next) => {
     if (!doesUserExist) {
       let name = '';
       if (req.body.name !== '') {
-        name = req.body.bane;
+        name = req.body.name;
+      }
+      if (req.body.displayName !== '') {
+        name = req.body.displayName;
       }
       const newUserOb = {
         uid: req.body.uid,
