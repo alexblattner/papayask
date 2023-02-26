@@ -126,7 +126,7 @@ export const DateInput = (props: InputProps) => {
         scrollableYearDropdown
         showYearDropdown
         dropdownMode={
-          navigator.userAgent.includes('Chrome') ? 'scroll' : 'select'
+          navigator.userAgent.toLowerCase().match(/mobile/i) ? 'select' : 'scroll'
         }
         yearDropdownItemNumber={100}
         autoComplete="off"
