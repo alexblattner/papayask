@@ -104,13 +104,13 @@ export const DateInput = (props: InputProps) => {
   useEffect(() => {
     if (props.value) {
       setDate(new Date(formatedDate(props.value)));
-    }else{
-      setDate(null)
+    } else {
+      setDate(null);
     }
   }, [props.value]);
 
   return (
-    <Container width='100%'>
+    <Container width="100%">
       <Text fontWeight={'bold'} color="#8e8e8e" mb={6}>
         {props.label}
       </Text>
@@ -125,6 +125,9 @@ export const DateInput = (props: InputProps) => {
         dateFormat="dd/MM/yyyy"
         scrollableYearDropdown
         showYearDropdown
+        dropdownMode={
+          navigator.userAgent.includes('Chrome') ? 'scroll' : 'select'
+        }
         yearDropdownItemNumber={100}
         autoComplete="off"
       />
