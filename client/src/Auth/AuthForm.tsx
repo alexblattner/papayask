@@ -27,7 +27,6 @@ const AuthForm = (props: Props) => {
     await auth
       .signInWithPopup(new firebase.auth.GoogleAuthProvider())
       .then(async (userCred: any) => {
-        console.log(1111,userCred);
         if (userCred) {
           window.localStorage.setItem('auth', 'true');
           if(userCred.additionalUserInfo.isNewUser)
